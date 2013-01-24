@@ -12,7 +12,7 @@ import javax.lang.model.element.TypeElement;
 import com.overstock.constraint.Constraint;
 
 /**
- * The {@link Constraint}s on an annotation.
+ * The {@link Constraint Constraints} on an annotation.
  */
 public class Constraints {
 

@@ -23,6 +23,24 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>13.0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <licenses>
@@ -71,6 +89,5 @@
     <url>https://github.com/overstock/annotation-constraints</url>
     <connection>scm:git:git://github.com/overstock/annotation-constraints.git</connection>
     <developerConnection>scm:git:git@github.com:overstock/annotation-constraints.git</developerConnection>
-    <tag>HEAD</tag>
   </scm>
 </project>
