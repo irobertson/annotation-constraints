@@ -1,4 +1,4 @@
-package com.overstock.constraint.processor;
+package com.overstock.constraint;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
