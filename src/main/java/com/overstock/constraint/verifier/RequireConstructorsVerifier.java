@@ -28,11 +28,11 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
 
     @SuppressWarnings("unchecked")
     List<AnnotationMirror> requiredConstructorValues = (List<AnnotationMirror>) requireConstructors.getElementValues()
-      .values().iterator().next().getValue();
+      .values().iterator().next().getValue(); //TODO does this work for other compilers besides javac?
     for (AnnotationMirror requiredConstructorValue : requiredConstructorValues) {
       @SuppressWarnings("unchecked")
       List<AnnotationValue> argumentList = (List<AnnotationValue>) requiredConstructorValue.getElementValues().values()
-        .iterator().next().getValue();
+        .iterator().next().getValue(); //TODO does this work for other compilers besides javac?
       if (!hasConstructor(element, argumentList)) {
         raiseAnnotatedClassMessage(
           Diagnostic.Kind.ERROR,
