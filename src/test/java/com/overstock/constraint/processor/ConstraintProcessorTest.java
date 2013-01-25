@@ -93,7 +93,7 @@ public class ConstraintProcessorTest extends AbstractCompilingTest {
   }
 
   private static String filePath(String fileName) {
-    return PACKAGE_NAME.replaceAll(".", "/") + "/" + fileName;
+    return PACKAGE_NAME.replaceAll("\\.", "/") + "/" + fileName;
   }
 
 }
