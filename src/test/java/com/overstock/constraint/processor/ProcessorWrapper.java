@@ -17,7 +17,7 @@ import org.mockito.Mockito;
 
 /**
  * A wrapper around a {@code Processor} which will replace the standard {@code Messager}
- * returned from {@link javax.annotation.processing.ProcessingEnvironment#getMessager()} with a provided
+ * returned of {@link javax.annotation.processing.ProcessingEnvironment#getMessager()} with a provided
  * mock Messager.
  */
 public class ProcessorWrapper implements Processor {

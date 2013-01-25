@@ -1,5 +1,6 @@
 package com.overstock.constraint.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,47 +20,62 @@ public class Constraints {
   private final Collection<AnnotationMirror> constraintAnnotations;
 
   /**
-   * The constraints for the annotation represented by the {@link AnnotationMirror}.
+   * The constraints on the annotation represented by the {@link AnnotationMirror}.
    *
    * @param annotation the annotation mirror
    * @return the constraints for the annotation represented by the {@link AnnotationMirror}, never {@code null}.
    */
-  public static Constraints from(AnnotationMirror annotation) {
-    return from(annotation.getAnnotationType().asElement());
+  public static Constraints on(AnnotationMirror annotation) {
+    return on(annotation.getAnnotationType().asElement());
   }
 
   /**
-   * The constraints for the annotation represented by the {@link Element}.
+   * The constraints on the annotation represented by the {@link Element}.
    *
    * @param annotation the annotation element
    * @return the constraints for the annotation represented by the {@link Element}, never {@code null}.
    */
-  public static Constraints from(Element annotation) {
+  public static Constraints on(Element annotation) {
     Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
-    for (AnnotationMirror maybeConstrained : annotation.getAnnotationMirrors()) {
-      for (AnnotationMirror maybeConstraint : maybeConstrained.getAnnotationType().asElement()
+    for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
+      for (AnnotationMirror maybeConstraint : maybeConstraining.getAnnotationType().asElement()
         .getAnnotationMirrors()) {
-        if (isConstraint(maybeConstraint)) {
-          constraints.add(maybeConstraint);
+        if (isOfType(Constraint.class, maybeConstraint)) {
+          constraints.add(maybeConstraining);
         }
       }
     }
     return new Constraints(constraints);
   }
 
-  public Collection<AnnotationMirror> getConstraintAnnotations() {
-    return constraintAnnotations;
+  /**
+   * Gets the constraint of the given type, if present.
+   *
+   * @param constraintType the type of the constraint
+   * @return the constraint of the given type or null if it is not present
+   */
+  public AnnotationMirror get(Class<? extends Annotation> constraintType) {
+    for (AnnotationMirror constraint : constraintAnnotations) {
+      if (isOfType(constraintType, constraint)) {
+        return constraint;
+      }
+    }
+    return null;
+  }
+
+  public boolean isEmtpy() {
+    return constraintAnnotations.isEmpty();
   }
 
   private Constraints(Collection<AnnotationMirror> constraintAnnotations) {
     this.constraintAnnotations = Collections.unmodifiableCollection(constraintAnnotations);
   }
 
-  private static boolean isConstraint(AnnotationMirror maybeConstraint) {
-    return Constraint.class.getName().equals(annotationName(maybeConstraint));
+  private static boolean isOfType(Class<? extends Annotation> annotationType, AnnotationMirror constraint) {
+    return annotationType.getName().equals(qualifiedName(constraint));
   }
 
-  private static String annotationName(AnnotationMirror manifestableCandidate) {
-    return ((TypeElement) manifestableCandidate.getAnnotationType().asElement()).getQualifiedName().toString();
+  private static String qualifiedName(AnnotationMirror annotationMirror) {
+    return ((TypeElement) annotationMirror.getAnnotationType().asElement()).getQualifiedName().toString();
   }
 }
