@@ -7,6 +7,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
@@ -26,9 +27,13 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
       return;
     }
 
-    AnnotationValue value = requireConstructors.getElementValues().values().iterator().next();
+    TypeElement typeElement = processingEnv.getElementUtils()
+      .getTypeElement(RequireConstructors.class.getCanonicalName());
+    List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
+
     @SuppressWarnings("unchecked")
-    List<AnnotationMirror> requiredConstructorValues = (List<AnnotationMirror>) value.getValue();
+    List<AnnotationMirror> requiredConstructorValues = (List<AnnotationMirror>) requireConstructors.getElementValues()
+      .values().iterator().next().getValue();
     for (AnnotationMirror requiredConstructorValue : requiredConstructorValues) {
       @SuppressWarnings("unchecked")
       List<AnnotationValue> argumentList = (List<AnnotationValue>) requiredConstructorValue.getElementValues().values()
@@ -44,8 +49,21 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
     }
   }
 
-  private String argumentLabel(List<?> argumentList) {
-    return argumentList.isEmpty() ? "no arguments" : "arguments " + argumentList.toString();
+  private String argumentLabel(List<AnnotationValue> argumentList) {
+    return argumentList.isEmpty() ? "no arguments" : "arguments " + asString(argumentList);
+  }
+
+  private String asString(List<AnnotationValue> argumentList) {
+    StringBuilder result = new StringBuilder("(");
+    boolean first = true;
+    for (AnnotationValue annotationValue : argumentList) {
+      if (!first) {
+        result.append(", ");
+      }
+      result.append(annotationValue.getValue().toString());
+      first = false;
+    }
+    return result.append(')').toString();
   }
 
   private static boolean hasConstructor(Element element, List<AnnotationValue> argumentTypes) {
@@ -61,7 +79,11 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
     if (parameters.size() != expected.size()) {
       return false;
     }
-    //FIXME compare parameter types
+    for (int i = 0; i < parameters.size(); ++i) {
+      if (!parameters.get(i).asType().toString().equals(expected.get(i).getValue().toString())) {
+        return false;
+      }
+    }
     return true;
   }
 

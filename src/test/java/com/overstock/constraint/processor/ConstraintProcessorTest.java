@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.overstock.constraint.RequireNoArgConstructor;
+import com.overstock.constraint.RequireStringLongIntArrayConstructor;
 
 public class ConstraintProcessorTest extends AbstractCompilingTest {
   private static final String PACKAGE_NAME = "com.overstock.constraint";
@@ -38,7 +39,7 @@ public class ConstraintProcessorTest extends AbstractCompilingTest {
       "@NoConstraints(someInt=3)",
       "public class SimpleAnnotated extends java.util.ArrayList {}") };
 
-    assertCompileSuccess(sourceFiles);
+    assertCleanCompile(sourceFiles);
   }
 
   @Test
@@ -48,7 +49,7 @@ public class ConstraintProcessorTest extends AbstractCompilingTest {
       PACKAGE_DECLARATION,
       "@RequireNoArgConstructor public class Annotated {}") };
 
-    assertCompileSuccess(sourceFiles);
+    assertCleanCompile(sourceFiles);
   }
 
   @Test
@@ -58,7 +59,7 @@ public class ConstraintProcessorTest extends AbstractCompilingTest {
       PACKAGE_DECLARATION,
       "@RequireNoArgConstructor public class Annotated { public Annotated(String s) {} }") };
 
-    assertTrue("Compilation should succeed", compiler.compileWithProcessor(wrapped, sourceFiles));
+    compile(sourceFiles);
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireNoArgConstructor.class.getName()
@@ -68,8 +69,43 @@ public class ConstraintProcessorTest extends AbstractCompilingTest {
     verifyNoMoreInteractions(messager);
   }
 
-  private void assertCompileSuccess(SourceFile[] sourceFiles) throws Exception {
+  @Test
+  public void testRequireStringLongIntArrayConstructorPass() throws Exception {
+    SourceFile[] sourceFiles = { new SourceFile(
+      filePath("Annotated.java"),
+      PACKAGE_DECLARATION,
+      "@RequireStringLongIntArrayConstructor public class Annotated {",
+      "  public Annotated(String s, long l, int[] array) {}",
+      "}") };
+
+    assertCleanCompile(sourceFiles);
+  }
+
+  @Test
+  public void testRequireStringLongIntArrayConstructorFail() throws Exception {
+    SourceFile[] sourceFiles = { new SourceFile(
+      filePath("Annotated.java"),
+      PACKAGE_DECLARATION,
+      "@RequireStringLongIntArrayConstructor public class Annotated { ",
+      "  public Annotated(String s, long l, long[] longs) {}",
+      "}") };
+
+    compile(sourceFiles);
+    verifyPrintMessage(
+      Diagnostic.Kind.ERROR,
+      "Class " + className("Annotated") + " is annotated with @" + RequireStringLongIntArrayConstructor.class.getName()
+        + " but does not have a constructor with arguments (java.lang.String, long, int[])",
+      new ClassValue(className("Annotated")),
+      RequireStringLongIntArrayConstructor.class);
+    verifyNoMoreInteractions(messager);
+  }
+
+  private void compile(SourceFile[] sourceFiles) throws Exception {
     assertTrue("Compilation should succeed", compiler.compileWithProcessor(wrapped, sourceFiles));
+  }
+
+  private void assertCleanCompile(SourceFile[] sourceFiles) throws Exception {
+    compile(sourceFiles);
     verifyZeroInteractions(messager); //no warnings or errors of the annotation processor
   }
 
