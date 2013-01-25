@@ -7,7 +7,6 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
@@ -26,10 +25,6 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
     if (requireConstructors == null) {
       return;
     }
-
-    TypeElement typeElement = processingEnv.getElementUtils()
-      .getTypeElement(RequireConstructors.class.getCanonicalName());
-    List<? extends Element> enclosedElements = typeElement.getEnclosedElements();
 
     @SuppressWarnings("unchecked")
     List<AnnotationMirror> requiredConstructorValues = (List<AnnotationMirror>) requireConstructors.getElementValues()
@@ -80,7 +75,7 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
       return false;
     }
     for (int i = 0; i < parameters.size(); ++i) {
-      if (!parameters.get(i).asType().toString().equals(expected.get(i).getValue().toString())) {
+      if (!parameters.get(i).asType().toString().equals(expected.get(i).getValue().toString())) { //TODO does this work for other compilers besides javac?
         return false;
       }
     }
