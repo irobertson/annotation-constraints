@@ -7,7 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks an annotation as providing a constraint which should be checked at compile-time.
+ * Marks an annotation as providing a constraint which should be checked at compile-time. Any such annotation must have
+ * an associated {@link com.overstock.constraint.verifier.Verifier}.
  */
 @Documented
 @Retention(RetentionPolicy.CLASS)

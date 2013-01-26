@@ -1,6 +1,7 @@
 package com.overstock.constraint;
 
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,6 +11,7 @@ import java.lang.annotation.Target;
  * Recommends that annotated types have specific annotations, generating a compiler warning when this constraint is
  * violated.
  */
+@Documented
 @Constraint
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -24,5 +26,4 @@ public @interface RecommendAnnotations {
    * with {@code @SomeOtherAnnotation}.
    */
   Class<? extends Annotation>[] value();
-
 }

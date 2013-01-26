@@ -7,7 +7,7 @@ import com.overstock.constraint.Constraint;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * Verifies that elements satisfy certain constraints presented by their annotations.
+ * Verifies that elements satisfy certain constraints presented by their annotations. TODO document registration of verifiers
  */
 public interface Verifier {
 
