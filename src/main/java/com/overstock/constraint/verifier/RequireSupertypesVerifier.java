@@ -34,9 +34,8 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
       return;
     }
 
-    Set<String> missingSupertypes = missingSupertypes(processingEnv.getTypeUtils().directSupertypes(element.asType()),
-      requiredSupertypes, processingEnv.getTypeUtils()
-    );
+    Set<String> missingSupertypes =
+      missingSupertypes(element.asType(), requiredSupertypes, processingEnv.getTypeUtils());
 
     for (String missingRequiredSupertype : missingSupertypes) {
       raiseAnnotatedClassMessage(
@@ -47,12 +46,13 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
     }
   }
 
-  private Set<String> missingSupertypes(List<? extends TypeMirror> supertypes, Set<String> missingSupertypes,
-    Types typeUtils) {
+  private Set<String> missingSupertypes(TypeMirror type, Set<String> missingSupertypes, Types typeUtils) {
     if (!missingSupertypes.isEmpty()) {
+      missingSupertypes.remove(VerifierUtils.getClassName(type));
+      List<? extends TypeMirror> supertypes = typeUtils.directSupertypes(type);
       for (TypeMirror supertype : supertypes) {
         missingSupertypes.remove(VerifierUtils.getClassName(supertype));
-        missingSupertypes(typeUtils.directSupertypes(supertype), missingSupertypes, typeUtils);
+        missingSupertypes(supertype, missingSupertypes, typeUtils);
       }
     }
     return missingSupertypes;

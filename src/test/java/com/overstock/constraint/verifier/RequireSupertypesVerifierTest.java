@@ -66,6 +66,21 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
         "@RequireBaseClassAndSerializable public class Annotated extends Extending {}"));
   }
 
+  @Test
+  public void testRequireSelfSupertypePass() throws Exception {
+    assertCleanCompile(
+      new SourceFile(
+        filePath("Annotated.java"),
+        PACKAGE_DECLARATION,
+        "@SuperclassRequired public class Annotated {}"),
+      new SourceFile(
+        filePath("SuperclassRequired.java"),
+        PACKAGE_DECLARATION,
+        "import com.overstock.constraint.RequireSupertypes;",
+        "@RequireSupertypes(Annotated.class)",
+        "public @interface SuperclassRequired {}"));
+  }
+
   private static String qualifiedNestedClassName(Class<?> clazz) {
     return RequireSupertypesVerifierTest.class.getName() + "." + clazz.getSimpleName();
   }
