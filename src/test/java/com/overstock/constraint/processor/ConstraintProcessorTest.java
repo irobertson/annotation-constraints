@@ -6,13 +6,11 @@ public class ConstraintProcessorTest extends AbstractConstraintProcessorTest {
 
   @Test
   public void testNoConstraints() throws Exception {
-    SourceFile[] sourceFiles = { new SourceFile(
+    assertCleanCompile(new SourceFile(
       filePath("SimpleAnnotated.java"),
       PACKAGE_DECLARATION,
-      "@NoConstraints(someInt=3)",
-      "public class SimpleAnnotated extends java.util.ArrayList {}") };
-
-    assertCleanCompile(sourceFiles);
+      "@Unconstrained(someInt=3)",
+      "public class SimpleAnnotated extends java.util.ArrayList {}"));
   }
 
 }

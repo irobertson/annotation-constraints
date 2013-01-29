@@ -13,6 +13,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
+import com.overstock.constraint.verifier.CompanionAnnotationsVerifier;
 import com.overstock.constraint.verifier.RequireConstructorsVerifier;
 import com.overstock.constraint.verifier.Verifier;
 
@@ -30,7 +31,10 @@ public class ConstraintProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
 
-    this.verifiers = Arrays.asList(new RequireConstructorsVerifier(processingEnv)); //TODO uniform and extensible way of registering verifiers
+    this.verifiers = Arrays.asList(
+      new RequireConstructorsVerifier(processingEnv),
+      new CompanionAnnotationsVerifier(processingEnv)
+    ); //TODO uniform and extensible way of registering verifiers
   }
 
   @Override

@@ -13,22 +13,19 @@ public class RequireConstructorsVerifierTest extends AbstractConstraintProcessor
 
   @Test
   public void testNoArgConstructorPass() throws Exception {
-    SourceFile[] sourceFiles = { new SourceFile(
+    assertCleanCompile(new SourceFile(
       filePath("Annotated.java"),
       PACKAGE_DECLARATION,
-      "@RequireNoArgConstructor public class Annotated {}") };
-
-    assertCleanCompile(sourceFiles);
+      "@RequireNoArgConstructor public class Annotated {}"));
   }
 
   @Test
   public void testNoArgConstructorFail() throws Exception {
-    SourceFile[] sourceFiles = { new SourceFile(
+    compile(new SourceFile(
       filePath("Annotated.java"),
       PACKAGE_DECLARATION,
-      "@RequireNoArgConstructor public class Annotated { public Annotated(String s) {} }") };
+      "@RequireNoArgConstructor public class Annotated { public Annotated(String s) {} }"));
 
-    compile(sourceFiles);
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireNoArgConstructor.class.getName()
@@ -40,26 +37,23 @@ public class RequireConstructorsVerifierTest extends AbstractConstraintProcessor
 
   @Test
   public void testRequireStringLongIntArrayConstructorPass() throws Exception {
-    SourceFile[] sourceFiles = { new SourceFile(
+    assertCleanCompile(new SourceFile(
       filePath("Annotated.java"),
       PACKAGE_DECLARATION,
       "@RequireStringLongIntArrayConstructor public class Annotated {",
       "  public Annotated(String s, long l, int[] array) {}",
-      "}") };
-
-    assertCleanCompile(sourceFiles);
+      "}"));
   }
 
   @Test
   public void testRequireStringLongIntArrayConstructorFail() throws Exception {
-    SourceFile[] sourceFiles = { new SourceFile(
+    compile(new SourceFile(
       filePath("Annotated.java"),
       PACKAGE_DECLARATION,
       "@RequireStringLongIntArrayConstructor public class Annotated { ",
       "  public Annotated(String s, long l, long[] longs) {}",
-      "}") };
+      "}"));
 
-    compile(sourceFiles);
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireStringLongIntArrayConstructor.class.getName()

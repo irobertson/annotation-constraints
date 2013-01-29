@@ -14,6 +14,9 @@ import javax.tools.Diagnostic;
 import com.overstock.constraint.RequireConstructors;
 import com.overstock.constraint.processor.Constraints;
 
+/**
+ * A verifier for {@link RequireConstructors}.
+ */
 public class RequireConstructorsVerifier extends AbstractVerifier {
 
   public RequireConstructorsVerifier(ProcessingEnvironment processingEnv) {

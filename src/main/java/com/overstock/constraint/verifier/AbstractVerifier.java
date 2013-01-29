@@ -26,7 +26,7 @@ public abstract class AbstractVerifier implements Verifier {
   protected void raiseAnnotatedClassMessage(Diagnostic.Kind kind, Element element, AnnotationMirror annotationMirror,
       String message) {
     raiseAnnotatedClassMessage(
-      kind, element, annotationMirror, message, annotationMirror.getAnnotationType().asElement().getSimpleName());
+      kind, element, annotationMirror, message, annotationMirror.getAnnotationType().asElement());
 
   }
 

@@ -26,11 +26,11 @@ public abstract class AbstractConstraintProcessorTest extends AbstractCompilingT
 
   protected Processor wrapped;
 
-  protected final void compile(SourceFile[] sourceFiles) throws Exception {
+  protected final void compile(SourceFile... sourceFiles) throws Exception {
     assertTrue("Compilation should succeed", compiler.compileWithProcessor(wrapped, sourceFiles));
   }
 
-  protected final void assertCleanCompile(SourceFile[] sourceFiles) throws Exception {
+  protected final void assertCleanCompile(SourceFile... sourceFiles) throws Exception {
     compile(sourceFiles);
     verifyZeroInteractions(messager); //no warnings or errors of the annotation processor
   }
