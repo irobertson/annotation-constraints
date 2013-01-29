@@ -33,7 +33,7 @@ public class DisallowAnnotationsVerifierTest extends AbstractConstraintProcessor
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + DisallowUnconstrained.class.getName()
-        + " and with @" + Unconstrained.class.getName(),
+        + " which is not allowed with @" + Unconstrained.class.getName(),
       className("Annotated"),
       DisallowUnconstrained.class);
     verifyNoMoreInteractions(messager);
@@ -57,13 +57,13 @@ public class DisallowAnnotationsVerifierTest extends AbstractConstraintProcessor
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + DisallowMultipleAnnotations.class.getName()
-        + " and with @" + Unconstrained.class.getName(),
+        + " which is not allowed with @" + Unconstrained.class.getName(),
       className("Annotated"),
       DisallowMultipleAnnotations.class);
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + DisallowMultipleAnnotations.class.getName()
-        + " and with @" + RequireNoArgConstructor.class.getName(),
+        + " which is not allowed with @" + RequireNoArgConstructor.class.getName(),
       className("Annotated"),
       DisallowMultipleAnnotations.class);
     verifyNoMoreInteractions(messager);

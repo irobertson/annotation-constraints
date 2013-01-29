@@ -44,7 +44,7 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
         Diagnostic.Kind.ERROR,
         element,
         annotation,
-        " and with @" + missingRequiredAnnotationType);
+        " which is not allowed with @" + missingRequiredAnnotationType);
     }
   }
 
