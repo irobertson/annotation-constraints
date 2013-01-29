@@ -78,7 +78,7 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
       return false;
     }
     for (int i = 0; i < parameters.size(); ++i) {
-      if (!parameters.get(i).asType().toString().equals(expected.get(i).getValue().toString())) { //TODO does this work for other compilers besides javac?
+      if (!VerifierUtils.getClassName(parameters.get(i)).equals(VerifierUtils.getClassName(expected.get(i)))) {
         return false;
       }
     }

@@ -1,4 +1,4 @@
-package com.overstock.constraint.processor;
+package com.overstock.constraint.verifier;
 
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -11,6 +11,8 @@ import com.overstock.constraint.RecommendUnconstrained;
 import com.overstock.constraint.RequireMultipleAnnotations;
 import com.overstock.constraint.RequireUnconstrained;
 import com.overstock.constraint.Unconstrained;
+import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
+import com.overstock.constraint.processor.SourceFile;
 
 public class CompanionAnnotationsVerifierTest extends AbstractConstraintProcessorTest {
 
@@ -33,7 +35,7 @@ public class CompanionAnnotationsVerifierTest extends AbstractConstraintProcesso
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireUnconstrained.class.getName()
         + " but not with @" + Unconstrained.class.getName(),
-      new ClassValue(className("Annotated")),
+      className("Annotated"),
       RequireUnconstrained.class);
     verifyNoMoreInteractions(messager);
   }
@@ -57,7 +59,7 @@ public class CompanionAnnotationsVerifierTest extends AbstractConstraintProcesso
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireMultipleAnnotations.class.getName()
         + " but not with @" + Unconstrained.class.getName(),
-      new ClassValue(className("Annotated")),
+      className("Annotated"),
       RequireMultipleAnnotations.class);
     verifyNoMoreInteractions(messager);
   }
@@ -81,7 +83,7 @@ public class CompanionAnnotationsVerifierTest extends AbstractConstraintProcesso
       Diagnostic.Kind.WARNING,
       "Class " + className("Annotated") + " is annotated with @" + RecommendUnconstrained.class.getName()
         + " but not with @" + Unconstrained.class.getName(),
-      new ClassValue(className("Annotated")),
+      className("Annotated"),
       RecommendUnconstrained.class);
     verifyNoMoreInteractions(messager);
   }
@@ -105,7 +107,7 @@ public class CompanionAnnotationsVerifierTest extends AbstractConstraintProcesso
       Diagnostic.Kind.WARNING,
       "Class " + className("Annotated") + " is annotated with @" + RecommendMultipleAnnotations.class.getName()
         + " but not with @" + Unconstrained.class.getName(),
-      new ClassValue(className("Annotated")),
+      className("Annotated"),
       RecommendMultipleAnnotations.class);
     verifyNoMoreInteractions(messager);
   }

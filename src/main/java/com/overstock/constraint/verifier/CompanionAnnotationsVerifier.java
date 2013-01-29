@@ -1,12 +1,10 @@
 package com.overstock.constraint.verifier;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
@@ -67,13 +65,6 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
   }
 
   private Set<String> getValuesAsClassNames(AnnotationMirror requireAnnotations) {
-    @SuppressWarnings("unchecked")
-    List<AnnotationValue> annotationValues = (List<AnnotationValue>) requireAnnotations.getElementValues()
-      .values().iterator().next().getValue(); //TODO does this work for other compilers besides javac?
-    Set<String> classNames = new HashSet<String>(annotationValues.size());
-    for (AnnotationValue annotationValue : annotationValues) {
-      classNames.add(annotationValue.getValue().toString()); //TODO does this work for other compilers besides javac?
-    }
-    return classNames;
+    return VerifierUtils.getClassNames(VerifierUtils.getArrayValues(requireAnnotations));
   }
 }

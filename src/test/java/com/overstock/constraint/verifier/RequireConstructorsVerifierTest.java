@@ -1,4 +1,4 @@
-package com.overstock.constraint.processor;
+package com.overstock.constraint.verifier;
 
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import com.overstock.constraint.RequireNoArgConstructor;
 import com.overstock.constraint.RequireStringLongIntArrayConstructor;
+import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
+import com.overstock.constraint.processor.SourceFile;
 
 public class RequireConstructorsVerifierTest extends AbstractConstraintProcessorTest {
 
@@ -30,7 +32,7 @@ public class RequireConstructorsVerifierTest extends AbstractConstraintProcessor
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireNoArgConstructor.class.getName()
         + " but does not have a constructor with no arguments",
-      new ClassValue(className("Annotated")),
+      className("Annotated"),
       RequireNoArgConstructor.class);
     verifyNoMoreInteractions(messager);
   }
@@ -58,7 +60,7 @@ public class RequireConstructorsVerifierTest extends AbstractConstraintProcessor
       Diagnostic.Kind.ERROR,
       "Class " + className("Annotated") + " is annotated with @" + RequireStringLongIntArrayConstructor.class.getName()
         + " but does not have a constructor with arguments (java.lang.String, long, int[])",
-      new ClassValue(className("Annotated")),
+      className("Annotated"),
       RequireStringLongIntArrayConstructor.class);
     verifyNoMoreInteractions(messager);
   }
