@@ -26,7 +26,7 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       return;
     }
 
-    Set<String> disallowedAnnotations = new HashSet<String>(getValuesAsClassNames(disallowAnnotations));
+    Set<String> disallowedAnnotations = VerifierUtils.getValuesAsClassNames(disallowAnnotations);
     if (disallowedAnnotations.isEmpty()) {
       return;
     }
@@ -39,16 +39,12 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       }
     }
 
-    for (String missingRequiredAnnotationType : presentAndDisallowed) {
+    for (String presentAndDisallowedAnnotationType : presentAndDisallowed) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,
         annotation,
-        " which is not allowed with @" + missingRequiredAnnotationType);
+        " which is not allowed with @" + presentAndDisallowedAnnotationType);
     }
-  }
-
-  private Set<String> getValuesAsClassNames(AnnotationMirror requireAnnotations) {
-    return VerifierUtils.getClassNames(VerifierUtils.getArrayValues(requireAnnotations));
   }
 }

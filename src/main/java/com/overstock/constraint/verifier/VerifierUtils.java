@@ -10,6 +10,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.type.TypeMirror;
 
 public class VerifierUtils {
 
@@ -85,6 +86,23 @@ public class VerifierUtils {
    */
   public static String getClassName(AnnotationMirror annotation) {
     return annotation.getAnnotationType().asElement().toString();
+  }
+
+  /**
+   * Gets the class names represented by the annotation values for the element named "{@code value}" on the annotation.
+   *
+   * @param annotation the annotation
+   * @return the class names represented by the annotation values for the element named "{@code value}" on the
+   * annotation
+   * @see #getClassNames(java.util.Collection)
+   * @see #getArrayValues(javax.lang.model.element.AnnotationMirror)
+   */
+  public static Set<String> getValuesAsClassNames(AnnotationMirror annotation) {
+    return getClassNames(getArrayValues(annotation));
+  }
+
+  public static String getClassName(TypeMirror typeMirror) {
+    return typeMirror.toString();
   }
 
   private VerifierUtils() {}

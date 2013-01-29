@@ -37,11 +37,16 @@ public abstract class AbstractConstraintProcessorTest extends AbstractCompilingT
 
   protected final void verifyPrintMessage(
     Diagnostic.Kind kind, String message, String elementClassName, Class<?> annotationMirrorClass) {
+    verifyPrintMessage(kind, message, elementClassName, annotationMirrorClass.getName());
+  }
+
+  protected final void verifyPrintMessage(
+    Diagnostic.Kind kind, String message, String elementClassName, String annotationMirrorClass) {
     verify(messager).printMessage(
       eq(kind),
       eq(message),
       argThat(Matchers.<Element>hasToString(elementClassName)),
-      argThat(Matchers.<AnnotationMirror>hasToString("@" + annotationMirrorClass.getName())));
+      argThat(Matchers.<AnnotationMirror>hasToString("@" + annotationMirrorClass)));
   }
 
   @Before

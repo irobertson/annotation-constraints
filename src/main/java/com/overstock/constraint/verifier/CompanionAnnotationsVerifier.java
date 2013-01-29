@@ -30,12 +30,12 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
 
     Set<String> requiredAnnotations = new HashSet<String>();
     if (requireAnnotations != null) {
-      requiredAnnotations.addAll(getValuesAsClassNames(requireAnnotations));
+      requiredAnnotations.addAll(VerifierUtils.getValuesAsClassNames(requireAnnotations));
     }
 
     Set<String> recommendedAnnotations = new HashSet<String>();
     if (recommendAnnotations != null) {
-      recommendedAnnotations.addAll(getValuesAsClassNames(recommendAnnotations));
+      recommendedAnnotations.addAll(VerifierUtils.getValuesAsClassNames(recommendAnnotations));
     }
 
     if (requiredAnnotations.isEmpty() && recommendedAnnotations.isEmpty()) {
@@ -64,7 +64,4 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
     }
   }
 
-  private Set<String> getValuesAsClassNames(AnnotationMirror requireAnnotations) {
-    return VerifierUtils.getClassNames(VerifierUtils.getArrayValues(requireAnnotations));
-  }
 }
