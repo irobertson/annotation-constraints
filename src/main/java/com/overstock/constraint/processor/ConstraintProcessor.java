@@ -15,6 +15,7 @@ import javax.lang.model.element.TypeElement;
 
 import com.overstock.constraint.verifier.CompanionAnnotationsVerifier;
 import com.overstock.constraint.verifier.DisallowAnnotationsVerifier;
+import com.overstock.constraint.verifier.RequireAnnotationsOnSupertypeVerifier;
 import com.overstock.constraint.verifier.RequireConstructorsVerifier;
 import com.overstock.constraint.verifier.RequireSupertypesVerifier;
 import com.overstock.constraint.verifier.Verifier;
@@ -37,7 +38,8 @@ public class ConstraintProcessor extends AbstractProcessor {
       new RequireConstructorsVerifier(processingEnv),
       new CompanionAnnotationsVerifier(processingEnv),
       new DisallowAnnotationsVerifier(processingEnv),
-      new RequireSupertypesVerifier(processingEnv)
+      new RequireSupertypesVerifier(processingEnv),
+      new RequireAnnotationsOnSupertypeVerifier(processingEnv)
     ); //TODO uniform and extensible way of registering verifiers
   }
 

@@ -3,7 +3,6 @@ package com.overstock.constraint.verifier;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.Serializable;
-import java.lang.annotation.Inherited;
 
 import javax.tools.Diagnostic;
 
@@ -62,7 +61,6 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
         filePath("Annotated.java"),
         PACKAGE_DECLARATION,
         "import " + qualifiedNestedClassName(RequireBaseClassAndSerializable.class) + ";",
-        "import " + Serializable.class.getName() + ";",
         "@RequireBaseClassAndSerializable public class Annotated extends Extending {}"));
   }
 
@@ -85,7 +83,6 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
     return RequireSupertypesVerifierTest.class.getName() + "." + clazz.getSimpleName();
   }
 
-  @Inherited
   @RequireSupertypes({BaseClass.class, Serializable.class})
   public static @interface RequireBaseClassAndSerializable {
   }

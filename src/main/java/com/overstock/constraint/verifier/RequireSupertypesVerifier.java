@@ -1,14 +1,11 @@
 package com.overstock.constraint.verifier;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.RequireSupertypes;
@@ -29,32 +26,21 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
       return;
     }
 
-    Set<String> requiredSupertypes = new HashSet<String>(VerifierUtils.getValuesAsClassNames(requireSupertypes));
+    Set<String> requiredSupertypes = VerifierUtils.getValuesAsClassNames(requireSupertypes);
     if (requiredSupertypes.isEmpty()) {
       return;
     }
 
-    Set<String> missingSupertypes =
-      missingSupertypes(element.asType(), requiredSupertypes, processingEnv.getTypeUtils());
+    for (TypeMirror supertype : VerifierUtils.getSuperTypes(element.asType(), processingEnv.getTypeUtils())) {
+      requiredSupertypes.remove(VerifierUtils.getClassName(supertype));
+    }
 
-    for (String missingRequiredSupertype : missingSupertypes) {
+    for (String missingRequiredSupertype : requiredSupertypes) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,
         annotation,
         " but does not have " + missingRequiredSupertype + " as a supertype");
     }
-  }
-
-  private Set<String> missingSupertypes(TypeMirror type, Set<String> missingSupertypes, Types typeUtils) {
-    if (!missingSupertypes.isEmpty()) {
-      missingSupertypes.remove(VerifierUtils.getClassName(type));
-      List<? extends TypeMirror> supertypes = typeUtils.directSupertypes(type);
-      for (TypeMirror supertype : supertypes) {
-        missingSupertypes.remove(VerifierUtils.getClassName(supertype));
-        missingSupertypes(supertype, missingSupertypes, typeUtils);
-      }
-    }
-    return missingSupertypes;
   }
 }
