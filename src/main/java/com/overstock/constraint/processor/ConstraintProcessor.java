@@ -48,7 +48,7 @@ public class ConstraintProcessor extends AbstractProcessor {
     for (Element element : roundEnv.getRootElements()) {
       for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
         Constraints constraints = Constraints.on(annotationMirror);
-        if (!constraints.isEmtpy()) {
+        if (!constraints.isEmpty()) {
           for (Verifier verifier : verifiers) {
             verifier.verify(element, annotationMirror, constraints);
           }

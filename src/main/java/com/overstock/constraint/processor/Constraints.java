@@ -63,7 +63,7 @@ public class Constraints {
     return null;
   }
 
-  public boolean isEmtpy() {
+  public boolean isEmpty() {
     return constraintAnnotations.isEmpty();
   }
 
