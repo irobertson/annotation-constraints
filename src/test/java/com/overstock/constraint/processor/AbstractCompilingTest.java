@@ -1,5 +1,7 @@
 package com.overstock.constraint.processor;
 
+import static org.junit.runners.Parameterized.Parameters;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,7 +35,7 @@ public abstract class AbstractCompilingTest {
     compiler.cleanUp();
   }
 
-  @Parameterized.Parameters
+  @Parameters
   public static Collection<Object[]> compilers() throws IOException {
     CompilerProvider javacProvider = new CompilerProvider() {
       public Compiler provide() throws IOException {
