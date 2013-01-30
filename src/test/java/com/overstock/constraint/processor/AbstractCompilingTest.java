@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
+import javax.tools.ToolProvider;
+
+import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -32,15 +35,14 @@ public abstract class AbstractCompilingTest {
 
   @Parameterized.Parameters
   public static Collection<Object[]> compilers() throws IOException {
-    //TODO merge JavacCompiler and EclipseCompiler into one class (Compiler) which takes a JavaCompiler constructor arg
     CompilerProvider javacProvider = new CompilerProvider() {
       public Compiler provide() throws IOException {
-        return new JavacCompiler(Compiler.Options());
+        return new Compiler(ToolProvider.getSystemJavaCompiler(), Compiler.Options());
       }
     };
     CompilerProvider eclipseProvider = new CompilerProvider() {
       public Compiler provide() throws IOException {
-        return new EclipseCompiler(Compiler.Options());
+        return new Compiler(new EclipseCompiler(), Compiler.Options());
       }
     };
     return Arrays.asList(new Object[][]{

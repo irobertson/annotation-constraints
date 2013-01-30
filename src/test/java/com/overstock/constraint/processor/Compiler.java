@@ -20,7 +20,7 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.overstock.constraint.Constraint;
 
-public abstract class Compiler {
+public final class Compiler {
 
   public static class Options {
     private Class<?> extraAnnotationsClass = null;
@@ -51,10 +51,12 @@ public abstract class Compiler {
     return new Options();
   }
 
+  private final JavaCompiler compiler;
   private final File sourceDir, outputDir;
   private final List<String> options;
 
-  public Compiler(Options options) throws IOException {
+  public Compiler(JavaCompiler compiler, Options options) throws IOException {
+    this.compiler = compiler;
     sourceDir = createTempDir("sourceDir");
     outputDir = createTempDir("outputDir");
 
@@ -83,13 +85,17 @@ public abstract class Compiler {
     return compile(null, sourceFiles);
   }
 
+  @Override
+  public String toString() {
+    return getClass().getName() + "(" + compiler + ")";
+  }
+
   private boolean compile(Processor processor, SourceFile... sourceFiles)  throws Exception {
     File[] files = new File[sourceFiles.length];
     for (int i = 0; i < sourceFiles.length; i++) {
       files[i] = writeSourceFile(sourceFiles[i]);
     }
 
-    JavaCompiler compiler = createCompiler();
     StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
     Iterable<? extends JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects(files);
     CompilationTask compilationTask =
@@ -101,8 +107,6 @@ public abstract class Compiler {
     fileManager.close();
     return success;
   }
-
-  protected abstract JavaCompiler createCompiler();
 
   private static String buildClassPath(Options options, File outputDir) {
     ArrayList<String> classPathElements = Lists.newArrayList(options.classPathEntries);
