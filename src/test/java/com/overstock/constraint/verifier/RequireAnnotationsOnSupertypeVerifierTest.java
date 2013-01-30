@@ -2,7 +2,6 @@ package com.overstock.constraint.verifier;
 
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.io.Serializable;
 import java.lang.annotation.Inherited;
 
 import javax.tools.Diagnostic;
@@ -12,7 +11,8 @@ import org.junit.Test;
 import com.overstock.constraint.RequireAnnotationsOnSupertype;
 import com.overstock.constraint.RequireUnconstrained;
 import com.overstock.constraint.Unconstrained;
-import com.overstock.constraint.processor.*;
+import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
+import com.overstock.constraint.processor.SourceFile;
 
 public class RequireAnnotationsOnSupertypeVerifierTest extends AbstractConstraintProcessorTest {
 
@@ -28,7 +28,6 @@ public class RequireAnnotationsOnSupertypeVerifierTest extends AbstractConstrain
       "import " + qualifiedNestedClassName(RequireUnconstrainedSupertype.class) + ";",
       "import " + qualifiedNestedClassName(UnconstrainedClass.class) + ";",
       "import " + qualifiedNestedClassName(RequireUnconstrainedInterface.class) + ";",
-      "import " + Serializable.class.getName() + ";",
       "@RequireUnconstrainedSupertype public class Annotated extends UnconstrainedClass implements "
         + "RequireUnconstrainedInterface {}"));
   }

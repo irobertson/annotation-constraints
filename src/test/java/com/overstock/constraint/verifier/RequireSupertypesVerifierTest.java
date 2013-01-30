@@ -31,7 +31,9 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
       "import " + qualifiedNestedClassName(RequireBaseClassAndSerializable.class) + ";",
       "import " + qualifiedNestedClassName(BaseClass.class) + ";",
       "import " + Serializable.class.getName() + ";",
-      "@RequireBaseClassAndSerializable public class Annotated extends BaseClass implements Serializable {}"));
+      "@RequireBaseClassAndSerializable public class Annotated extends BaseClass implements Serializable {",
+      "  static final long serialVersionUID = 1;",
+      "}"));
   }
 
   @Test
@@ -69,12 +71,14 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
         PACKAGE_DECLARATION,
         "import " + qualifiedNestedClassName(BaseClass.class) + ";",
         "import " + Serializable.class.getName() + ";",
-        "public class Extending extends BaseClass implements Serializable {}"),
+        "public class Extending extends BaseClass implements Serializable { static final long serialVersionUID = 1; }"),
       new SourceFile(
         filePath("Annotated.java"),
         PACKAGE_DECLARATION,
         "import " + qualifiedNestedClassName(RequireBaseClassAndSerializable.class) + ";",
-        "@RequireBaseClassAndSerializable public class Annotated extends Extending {}"));
+        "@RequireBaseClassAndSerializable public class Annotated extends Extending { ",
+        "  static final long serialVersionUID = 1; ",
+        "}"));
   }
 
   @Test
