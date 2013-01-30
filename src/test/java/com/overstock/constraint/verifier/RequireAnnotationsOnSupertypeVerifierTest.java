@@ -12,10 +12,13 @@ import org.junit.Test;
 import com.overstock.constraint.RequireAnnotationsOnSupertype;
 import com.overstock.constraint.RequireUnconstrained;
 import com.overstock.constraint.Unconstrained;
-import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
-import com.overstock.constraint.processor.SourceFile;
+import com.overstock.constraint.processor.*;
 
 public class RequireAnnotationsOnSupertypeVerifierTest extends AbstractConstraintProcessorTest {
+
+  public RequireAnnotationsOnSupertypeVerifierTest(CompilerProvider provider) {
+    super(provider);
+  }
 
   @Test
   public void testRequireAnnotationsOnSupertypePass() throws Exception {

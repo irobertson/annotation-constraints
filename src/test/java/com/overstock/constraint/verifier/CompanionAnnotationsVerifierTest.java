@@ -11,10 +11,13 @@ import com.overstock.constraint.RecommendUnconstrained;
 import com.overstock.constraint.RequireMultipleAnnotations;
 import com.overstock.constraint.RequireUnconstrained;
 import com.overstock.constraint.Unconstrained;
-import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
-import com.overstock.constraint.processor.SourceFile;
+import com.overstock.constraint.processor.*;
 
 public class CompanionAnnotationsVerifierTest extends AbstractConstraintProcessorTest {
+
+  public CompanionAnnotationsVerifierTest(CompilerProvider provider) {
+    super(provider);
+  }
 
   @Test
   public void testRequireUnconstrainedPass() throws Exception {

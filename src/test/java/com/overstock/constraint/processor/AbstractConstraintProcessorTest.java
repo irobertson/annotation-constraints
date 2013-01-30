@@ -26,6 +26,10 @@ public abstract class AbstractConstraintProcessorTest extends AbstractCompilingT
 
   protected Processor wrapped;
 
+  public AbstractConstraintProcessorTest(CompilerProvider provider) {
+    super(provider);
+  }
+
   protected final void compile(SourceFile... sourceFiles) throws Exception {
     assertTrue("Compilation should succeed", compiler.compileWithProcessor(wrapped, sourceFiles));
   }

@@ -1,18 +1,27 @@
 package com.overstock.constraint.verifier;
 
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import java.io.Serializable;
 
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.overstock.constraint.RequireSupertypes;
-import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
-import com.overstock.constraint.processor.SourceFile;
+import com.overstock.constraint.processor.*;
 
 public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTest {
+
+  public RequireSupertypesVerifierTest(CompilerProvider provider) {
+    super(provider);
+  }
 
   @Test
   public void testRequireSupertypesPass() throws Exception {
@@ -35,16 +44,20 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
 
     verifyPrintMessage(
       Diagnostic.Kind.ERROR,
-      "Class " + className("Annotated") + " is annotated with @" + qualifiedNestedClassName(RequireBaseClassAndSerializable.class)
-        + " but does not have " + qualifiedNestedClassName(BaseClass.class) + " as a supertype",
+      "Class " + className("Annotated") + " is annotated with @" + qualifiedNestedClassName(
+        RequireBaseClassAndSerializable.class) + " but does not have " + Serializable.class.getName()
+        + " as a supertype",
       className("Annotated"),
       qualifiedNestedClassName(RequireBaseClassAndSerializable.class));
-    verifyPrintMessage(
-      Diagnostic.Kind.ERROR,
-      "Class " + className("Annotated") + " is annotated with @" + qualifiedNestedClassName(RequireBaseClassAndSerializable.class)
-        + " but does not have " + Serializable.class.getName() + " as a supertype",
-      className("Annotated"),
-      qualifiedNestedClassName(RequireBaseClassAndSerializable.class));
+    verify(messager).printMessage(
+      eq(Diagnostic.Kind.ERROR),
+      argThat(
+        RegexMatcher.matches("Class " + className("Annotated") + " is annotated with @" + qualifiedNestedClassName(
+          RequireBaseClassAndSerializable.class) + " but does not have " + qualifiedNestedClassName(BaseClass.class)
+          + " as a supertype")),
+      argThat(Matchers.<Element>hasToString(className("Annotated"))),
+      argThat(
+        Matchers.<AnnotationMirror>hasToString("@" + qualifiedNestedClassName(RequireBaseClassAndSerializable.class))));
     verifyNoMoreInteractions(messager);
   }
 

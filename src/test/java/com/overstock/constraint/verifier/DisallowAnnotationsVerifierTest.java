@@ -10,10 +10,13 @@ import com.overstock.constraint.DisallowMultipleAnnotations;
 import com.overstock.constraint.DisallowUnconstrained;
 import com.overstock.constraint.RequireNoArgConstructor;
 import com.overstock.constraint.Unconstrained;
-import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
-import com.overstock.constraint.processor.SourceFile;
+import com.overstock.constraint.processor.*;
 
 public class DisallowAnnotationsVerifierTest extends AbstractConstraintProcessorTest {
+
+  public DisallowAnnotationsVerifierTest(CompilerProvider provider) {
+    super(provider);
+  }
 
   @Test
   public void testDisallowUnconstrainedPass() throws Exception {

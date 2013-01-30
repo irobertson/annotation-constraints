@@ -11,7 +11,6 @@ import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 
 import org.apache.commons.io.FileUtils;
 
@@ -21,7 +20,7 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Lists;
 import com.overstock.constraint.Constraint;
 
-public class Compiler {
+public abstract class Compiler {
 
   public static class Options {
     private Class<?> extraAnnotationsClass = null;
@@ -90,7 +89,7 @@ public class Compiler {
       files[i] = writeSourceFile(sourceFiles[i]);
     }
 
-    JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+    JavaCompiler compiler = createCompiler();
     StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
     Iterable<? extends JavaFileObject> javaFileObjects = fileManager.getJavaFileObjects(files);
     CompilationTask compilationTask =
@@ -102,6 +101,8 @@ public class Compiler {
     fileManager.close();
     return success;
   }
+
+  protected abstract JavaCompiler createCompiler();
 
   private static String buildClassPath(Options options, File outputDir) {
     ArrayList<String> classPathElements = Lists.newArrayList(options.classPathEntries);

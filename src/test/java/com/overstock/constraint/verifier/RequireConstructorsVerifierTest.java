@@ -8,10 +8,13 @@ import org.junit.Test;
 
 import com.overstock.constraint.RequireNoArgConstructor;
 import com.overstock.constraint.RequireStringLongIntArrayConstructor;
-import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
-import com.overstock.constraint.processor.SourceFile;
+import com.overstock.constraint.processor.*;
 
 public class RequireConstructorsVerifierTest extends AbstractConstraintProcessorTest {
+
+  public RequireConstructorsVerifierTest(CompilerProvider provider) {
+    super(provider);
+  }
 
   @Test
   public void testNoArgConstructorPass() throws Exception {

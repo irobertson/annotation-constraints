@@ -30,7 +30,7 @@ public class VerifierUtils {
     for (ExecutableElement executableElement : elementValues.keySet()) {
       if (executableElement.getSimpleName().contentEquals(elementName)) {
         @SuppressWarnings("unchecked")
-        List<AnnotationValue> values = (List<AnnotationValue>) elementValues.get(executableElement).getValue(); //TODO does this work for other compilers besides javac?
+        List<AnnotationValue> values = (List<AnnotationValue>) elementValues.get(executableElement).getValue();
         return values;
       }
     }
@@ -69,7 +69,7 @@ public class VerifierUtils {
    * @return the class name represented by the annotation value
    */
   public static String getClassName(AnnotationValue annotationValue) {
-    return annotationValue.getValue().toString(); //TODO does this work for other compilers besides javac?
+    return annotationValue.getValue().toString();
   }
 
   /**
