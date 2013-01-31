@@ -18,12 +18,11 @@ import org.junit.runners.Parameterized;
 public abstract class AbstractCompilingTest {
 
   private final CompilerProvider provider;
+  protected Compiler compiler;
 
   public AbstractCompilingTest(CompilerProvider provider) {
     this.provider = provider;
   }
-
-  protected Compiler compiler;
 
   @Before
   public void setUp() throws IOException {
@@ -47,7 +46,7 @@ public abstract class AbstractCompilingTest {
         return new Compiler(new EclipseCompiler(), Compiler.Options());
       }
     };
-    return Arrays.asList(new Object[][]{
+    return Arrays.asList(new Object[][] {
       { javacProvider },
       { eclipseProvider }
     });
