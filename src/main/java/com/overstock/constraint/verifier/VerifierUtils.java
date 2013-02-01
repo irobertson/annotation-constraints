@@ -16,7 +16,7 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 
-public class VerifierUtils {
+class VerifierUtils {
 
   /**
    * Gets the array values for the element on the annotation with the specified name.
