@@ -5,6 +5,7 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
+@ServiceProvider
 public abstract class AbstractVerifier implements Verifier {
 
   protected ProcessingEnvironment processingEnv;

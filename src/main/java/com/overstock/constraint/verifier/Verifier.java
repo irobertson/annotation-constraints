@@ -16,7 +16,7 @@ import com.overstock.constraint.processor.Constraints;
  *
  * @see <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">ServiceLoader documentation</a>
  */
-@ServiceProvider
+@ServiceProvider //this is just documentation, it's not actually inherited by implementations
 public interface Verifier {
 
   /**

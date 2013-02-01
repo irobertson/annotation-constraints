@@ -37,7 +37,7 @@ public class ConstraintProcessor extends AbstractProcessor {
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     for (Element element : roundEnv.getRootElements()) {
-      for (AnnotationMirror annotationMirror : element.getAnnotationMirrors()) {
+      for (AnnotationMirror annotationMirror : processingEnv.getElementUtils().getAllAnnotationMirrors(element)) {
         Constraints constraints = Constraints.on(annotationMirror);
         if (!constraints.isEmpty()) {
           for (Verifier verifier : verifiers) {
