@@ -48,7 +48,7 @@ the recommended annotations.
 * @RequireAnnotations - issues an error when an element is annotated with the target annotation and not with one of the
 required annotations.
 * @RequireAnnotationsOnSupertype - same as @RequireAnnotations except it checks supertypes (for annotations whicha are
-not @Inherited).
+not @Inherited). TODO should we merge @RequireAnnotationsOnSupertype behavior into @RequireAnnotations?
 * @RequireConstructors - issues an error when an element is annotated with the target annotation and does not have all
 of the required constructors with the necessary arguments types.
 * @RequireSupertypes - issues an error when an element is annotated witht the target annotation and does not have all of
@@ -58,7 +58,9 @@ Writing your own constraint
 ======================
 1. Create an annotation and add @Constraint to it.
 1. Implement a Verifier for your new constraint.
-1. Register your new Verifier with annotation-constraints. TODO how to register new verifiers
+1. To register your new Verifier with annotation-constraints, create a text file named
+`com.overstock.constraint.verifier.Verifier` under `META-INF/services/` with the fully-qualified binary class name of
+your verifier in it. (See the JavaDoc for com.overstock.constraint.verifier.Verifier for more details.)
 1. Make sure annotation-constraints and your new Verifier are on the classpath during compilation. (See instructions for
 Maven below.)
 

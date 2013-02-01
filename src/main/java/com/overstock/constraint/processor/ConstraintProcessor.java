@@ -1,7 +1,6 @@
 package com.overstock.constraint.processor;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -13,17 +12,12 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
-import com.overstock.constraint.verifier.CompanionAnnotationsVerifier;
-import com.overstock.constraint.verifier.DisallowAnnotationsVerifier;
-import com.overstock.constraint.verifier.RequireAnnotationsOnSupertypeVerifier;
-import com.overstock.constraint.verifier.RequireConstructorsVerifier;
-import com.overstock.constraint.verifier.RequireSupertypesVerifier;
 import com.overstock.constraint.verifier.Verifier;
 
 @SupportedAnnotationTypes("*")
 public class ConstraintProcessor extends AbstractProcessor {
 
-  private List<? extends Verifier> verifiers;
+  private Iterable<Verifier> verifiers;
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
@@ -34,13 +28,10 @@ public class ConstraintProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
 
-    this.verifiers = Arrays.asList(
-      new RequireConstructorsVerifier(processingEnv),
-      new CompanionAnnotationsVerifier(processingEnv),
-      new DisallowAnnotationsVerifier(processingEnv),
-      new RequireSupertypesVerifier(processingEnv),
-      new RequireAnnotationsOnSupertypeVerifier(processingEnv)
-    ); //TODO uniform and extensible way of registering verifiers
+    verifiers = ServiceLoader.load(Verifier.class);
+    for (Verifier verifier : verifiers) {
+      verifier.init(processingEnv);
+    }
   }
 
   @Override

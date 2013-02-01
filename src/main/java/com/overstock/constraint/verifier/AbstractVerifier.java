@@ -7,13 +7,11 @@ import javax.tools.Diagnostic;
 
 public abstract class AbstractVerifier implements Verifier {
 
-  /**
-   * Processing environment providing by the tool framework.
-   */
-  protected final ProcessingEnvironment processingEnv;
+  protected ProcessingEnvironment processingEnv;
 
-  protected AbstractVerifier(ProcessingEnvironment processingEnv) {
-    this.processingEnv = processingEnv;
+  @Override
+  public void init(ProcessingEnvironment environment) {
+    this.processingEnv = environment;
   }
 
   /**

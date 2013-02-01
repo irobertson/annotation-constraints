@@ -35,7 +35,7 @@ public class Constraints {
    * @param annotation the annotation element
    * @return the constraints for the annotation represented by the {@link Element}, never {@code null}.
    */
-  public static Constraints on(Element annotation) {
+  private static Constraints on(Element annotation) {
     Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
       for (AnnotationMirror maybeConstraint : maybeConstraining.getAnnotationType().asElement()

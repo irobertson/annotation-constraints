@@ -2,7 +2,6 @@ package com.overstock.constraint.verifier;
 
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -18,10 +17,6 @@ import com.overstock.constraint.processor.Constraints;
  * A verifier for {@link RequireConstructors}.
  */
 public class RequireConstructorsVerifier extends AbstractVerifier {
-
-  public RequireConstructorsVerifier(ProcessingEnvironment processingEnv) {
-    super(processingEnv);
-  }
 
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
     AnnotationMirror requireConstructors = constraints.get(RequireConstructors.class);

@@ -3,7 +3,6 @@ package com.overstock.constraint.verifier;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
@@ -15,10 +14,6 @@ import com.overstock.constraint.processor.Constraints;
  * A verifier for {@link DisallowAnnotations}.
  */
 public class DisallowAnnotationsVerifier extends AbstractVerifier {
-
-  public DisallowAnnotationsVerifier(ProcessingEnvironment processingEnv) {
-    super(processingEnv);
-  }
 
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
     AnnotationMirror disallowAnnotations = constraints.get(DisallowAnnotations.class);
