@@ -11,6 +11,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.util.Elements;
 
 import com.overstock.constraint.verifier.Verifier;
 
@@ -36,9 +37,10 @@ public class ConstraintProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    Elements elementUtils = processingEnv.getElementUtils();
     for (Element element : roundEnv.getRootElements()) {
-      for (AnnotationMirror annotationMirror : processingEnv.getElementUtils().getAllAnnotationMirrors(element)) {
-        Constraints constraints = Constraints.on(annotationMirror);
+      for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
+        Constraints constraints = Constraints.on(annotationMirror, processingEnv);
         if (!constraints.isEmpty()) {
           for (Verifier verifier : verifiers) {
             verifier.verify(element, annotationMirror, constraints);
