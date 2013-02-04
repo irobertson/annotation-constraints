@@ -75,7 +75,7 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
     <dependency>
       <groupId>com.overstock</groupId>
       <artifactId>annotation-constraints</artifactId>
-      <version>0.1-SNAPSHOT</version>
+      <version>${annotation-constraints.version}</version>
     </dependency>
     ...
   </dependencies>
