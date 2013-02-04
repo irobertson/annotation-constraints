@@ -28,7 +28,7 @@ public class ConstraintProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
 
-    verifiers = ServiceLoader.load(Verifier.class);
+    verifiers = ServiceLoader.load(Verifier.class, ConstraintProcessor.class.getClassLoader());
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
