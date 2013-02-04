@@ -51,7 +51,7 @@ required annotations.
 not @Inherited). TODO should we merge @RequireAnnotationsOnSupertype behavior into @RequireAnnotations?
 * @RequireConstructors - issues an error when an element is annotated with the target annotation and does not have all
 of the required constructors with the necessary arguments types.
-* @RequireSupertypes - issues an error when an element is annotated witht the target annotation and does not have all of
+* @RequireSupertypes - issues an error when an element is annotated with the target annotation and does not have all of
 the required supertypes (classes and/or interfaces).
 
 Writing your own constraint
