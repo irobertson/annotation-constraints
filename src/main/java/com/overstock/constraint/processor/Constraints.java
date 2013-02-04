@@ -42,10 +42,11 @@ public class Constraints {
    */
   private static Constraints on(Element annotation, ProcessingEnvironment processingEnv) {
     Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
+    TypeMirror constraintMirror = getTypeMirror(Constraint.class, processingEnv);
     Types types = processingEnv.getTypeUtils();
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
       for (AnnotationMirror metaAnnotation : maybeConstraining.getAnnotationType().asElement().getAnnotationMirrors()) {
-        if (types.isSameType(getTypeMirror(Constraint.class, processingEnv), metaAnnotation.getAnnotationType())) {
+        if (types.isSameType(constraintMirror, metaAnnotation.getAnnotationType())) {
           constraints.add(maybeConstraining);
         }
       }
