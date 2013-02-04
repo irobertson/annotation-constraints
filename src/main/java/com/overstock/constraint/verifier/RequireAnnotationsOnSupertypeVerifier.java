@@ -1,6 +1,6 @@
 package com.overstock.constraint.verifier;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -22,7 +22,7 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
       return;
     }
 
-    Set<String> requiredAnnotations = VerifierUtils.getValuesAsClassNames(requireAnnotationsOnSupertype);
+    List<String> requiredAnnotations = VerifierUtils.getValuesAsClassNames(requireAnnotationsOnSupertype);
     if (requiredAnnotations.isEmpty()) {
       return;
     }

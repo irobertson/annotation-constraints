@@ -1,7 +1,8 @@
 package com.overstock.constraint.verifier;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -21,12 +22,12 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       return;
     }
 
-    Set<String> disallowedAnnotations = VerifierUtils.getValuesAsClassNames(disallowAnnotations);
+    Collection<String> disallowedAnnotations = VerifierUtils.getValuesAsClassNames(disallowAnnotations);
     if (disallowedAnnotations.isEmpty()) {
       return;
     }
 
-    Set<String> presentAndDisallowed = new HashSet<String>();
+    List<String> presentAndDisallowed = new ArrayList<String>();
     for (AnnotationMirror annotated : element.getAnnotationMirrors()) {
       String className = VerifierUtils.getClassName(annotated);
       if (disallowedAnnotations.contains(className)) {

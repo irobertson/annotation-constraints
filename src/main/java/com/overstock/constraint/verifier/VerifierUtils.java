@@ -1,5 +1,6 @@
 package com.overstock.constraint.verifier;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -54,8 +55,8 @@ class VerifierUtils {
    * @return the class names represented by the annotation values
    * @see #getClassName(javax.lang.model.element.AnnotationValue)
    */
-  public static Set<String> getClassNames(Collection<AnnotationValue> annotationValues) {
-    Set<String> classNames = new HashSet<String>(annotationValues.size());
+  public static List<String> getClassNames(Collection<AnnotationValue> annotationValues) {
+    List<String> classNames = new ArrayList<String>(annotationValues.size());
     for (AnnotationValue annotationValue : annotationValues) {
       classNames.add(getClassName(annotationValue));
     }
@@ -127,7 +128,7 @@ class VerifierUtils {
    * @see #getClassNames(java.util.Collection)
    * @see #getArrayValues(javax.lang.model.element.AnnotationMirror)
    */
-  public static Set<String> getValuesAsClassNames(AnnotationMirror annotation) {
+  public static List<String> getValuesAsClassNames(AnnotationMirror annotation) {
     return getClassNames(getArrayValues(annotation));
   }
 
