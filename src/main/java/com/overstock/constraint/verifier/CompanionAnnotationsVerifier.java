@@ -1,7 +1,7 @@
 package com.overstock.constraint.verifier;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -23,12 +23,12 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
       return;
     }
 
-    Set<String> requiredAnnotations = new HashSet<String>();
+    List<String> requiredAnnotations = new ArrayList<String>();
     if (requireAnnotations != null) {
       requiredAnnotations.addAll(VerifierUtils.getValuesAsClassNames(requireAnnotations));
     }
 
-    Set<String> recommendedAnnotations = new HashSet<String>();
+    List<String> recommendedAnnotations = new ArrayList<String>();
     if (recommendAnnotations != null) {
       recommendedAnnotations.addAll(VerifierUtils.getValuesAsClassNames(recommendAnnotations));
     }
