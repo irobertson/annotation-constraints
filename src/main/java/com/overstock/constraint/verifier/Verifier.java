@@ -12,11 +12,11 @@ import com.overstock.constraint.processor.Constraints;
  * defined by {@link java.util.ServiceLoader}, and implementors of this interface are <i>service providers</i>.
  * Additional Verifier implementations can be listed, one fully-qualified binary class name per line, in a text file
  * named <tt>com.overstock.constraint.verifier.Verifier</tt> in the <tt>META-INF/services</tt> directory of any jar,
- * which is a <i>provider-configuration file</i> as specified by {@link java.util.ServiceLoader}.
+ * which is a <i>provider-configuration file</i> as specified by {@link java.util.ServiceLoader}. Verifier
+ * implementations require a no-argument constructor.
  *
  * @see <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">ServiceLoader documentation</a>
  */
-@ServiceProvider //this is just documentation, it's not actually inherited by implementations
 public interface Verifier {
 
   /**
