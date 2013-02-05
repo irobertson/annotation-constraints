@@ -111,7 +111,7 @@ class VerifierUtils {
    * @return the supertypes of the type
    */
   public static Set<TypeMirror> getSuperTypes(TypeMirror type, Types typeUtils) {
-    Set<TypeMirror> supertypes = new HashSet<TypeMirror>();
+    Set<TypeMirror> supertypes = new HashSet<TypeMirror>(); //TODO investigate caching
     supertypes.add(type); //include the type itself
     for (TypeMirror supertype : typeUtils.directSupertypes(type)) {
       supertypes.addAll(getSuperTypes(supertype, typeUtils));
@@ -129,7 +129,7 @@ class VerifierUtils {
    * @see #getArrayValues(javax.lang.model.element.AnnotationMirror)
    */
   public static List<String> getValuesAsClassNames(AnnotationMirror annotation) {
-    return getClassNames(getArrayValues(annotation));
+    return getClassNames(getArrayValues(annotation)); //TODO investigate caching
   }
 
   /**

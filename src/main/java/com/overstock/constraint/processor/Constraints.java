@@ -41,7 +41,7 @@ public class Constraints {
    * @return the constraints for the annotation represented by the {@link Element}, never {@code null}.
    */
   private static Constraints on(Element annotation, ProcessingEnvironment processingEnv) {
-    Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
+    Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>(); //TODO investigate caching
     TypeMirror constraintMirror = getTypeMirror(Constraint.class, processingEnv);
     Types types = processingEnv.getTypeUtils();
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
