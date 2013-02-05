@@ -29,7 +29,7 @@ public class ConstraintProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
 
-    verifiers = ServiceLoader.load(Verifier.class, ConstraintProcessor.class.getClassLoader());
+    verifiers = ServiceLoader.load(Verifier.class, ConstraintProcessor.class.getClassLoader()); //TODO do we need to check the current thread's context classloader as well? Test a new Verifier in a different jar file.
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
