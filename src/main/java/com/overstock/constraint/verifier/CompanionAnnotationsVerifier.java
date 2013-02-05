@@ -1,6 +1,6 @@
 package com.overstock.constraint.verifier;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
@@ -23,15 +23,10 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
       return;
     }
 
-    List<String> requiredAnnotations = new ArrayList<String>();
-    if (requireAnnotations != null) {
-      requiredAnnotations.addAll(VerifierUtils.getValuesAsClassNames(requireAnnotations));
-    }
-
-    List<String> recommendedAnnotations = new ArrayList<String>();
-    if (recommendAnnotations != null) {
-      recommendedAnnotations.addAll(VerifierUtils.getValuesAsClassNames(recommendAnnotations));
-    }
+    final List<String> requiredAnnotations = requireAnnotations == null ? Collections.<String>emptyList()
+      : VerifierUtils.getValuesAsClassNames(requireAnnotations);
+    final List<String> recommendedAnnotations = recommendAnnotations == null ? Collections.<String>emptyList()
+      : VerifierUtils.getValuesAsClassNames(recommendAnnotations);
 
     if (requiredAnnotations.isEmpty() && recommendedAnnotations.isEmpty()) {
       return;
