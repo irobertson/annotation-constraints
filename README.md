@@ -7,8 +7,8 @@ example, the following `@Model` annotation can only be placed on a class which e
 no-argument constructor.
 
 ```java
-@RequireSupertypes(AbstractModel.class) //must extend AbstractModel
-@RequireConstructors(@RequiredConstructor({})) //must have a no-arg constructor
+@TargetRequiresSupertypes(AbstractModel.class) //must extend AbstractModel
+@TargetRequiresConstructors(@RequiredConstructor({})) //must have a no-arg constructor
 @Target(ElementType.TYPE)
 public @interface Model {
 }
@@ -41,18 +41,19 @@ The following constraints are included in the `com.overstock.constraint` package
 and/or with your own custom constraints. The "target annotation" below refers to the annotation which is being
 constrained (i.e. annotated with one or more of these constraint annotations).
 
-* **@DisallowAnnotations** issues an error when an element is annotated with both the target annotation and any of the
-disallowed annotations. This is a way of specifying that the annotations are not compatible with one another.
-* **@RecommendAnnotations** issues a warning when an element is annotated with the target annotation and not with one
-of the recommended annotations.
-* **@RequireAnnotations** issues an error when an element is annotated with the target annotation and not with one of
-the required annotations.
-* **@RequireAnnotationsOnSupertype** same as `@RequireAnnotations` except it checks supertypes (for annotations whicha
-are not @Inherited). TODO should we merge @RequireAnnotationsOnSupertype behavior into @RequireAnnotations?
-* **@RequireConstructors** issues an error when an element is annotated with the target annotation and does not have all
-of the required constructors with the necessary arguments types.
-* **@RequireSupertypes** issues an error when an element is annotated with the target annotation and does not have all of
-the required supertypes (classes and/or interfaces).
+* **@TargetDisallowsAnnotations** issues an error when an element is annotated with both the target annotation and any
+of the disallowed annotations. This is a way of specifying that the target annotation is not compatible with one or more
+other annotations.
+* **@TargetRecommendsAnnotations** issues a warning when an element is annotated with the target annotation and not with
+one of the recommended annotations.
+* **@TargetRequiresAnnotations** issues an error when an element is annotated with the target annotation and not with
+one of the required annotations.
+* **@TargetRequiresAnnotationsOnSupertype** same as `@TargetRequiresAnnotations` except it checks supertypes (i.e. for
+annotations which are not @Inherited).
+* **@TargetRequiresConstructors** issues an error when an element is annotated with the target annotation and does not
+have all of the required constructors with the necessary arguments types.
+* **@TargetRequiresSupertypes** issues an error when an element is annotated with the target annotation and does not
+have all of the required supertypes (classes and/or interfaces).
 
 Writing your own constraint
 ======================

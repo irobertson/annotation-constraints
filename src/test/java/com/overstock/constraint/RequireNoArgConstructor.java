@@ -1,5 +1,5 @@
 package com.overstock.constraint;
 
-@RequireConstructors(@RequiredConstructor({}))
+@TargetRequiresConstructors(@RequiredConstructor({}))
 public @interface RequireNoArgConstructor {
 }

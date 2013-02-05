@@ -5,9 +5,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes a required constructor for use with {@link RequireConstructors}.
+ * Describes a required constructor for use with {@link TargetRequiresConstructors}.
  *
- * @see RequireConstructors
+ * @see TargetRequiresConstructors
  */
 @Retention(RetentionPolicy.CLASS)
 @Target({}) //cannot be annotated on anything directly

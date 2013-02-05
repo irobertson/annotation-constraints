@@ -3,6 +3,6 @@ package com.overstock.constraint;
 import java.lang.annotation.Inherited;
 
 @Inherited
-@RecommendAnnotations(Unconstrained.class)
+@TargetRecommendsAnnotations(Unconstrained.class)
 public @interface RecommendUnconstrained {
 }

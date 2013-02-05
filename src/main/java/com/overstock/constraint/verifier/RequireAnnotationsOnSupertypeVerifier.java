@@ -8,16 +8,16 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.RequireAnnotationsOnSupertype;
+import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link RequireAnnotationsOnSupertype}.
+ * A verifier for {@link com.overstock.constraint.TargetRequiresAnnotationsOnSupertype}.
  */
 public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
-    AnnotationMirror requireAnnotationsOnSupertype = constraints.get(RequireAnnotationsOnSupertype.class);
+    AnnotationMirror requireAnnotationsOnSupertype = constraints.get(TargetRequiresAnnotationsOnSupertype.class);
     if (requireAnnotationsOnSupertype == null) {
       return;
     }

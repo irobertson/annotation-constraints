@@ -13,13 +13,13 @@ import java.lang.annotation.Target;
 @Constraint
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface RequireSupertypes {
+public @interface TargetRequiresSupertypes {
 
   /**
    * The classes which must be supertypes of any class annotated with the target annotation.
    *
    * For example, if {@code @SomeAnnotation} is annotated with
-   * {@code @RequireAnnotationsOnSupertype(Superclass.class, Superinterface.class)} then it will be an error if a class
+   * {@code @TargetRequiresSupertypes(Superclass.class, Superinterface.class)} then it will be an error if a class
    * annotated with {@code @SomeAnnotation} does not extend {@code Superclass} and implement {@code Superinterface}.
    */
   Class<?>[] value();

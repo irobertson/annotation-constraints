@@ -8,7 +8,7 @@ import javax.tools.Diagnostic;
 
 import org.junit.Test;
 
-import com.overstock.constraint.RequireAnnotationsOnSupertype;
+import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
 import com.overstock.constraint.RequireUnconstrained;
 import com.overstock.constraint.Unconstrained;
 import com.overstock.constraint.processor.AbstractConstraintProcessorTest;
@@ -90,7 +90,7 @@ public class RequireAnnotationsOnSupertypeVerifierTest extends AbstractConstrain
   }
 
   @Inherited
-  @RequireAnnotationsOnSupertype({Unconstrained.class, RequireUnconstrained.class})
+  @TargetRequiresAnnotationsOnSupertype({Unconstrained.class, RequireUnconstrained.class})
   public static @interface RequireUnconstrainedSupertype {
   }
 

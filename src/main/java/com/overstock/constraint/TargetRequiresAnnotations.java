@@ -14,12 +14,12 @@ import java.lang.annotation.Target;
 @Constraint
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface RequireAnnotations {
+public @interface TargetRequiresAnnotations {
 
   /**
    * An array of annotations which MUST be present on any class annotated with the target annotation.
    *
-   * For example, if {@code SomeAnnotation} is annotated with {@code RequireAnnotations(OtherAnnotation.class)},
+   * For example, if {@code SomeAnnotation} is annotated with {@code TargetRequiresAnnotations(OtherAnnotation.class)},
    * then it will be an error whenever a class annotated with {@code @SomeAnnotation} is not also annotated with
    * {@code @OtherAnnotation}.
    */

@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Target;
 
-import com.overstock.constraint.RequireConstructors;
+import com.overstock.constraint.TargetRequiresConstructors;
 import com.overstock.constraint.RequiredConstructor;
 
 /**
@@ -16,7 +16,7 @@ import com.overstock.constraint.RequiredConstructor;
  */
 @Inherited
 @Documented
-@RequireConstructors(@RequiredConstructor({}))
+@TargetRequiresConstructors(@RequiredConstructor({}))
 @Target(ElementType.TYPE)
 public @interface ServiceProvider { //TODO find a better package for this
 }

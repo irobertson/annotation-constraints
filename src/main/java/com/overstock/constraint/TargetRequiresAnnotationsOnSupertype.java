@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Constraint
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface RequireAnnotationsOnSupertype {
+public @interface TargetRequiresAnnotationsOnSupertype {
 
   /**
    * An array of annotations which must be present on some supertype of any class annotated with the
@@ -22,7 +22,7 @@ public @interface RequireAnnotationsOnSupertype {
    * if the annotated class itself was also annotated with the required annotation(s).
    *
    * For example, if {@code @SomeAnnotation} is annotated with
-   * {@code @RequireAnnotationsOnSupertype(OtherAnnotation.class)}, then any class annotated with {code @SomeAnnotation}
+   * {@code @TargetRequiresAnnotationsOnSupertype(OtherAnnotation.class)}, then any class annotated with {code @SomeAnnotation}
    * will be required to be annotated with {@code @OtherAnnotation} or to implement some interface or extend some class
    * which is annotated with {@code @OtherAnnotation}.
    */

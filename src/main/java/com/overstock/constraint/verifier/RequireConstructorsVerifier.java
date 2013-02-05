@@ -10,16 +10,16 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.RequireConstructors;
+import com.overstock.constraint.TargetRequiresConstructors;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link RequireConstructors}.
+ * A verifier for {@link com.overstock.constraint.TargetRequiresConstructors}.
  */
 public class RequireConstructorsVerifier extends AbstractVerifier {
 
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
-    AnnotationMirror requireConstructors = constraints.get(RequireConstructors.class);
+    AnnotationMirror requireConstructors = constraints.get(TargetRequiresConstructors.class);
     if (requireConstructors == null) {
       return;
     }

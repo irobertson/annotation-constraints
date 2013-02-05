@@ -7,16 +7,16 @@ import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.RequireSupertypes;
+import com.overstock.constraint.TargetRequiresSupertypes;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link RequireSupertypes}.
+ * A verifier for {@link com.overstock.constraint.TargetRequiresSupertypes}.
  */
 public class RequireSupertypesVerifier extends AbstractVerifier {
 
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
-    AnnotationMirror requireSupertypes = constraints.get(RequireSupertypes.class);
+    AnnotationMirror requireSupertypes = constraints.get(TargetRequiresSupertypes.class);
     if (requireSupertypes == null) {
       return;
     }

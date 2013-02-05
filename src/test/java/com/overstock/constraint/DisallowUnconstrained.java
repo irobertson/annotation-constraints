@@ -1,5 +1,5 @@
 package com.overstock.constraint;
 
-@DisallowAnnotations(Unconstrained.class)
+@TargetDisallowsAnnotations(Unconstrained.class)
 public @interface DisallowUnconstrained {
 }

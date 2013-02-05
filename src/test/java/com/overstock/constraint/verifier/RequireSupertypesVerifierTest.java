@@ -14,7 +14,7 @@ import javax.tools.Diagnostic;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-import com.overstock.constraint.RequireSupertypes;
+import com.overstock.constraint.TargetRequiresSupertypes;
 import com.overstock.constraint.processor.*;
 
 public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTest {
@@ -91,8 +91,8 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
       new SourceFile(
         filePath("SuperclassRequired.java"),
         PACKAGE_DECLARATION,
-        "import com.overstock.constraint.RequireSupertypes;",
-        "@RequireSupertypes(Annotated.class)",
+        "import com.overstock.constraint.TargetRequiresSupertypes;",
+        "@TargetRequiresSupertypes(Annotated.class)",
         "public @interface SuperclassRequired {}"));
   }
 
@@ -100,7 +100,7 @@ public class RequireSupertypesVerifierTest extends AbstractConstraintProcessorTe
     return RequireSupertypesVerifierTest.class.getName() + "." + clazz.getSimpleName();
   }
 
-  @RequireSupertypes({BaseClass.class, Serializable.class})
+  @TargetRequiresSupertypes({BaseClass.class, Serializable.class})
   public static @interface RequireBaseClassAndSerializable {
   }
 

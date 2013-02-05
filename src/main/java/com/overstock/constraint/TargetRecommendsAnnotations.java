@@ -15,11 +15,11 @@ import java.lang.annotation.Target;
 @Constraint
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface RecommendAnnotations {
+public @interface TargetRecommendsAnnotations {
 
   /**
    * An array of annotations which SHOULD be present on any class annotated with the annotated
-   * annotation. If {@code SomeAnnotation} is annotated with {@code RecommendAnnotations}
+   * annotation. If {@code SomeAnnotation} is annotated with {@code TargetRecommendsAnnotations}
    * where {@code value} is set to a array of annotation
    * classes which includes {@code SomeOtherAnnotation.class}, then a compiler warning will be
    * generated whenever a class annotated with {@code @SomeAnnotation} is not also annotated

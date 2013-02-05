@@ -8,16 +8,16 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.DisallowAnnotations;
+import com.overstock.constraint.TargetDisallowsAnnotations;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link DisallowAnnotations}.
+ * A verifier for {@link com.overstock.constraint.TargetDisallowsAnnotations}.
  */
 public class DisallowAnnotationsVerifier extends AbstractVerifier {
 
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
-    AnnotationMirror disallowAnnotations = constraints.get(DisallowAnnotations.class);
+    AnnotationMirror disallowAnnotations = constraints.get(TargetDisallowsAnnotations.class);
     if (disallowAnnotations == null) {
       return;
     }
