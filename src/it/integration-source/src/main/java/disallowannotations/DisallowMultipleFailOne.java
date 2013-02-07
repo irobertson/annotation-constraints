@@ -1,9 +1,8 @@
 package disallowannotations;
 
-import companionannotations.RequireMultiple;
 import noconstraints.Unconstrained;
 
-@RequireMultiple
+@DisallowMultiple
 @Unconstrained
 public class DisallowMultipleFailOne {
 }

@@ -1,1 +1,30 @@
-System.out.println("Basedir: " + basedir);
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+
+import com.overstock.constraint.test.FileAssert;
+
+String localBasedir = basedir.getPath().split("../integration-source")[0];
+File buildLog = new File(localBasedir, "build.log");
+FileAssert.assertFileMatches(buildLog, new Matcher[] {
+  Matchers.containsString("Class companionannotations.RequireUnconstrainedFail is annotated with @companionannotations.RequireUnconstrained but not with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class companionannotations.RequireMultipleFailOne is annotated with @companionannotations.RequireMultiple but not with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class companionannotations.RequireMultipleFailAll is annotated with @companionannotations.RequireMultiple but not with @noconstraints.Unconstrained"),
+  //TODO javac only reports the first error for the class Matchers.containsString("Class companionannotations.RequireMultipleFailAll is annotated with @companionannotations.RequireMultiple but not with @requireconstructors.RequireNoArgConstructor"),
+  Matchers.containsString("Class companionannotations.RecommendUnconstrainedFail is annotated with @companionannotations.RecommendUnconstrained but not with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class companionannotations.RecommendMultipleFailOne is annotated with @companionannotations.RecommendMultiple but not with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class companionannotations.RecommendMultipleFailAll is annotated with @companionannotations.RecommendMultiple but not with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class companionannotations.RecommendMultipleFailAll is annotated with @companionannotations.RecommendMultiple but not with @requireconstructors.RequireNoArgConstructor"),
+  Matchers.containsString("Class disallowannotations.DisallowUnconstrainedFail is annotated with @disallowannotations.DisallowUnconstrained which is not allowed with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class disallowannotations.DisallowMultipleFailOne is annotated with @disallowannotations.DisallowMultiple which is not allowed with @noconstraints.Unconstrained"),
+  Matchers.containsString("Class disallowannotations.DisallowMultipleFailAll is annotated with @disallowannotations.DisallowMultiple which is not allowed with @noconstraints.Unconstrained"),
+  //TODO javac only reports the first error for the class Matchers.containsString("Class disallowannotations.DisallowMultipleFailAll is annotated with @disallowannotations.DisallowMultiple which is not allowed with @requireconstructors.RequireNoArgConstructor"),
+  Matchers.containsString("Class example.Person is annotated with @example.Model but does not have a constructor with no arguments"),
+  //TODO javac only reports the first error for the class Matchers.containsString("Class example.Person is annotated with @example.Model but does not have example.AbstractModel as a supertype"),
+  Matchers.containsString("Class requireannotationsonsupertype.RequireAnnotationsOnSupertypeFail is annotated with @requireannotationsonsupertype.RequireUnconstrainedSupertype but does not have a supertype annotated with @noconstraints.Unconstrained"),
+  //TODO javac only reports the first error for the class Matchers.containsString("Class requireannotationsonsupertype.RequireAnnotationsOnSupertypeFail is annotated with @requireannotationsonsupertype.RequireUnconstrainedSupertype but does not have a supertype annotated with @companionannotations.RequireUnconstrained"),
+  Matchers.containsString("Class requireconstructors.RequireNoArgConstructorFail is annotated with @requireconstructors.RequireNoArgConstructor but does not have a constructor with no arguments"),
+  Matchers.containsString("Class requireconstructors.RequireStringLongIntArrayConstructorFail is annotated with @requireconstructors.RequireStringLongIntArrayConstructor but does not have a constructor with arguments (java.lang.String, long, int[])"),
+  Matchers.containsString("Class requiresupertypes.RequireSupertypesFail is annotated with @requiresupertypes.RequireBaseClassAndSerializable but does not have requiresupertypes.BaseClass as a supertype"),
+  //TODO javac only reports the first error for the class Matchers.containsString("Class requiresupertypes.RequireSupertypesFail is annotated with @requiresupertypes.RequireBaseClassAndSerializable but does not have java.io.Serializable as a supertype"),
+  Matchers.not(Matchers.containsString("Pass")) //naming convention for classes which should compile cleanly
+});
