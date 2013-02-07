@@ -1,0 +1,8 @@
+package requireannotationsonsupertype;
+
+import noconstraints.Unconstrained;
+
+@RequireUnconstrainedSupertype
+@Unconstrained
+public class RequireAnnotationsOnSelfPass extends ExtendsUnconstrainedClass implements RequireUnconstrainedInterface {
+}

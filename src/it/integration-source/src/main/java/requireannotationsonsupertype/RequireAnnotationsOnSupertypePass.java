@@ -1,0 +1,5 @@
+package requireannotationsonsupertype;
+
+@RequireUnconstrainedSupertype
+public class RequireAnnotationsOnSupertypePass extends UnconstrainedClass implements RequireUnconstrainedInterface {
+}
