@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetDisallowsAnnotations;
@@ -22,20 +24,23 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       return;
     }
 
-    Collection<String> disallowedAnnotations = VerifierUtils.getValuesAsClassNames(disallowAnnotations);
+    Collection<TypeMirror> disallowedAnnotations = VerifierUtils.getValuesAsTypes(disallowAnnotations);
     if (disallowedAnnotations.isEmpty()) {
       return;
     }
 
-    List<String> presentAndDisallowed = new ArrayList<String>();
+    Types typeUtils = processingEnv.getTypeUtils();
+    List<TypeMirror> presentAndDisallowed = new ArrayList<TypeMirror>();
     for (AnnotationMirror annotated : element.getAnnotationMirrors()) {
-      String className = VerifierUtils.getClassName(annotated);
-      if (disallowedAnnotations.contains(className)) {
-        presentAndDisallowed.add(className);
+      TypeMirror annotatedType = VerifierUtils.asType(annotated);
+      for (TypeMirror disallowedAnnotation : disallowedAnnotations) {
+        if (typeUtils.isSameType(annotatedType, disallowedAnnotation)) {
+          presentAndDisallowed.add(annotatedType);
+        }
       }
     }
 
-    for (String presentAndDisallowedAnnotationType : presentAndDisallowed) {
+    for (TypeMirror presentAndDisallowedAnnotationType : presentAndDisallowed) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresSupertypes;
@@ -21,16 +22,17 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
       return;
     }
 
-    List<String> requiredSupertypes = VerifierUtils.getValuesAsClassNames(requireSupertypes);
+    List<TypeMirror> requiredSupertypes = VerifierUtils.getValuesAsTypes(requireSupertypes);
     if (requiredSupertypes.isEmpty()) {
       return;
     }
 
-    for (TypeMirror supertype : VerifierUtils.getSuperTypes(element.asType(), processingEnv.getTypeUtils())) {
-      requiredSupertypes.remove(VerifierUtils.getClassName(supertype));
+    Types typeUtils = processingEnv.getTypeUtils();
+    for (TypeMirror supertype : VerifierUtils.getSuperTypes(element.asType(), typeUtils)) {
+      VerifierUtils.removeType(requiredSupertypes, supertype, typeUtils);
     }
 
-    for (String missingRequiredSupertype : requiredSupertypes) {
+    for (TypeMirror missingRequiredSupertype : requiredSupertypes) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,

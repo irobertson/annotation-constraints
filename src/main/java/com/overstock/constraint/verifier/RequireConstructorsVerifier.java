@@ -8,6 +8,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresConstructors;
@@ -60,7 +61,7 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
     return result.append(')').toString();
   }
 
-  private static boolean hasConstructor(Element element, List<AnnotationValue> argumentTypes) {
+  private boolean hasConstructor(Element element, List<AnnotationValue> argumentTypes) {
     for (ExecutableElement constructorElement : ElementFilter.constructorsIn(element.getEnclosedElements())) {
       if (argumentTypesMatch(constructorElement.getParameters(), argumentTypes)) {
         return true;
@@ -69,12 +70,15 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
     return false;
   }
 
-  private static boolean argumentTypesMatch(List<? extends VariableElement> parameters, List<AnnotationValue> expected) {
+  private boolean argumentTypesMatch(List<? extends VariableElement> parameters, List<AnnotationValue> expected) {
     if (parameters.size() != expected.size()) {
       return false;
     }
+    Types typeUtils = processingEnv.getTypeUtils();
     for (int i = 0; i < parameters.size(); ++i) {
-      if (!VerifierUtils.getClassName(parameters.get(i)).equals(VerifierUtils.getClassName(expected.get(i)))) {
+      if (!typeUtils.isSameType(
+          VerifierUtils.asType(parameters.get(i)),
+          VerifierUtils.asType(expected.get(i)))) {
         return false;
       }
     }

@@ -3,6 +3,7 @@ package com.overstock.constraint.verifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,58 +50,51 @@ class VerifierUtils {
   }
 
   /**
-   * Gets the class names represented by the annotation values.
+   * Gets the types represented by the annotation values.
    *
    * @param annotationValues the annotation values
-   * @return the class names represented by the annotation values
-   * @see #getClassName(javax.lang.model.element.AnnotationValue)
+   * @return the types represented by the annotation values
+   * @see #asType(javax.lang.model.element.AnnotationValue)
    */
-  public static List<String> getClassNames(Collection<AnnotationValue> annotationValues) {
-    List<String> classNames = new ArrayList<String>(annotationValues.size());
+  public static List<TypeMirror> asTypes(Collection<AnnotationValue> annotationValues) {
+    List<TypeMirror> types = new ArrayList<TypeMirror>(annotationValues.size());
     for (AnnotationValue annotationValue : annotationValues) {
-      classNames.add(getClassName(annotationValue));
+      types.add(asType(annotationValue));
     }
-    return classNames;
+    return types;
   }
 
   /**
-   * Gets the class name represented by the annotation value.
+   * Gets the type represented by the annotation value. This only works for annotation values which are known to be
+   * classes.
    *
    * @param annotationValue the annotation value
-   * @return the class name represented by the annotation value
+   * @return the type represented by the annotation value
    */
-  public static String getClassName(AnnotationValue annotationValue) {
-    return annotationValue.getValue().toString();
+  public static TypeMirror asType(AnnotationValue annotationValue) {
+    return (TypeMirror) annotationValue.getValue();
   }
 
   /**
-   * Gets the class name of the element's type.
+   * Gets the type represented by the element.
+   *
    *
    * @param element the element
-   * @return the class name of the element's type
+   * @return the type represented by the element
    */
-  public static String getClassName(Element element) {
-    return element.asType().toString();
+  public static TypeMirror asType(Element element) {
+    return element.asType();
   }
 
   /**
-   * Gets the class name of the annotation's type.
+   * Gets the annotation's type.
+   *
    *
    * @param annotation the annotation
-   * @return the class name of the annotation's type
+   * @return the annotation's type
    */
-  public static String getClassName(AnnotationMirror annotation) {
-    return annotation.getAnnotationType().asElement().toString();
-  }
-
-  /**
-   * Gets the class name of the type.
-   *
-   * @param typeMirror the type
-   * @return the class name of the type
-   */
-  public static String getClassName(TypeMirror typeMirror) {
-    return typeMirror.toString();
+  public static TypeMirror asType(AnnotationMirror annotation) {
+    return asType(annotation.getAnnotationType().asElement());
   }
 
   /**
@@ -120,16 +114,16 @@ class VerifierUtils {
   }
 
   /**
-   * Gets the class names represented by the annotation values for the element named "{@code value}" on the annotation.
+   * Gets the types represented by the annotation values for the element named "{@code value}" on the annotation.
    *
    * @param annotation the annotation
-   * @return the class names represented by the annotation values for the element named "{@code value}" on the
+   * @return the types represented by the annotation values for the element named "{@code value}" on the
    * annotation
-   * @see #getClassNames(java.util.Collection)
+   * @see #asTypes(java.util.Collection)
    * @see #getArrayValues(javax.lang.model.element.AnnotationMirror)
    */
-  public static List<String> getValuesAsClassNames(AnnotationMirror annotation) {
-    return getClassNames(getArrayValues(annotation)); //TODO investigate caching
+  public static List<TypeMirror> getValuesAsTypes(AnnotationMirror annotation) {
+    return asTypes(getArrayValues(annotation)); //TODO investigate caching
   }
 
   /**
@@ -142,6 +136,15 @@ class VerifierUtils {
     return (typeMirror.getKind() == TypeKind.DECLARED)
       ? (TypeElement) ((DeclaredType) typeMirror).asElement()
       : null;
+  }
+
+  public static void removeType(Iterable<TypeMirror> types, TypeMirror t, Types typeUtils) {
+    Iterator<TypeMirror> iterator = types.iterator();
+    while (iterator.hasNext()) {
+      if (typeUtils.isSameType(t, iterator.next())) {
+        iterator.remove();
+      }
+    }
   }
 
   private VerifierUtils() {}

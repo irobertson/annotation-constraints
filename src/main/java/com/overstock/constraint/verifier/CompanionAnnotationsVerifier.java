@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRecommendsAnnotations;
@@ -23,29 +24,32 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
       return;
     }
 
-    final List<String> requiredAnnotations = requireAnnotations == null ? Collections.<String>emptyList()
-      : VerifierUtils.getValuesAsClassNames(requireAnnotations);
-    final List<String> recommendedAnnotations = recommendAnnotations == null ? Collections.<String>emptyList()
-      : VerifierUtils.getValuesAsClassNames(recommendAnnotations);
+    final List<TypeMirror> requiredAnnotations = requireAnnotations == null ? Collections.<TypeMirror>emptyList()
+      : VerifierUtils.getValuesAsTypes(requireAnnotations);
+    final List<TypeMirror> recommendedAnnotations = recommendAnnotations == null ? Collections.<TypeMirror>emptyList()
+      : VerifierUtils.getValuesAsTypes(recommendAnnotations);
 
     if (requiredAnnotations.isEmpty() && recommendedAnnotations.isEmpty()) {
       return;
     }
 
     for (AnnotationMirror annotated : element.getAnnotationMirrors()) {
-      String className = annotated.getAnnotationType().asElement().toString();
-      requiredAnnotations.remove(className);
-      recommendedAnnotations.remove(className);
+      TypeMirror annotatedType = annotated.getAnnotationType().asElement().asType();
+      VerifierUtils.removeType(requiredAnnotations, annotatedType, processingEnv.getTypeUtils());
+      VerifierUtils.removeType(recommendedAnnotations, annotatedType, processingEnv.getTypeUtils());
+      if (requiredAnnotations.isEmpty() && recommendedAnnotations.isEmpty()) {
+        return;
+      }
     }
 
-    for (String missingRequiredAnnotationType : requiredAnnotations) {
+    for (TypeMirror missingRequiredAnnotationType : requiredAnnotations) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,
         annotation,
         " but not with @" + missingRequiredAnnotationType);
     }
-    for (String missingRecommendedAnnotationType : recommendedAnnotations) {
+    for (TypeMirror missingRecommendedAnnotationType : recommendedAnnotations) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.WARNING,
         element,
@@ -53,5 +57,4 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
         " but not with @" + missingRecommendedAnnotationType);
     }
   }
-
 }
