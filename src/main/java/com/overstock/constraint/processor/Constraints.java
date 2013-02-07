@@ -3,7 +3,9 @@ package com.overstock.constraint.processor;
 import java.lang.annotation.Annotation;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -16,8 +18,11 @@ import com.overstock.constraint.Constraint;
 
 /**
  * The {@link Constraint Constraints} on an annotation.
+ *
+ * @see Constraint
  */
 public class Constraints {
+  private static final Map<Element, Constraints> CACHE = new HashMap<Element, Constraints>();
 
   private final Collection<AnnotationMirror> constraintAnnotations;
   private final ProcessingEnvironment processingEnv;
@@ -41,7 +46,11 @@ public class Constraints {
    * @return the constraints for the annotation represented by the {@link Element}, never {@code null}.
    */
   private static Constraints on(Element annotation, ProcessingEnvironment processingEnv) {
-    Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>(); //TODO investigate caching
+    Constraints cached = CACHE.get(annotation);
+    if (cached != null) {
+      return cached;
+    }
+    Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
     TypeMirror constraintMirror = getTypeMirror(Constraint.class, processingEnv);
     Types types = processingEnv.getTypeUtils();
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
@@ -51,7 +60,9 @@ public class Constraints {
         }
       }
     }
-    return new Constraints(constraints, processingEnv);
+    Constraints result = new Constraints(constraints, processingEnv);
+    CACHE.put(annotation, result);
+    return result;
   }
 
   /**
