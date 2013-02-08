@@ -18,6 +18,7 @@ import com.overstock.constraint.processor.Constraints;
  */
 public class DisallowAnnotationsVerifier extends AbstractVerifier {
 
+  @Override
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
     AnnotationMirror disallowAnnotations = constraints.get(TargetDisallowsAnnotations.class);
     if (disallowAnnotations == null) {

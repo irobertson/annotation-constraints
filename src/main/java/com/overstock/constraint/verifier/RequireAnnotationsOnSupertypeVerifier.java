@@ -17,6 +17,7 @@ import com.overstock.constraint.processor.Constraints;
  */
 public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 
+  @Override
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
     AnnotationMirror requireAnnotationsOnSupertype = constraints.get(TargetRequiresAnnotationsOnSupertype.class);
     if (requireAnnotationsOnSupertype == null) {

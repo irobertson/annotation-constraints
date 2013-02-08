@@ -19,6 +19,7 @@ import com.overstock.constraint.processor.Constraints;
  */
 public class RequireConstructorsVerifier extends AbstractVerifier {
 
+  @Override
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
     AnnotationMirror requireConstructors = constraints.get(TargetRequiresConstructors.class);
     if (requireConstructors == null) {
