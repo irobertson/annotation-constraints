@@ -11,6 +11,7 @@
 
   <modules>
     <module>integration-source</module>
+    <module>custom-verifiers</module>
     <!-- Endpoint integration modules are not included here -->
   </modules>
 
@@ -23,13 +24,6 @@
       <groupId>com.overstock</groupId>
       <artifactId>annotation-constraints</artifactId>
       <version>@annotation-constraints.version@</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

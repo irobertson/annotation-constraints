@@ -26,5 +26,7 @@ FileAssert.assertFileMatches(buildLog, new Matcher[] {
   Matchers.containsString("Class requireconstructors.RequireStringLongIntArrayConstructorFail is annotated with @requireconstructors.RequireStringLongIntArrayConstructor but does not have a constructor with arguments (java.lang.String, long, int[])"),
   Matchers.containsString("Class requiresupertypes.RequireSupertypesFail is annotated with @requiresupertypes.RequireBaseClassAndSerializable but does not have requiresupertypes.BaseClass as a supertype"),
   //TODO javac only reports the first error for the class Matchers.containsString("Class requiresupertypes.RequireSupertypesFail is annotated with @requiresupertypes.RequireBaseClassAndSerializable but does not have java.io.Serializable as a supertype"),
+  Matchers.containsString("Class verifier.VerifierSubclassFail is annotated with @com.overstock.constraint.verifier.ServiceProvider but does not have a constructor with no arguments"),
+  Matchers.containsString("Failing CustomVerifyFail.class from a custom verifier"),
   Matchers.not(Matchers.containsString("Pass")) //naming convention for classes which should compile cleanly
 });

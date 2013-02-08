@@ -13,6 +13,14 @@
 
   <name>javac 1.6 Integration</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>com.overstock</groupId>
+      <artifactId>custom-verifiers</artifactId>
+      <version>@annotation-constraints.version@</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>

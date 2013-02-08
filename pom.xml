@@ -93,9 +93,10 @@
           <filterProperties>
             <annotation-constraints.version>${project.version}</annotation-constraints.version>
           </filterProperties>
-          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+          <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
           <pomExcludes>
             <pomExclude>integration-source/pom.xml</pomExclude>
+            <pomExclude>custom-verifiers/pom.xml</pomExclude>
           </pomExcludes>
           <postBuildHookScript>../integration-source/src/test/beanshell/verify.bsh</postBuildHookScript>
           <setupIncludes>
