@@ -8,10 +8,10 @@
     <version>@annotation-constraints.version@</version>
   </parent>
 
-  <artifactId>eclipse-3.8-integration</artifactId>
+  <artifactId>eclipse-3.8-integration-test</artifactId>
   <packaging>jar</packaging>
 
-  <name>Eclipse 3.8 Integration</name>
+  <name>Eclipse 3.8 Integration Test</name>
 
   <dependencies>
     <dependency>

@@ -8,10 +8,10 @@
     <version>@annotation-constraints.version@</version>
   </parent>
 
-  <artifactId>javac-1.6-integration</artifactId>
+  <artifactId>javac-1.6-integration-test</artifactId>
   <packaging>jar</packaging>
 
-  <name>javac 1.6 Integration</name>
+  <name>javac 1.6 Integration Test</name>
 
   <dependencies>
     <dependency>
