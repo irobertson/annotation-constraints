@@ -29,7 +29,7 @@ public class ConstraintProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
 
-    verifiers = ServiceLoader.load(Verifier.class, getClass().getClassLoader());
+    verifiers = VerifierLoader.loadVerifiers(getClass().getClassLoader());
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
@@ -50,6 +50,22 @@ public class ConstraintProcessor extends AbstractProcessor {
     }
 
     return false;
+  }
+
+  static class VerifierLoader {
+    private static VerifierLoader INSTANCE = new VerifierLoader();
+
+    public Iterable<Verifier> load(ClassLoader classLoader) {
+      return ServiceLoader.load(Verifier.class, classLoader);
+    }
+
+    public static Iterable<Verifier> loadVerifiers(ClassLoader classLoader) {
+      return INSTANCE.load(classLoader);
+    }
+
+    static void set(VerifierLoader loader) { //for testing
+      INSTANCE = loader;
+    }
   }
 
 }
