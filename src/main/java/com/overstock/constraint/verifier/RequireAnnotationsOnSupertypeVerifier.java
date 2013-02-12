@@ -13,7 +13,7 @@ import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetRequiresAnnotationsOnSupertype}.
+ * A verifier for {@link TargetRequiresAnnotationsOnSupertype}.
  */
 public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 
@@ -39,11 +39,11 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
     }
 
     for (TypeMirror missingRequiredAnnotation : requiredAnnotations) {
-      raiseAnnotatedClassMessage(
+      printMessage(
         Diagnostic.Kind.ERROR,
         element,
         constrained,
-        " but does not have a supertype annotated with @" + missingRequiredAnnotation);
+        " but does not have a supertype annotated with @" + getSimpleName(missingRequiredAnnotation));
     }
   }
 }

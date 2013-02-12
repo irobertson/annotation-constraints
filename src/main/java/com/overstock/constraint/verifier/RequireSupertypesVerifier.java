@@ -12,7 +12,7 @@ import com.overstock.constraint.TargetRequiresSupertypes;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetRequiresSupertypes}.
+ * A verifier for {@link TargetRequiresSupertypes}.
  */
 public class RequireSupertypesVerifier extends AbstractVerifier {
 
@@ -34,7 +34,7 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
     }
 
     for (TypeMirror missingRequiredSupertype : requiredSupertypes) {
-      raiseAnnotatedClassMessage(
+      printMessage(
         Diagnostic.Kind.ERROR,
         element,
         constrained,

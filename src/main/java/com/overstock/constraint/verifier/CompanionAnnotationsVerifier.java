@@ -13,7 +13,7 @@ import com.overstock.constraint.TargetRequiresAnnotations;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetRequiresAnnotations} and {@link com.overstock.constraint.TargetRecommendsAnnotations}.
+ * A verifier for {@link TargetRequiresAnnotations} and {@link TargetRecommendsAnnotations}.
  */
 public class CompanionAnnotationsVerifier extends AbstractVerifier {
 
@@ -43,18 +43,18 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
     }
 
     for (TypeMirror missingRequiredAnnotationType : requiredAnnotations) {
-      raiseAnnotatedClassMessage(
+      printMessage(
         Diagnostic.Kind.ERROR,
         element,
         constrained,
-        " but not with @" + missingRequiredAnnotationType);
+        " but not with @" + getSimpleName(missingRequiredAnnotationType));
     }
     for (TypeMirror missingRecommendedAnnotationType : recommendedAnnotations) {
-      raiseAnnotatedClassMessage(
+      printMessage(
         Diagnostic.Kind.WARNING,
         element,
         constrained,
-        " but not with @" + missingRecommendedAnnotationType);
+        " but not with @" + getSimpleName(missingRecommendedAnnotationType));
     }
   }
 }

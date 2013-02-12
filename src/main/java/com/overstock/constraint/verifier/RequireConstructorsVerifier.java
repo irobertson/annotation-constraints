@@ -15,7 +15,7 @@ import com.overstock.constraint.TargetRequiresConstructors;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetRequiresConstructors}.
+ * A verifier for {@link TargetRequiresConstructors}.
  */
 public class RequireConstructorsVerifier extends AbstractVerifier {
 
@@ -35,7 +35,7 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
       List<AnnotationValue> argumentList = (List<AnnotationValue>) requiredConstructorMirror.getElementValues().values()
         .iterator().next().getValue();
       if (!hasConstructor(element, argumentList)) {
-        raiseAnnotatedClassMessage(
+        printMessage(
           Diagnostic.Kind.ERROR,
           element,
           constrained,

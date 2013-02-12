@@ -14,7 +14,7 @@ import com.overstock.constraint.TargetDisallowsAnnotations;
 import com.overstock.constraint.processor.Constraints;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetDisallowsAnnotations}.
+ * A verifier for {@link TargetDisallowsAnnotations}.
  */
 public class DisallowAnnotationsVerifier extends AbstractVerifier {
 
@@ -42,11 +42,11 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
     }
 
     for (TypeMirror presentAndDisallowedAnnotationType : presentAndDisallowed) {
-      raiseAnnotatedClassMessage(
+      printMessage(
         Diagnostic.Kind.ERROR,
         element,
         constrained,
-        " which is not allowed with @" + presentAndDisallowedAnnotationType);
+        " which is not allowed with @" + getSimpleName(presentAndDisallowedAnnotationType));
     }
   }
 }
