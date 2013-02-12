@@ -17,7 +17,7 @@ import com.overstock.constraint.processor.Constraints;
  */
 public class CompanionAnnotationsVerifier extends AbstractVerifier {
 
-  public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
+  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
     AnnotationMirror requireAnnotations = constraints.get(TargetRequiresAnnotations.class);
     AnnotationMirror recommendAnnotations = constraints.get(TargetRecommendsAnnotations.class);
     if (requireAnnotations == null && recommendAnnotations == null) {
@@ -46,14 +46,14 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,
-        annotation,
+        constrained,
         " but not with @" + missingRequiredAnnotationType);
     }
     for (TypeMirror missingRecommendedAnnotationType : recommendedAnnotations) {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.WARNING,
         element,
-        annotation,
+        constrained,
         " but not with @" + missingRecommendedAnnotationType);
     }
   }

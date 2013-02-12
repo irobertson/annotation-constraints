@@ -19,27 +19,15 @@ public abstract class AbstractVerifier implements Verifier {
    * Raise an message about a class annotated with an annotation.
    * @param kind the error level
    * @param element the annotated class
-   * @param annotationMirror the annotation
+   * @param constrained the constrained annotation
    * @param message the rest of the message
    */
-  protected void raiseAnnotatedClassMessage(Diagnostic.Kind kind, Element element, AnnotationMirror annotationMirror,
+  protected void raiseAnnotatedClassMessage(Diagnostic.Kind kind, Element element, AnnotationMirror constrained,
       String message) {
-    raiseAnnotatedClassMessage(
-      kind, element, annotationMirror, message, annotationMirror.getAnnotationType().asElement());
-
-  }
-
-  /**
-   * Raise an message about a class annotated with an annotation.
-   * @param kind the error level
-   * @param element the annotated class
-   * @param annotationMirror the annotation
-   * @param message the rest of the message
-   * @param annotationLabel a label for the annotation
-   */
-  protected void raiseAnnotatedClassMessage(Diagnostic.Kind kind, Element element, AnnotationMirror annotationMirror,
-      String message, final Object annotationLabel) {
     processingEnv.getMessager().printMessage(
-      kind, "Class " + element + " is annotated with @" + annotationLabel + message, element, annotationMirror);
+      kind,
+      "Class " + element + " is annotated with @" + constrained.getAnnotationType().asElement() + message,
+      element,
+      constrained);
   }
 }

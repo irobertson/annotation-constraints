@@ -19,7 +19,7 @@ import com.overstock.constraint.processor.Constraints;
 public class DisallowAnnotationsVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
+  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
     AnnotationMirror disallowAnnotations = constraints.get(TargetDisallowsAnnotations.class);
     if (disallowAnnotations == null) {
       return;
@@ -45,7 +45,7 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,
-        annotation,
+        constrained,
         " which is not allowed with @" + presentAndDisallowedAnnotationType);
     }
   }

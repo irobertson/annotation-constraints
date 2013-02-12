@@ -20,7 +20,7 @@ import com.overstock.constraint.processor.Constraints;
 public class RequireConstructorsVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
+  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
     AnnotationMirror requireConstructors = constraints.get(TargetRequiresConstructors.class);
     if (requireConstructors == null) {
       return;
@@ -38,9 +38,8 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
         raiseAnnotatedClassMessage(
           Diagnostic.Kind.ERROR,
           element,
-          annotation,
-          " but does not have a constructor with " + argumentLabel(argumentList),
-          annotation.getAnnotationType());
+          constrained,
+          " but does not have a constructor with " + argumentLabel(argumentList));
       }
     }
   }

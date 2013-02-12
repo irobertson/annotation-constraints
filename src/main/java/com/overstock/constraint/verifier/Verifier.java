@@ -24,10 +24,10 @@ public interface Verifier {
    * one or more {@link Constraint}s.
    *
    * @param element the annotated element
-   * @param annotation the annotation on {@code element}
-   * @param constraints the {@link Constraint} annotations on the annotation represented by {@code annotation}.
+   * @param constrained the constrained annotation, which is present on {@code element}
+   * @param constraints the constraints on the annotation represented by {@code annotation}.
    */
-  void verify(Element element, AnnotationMirror annotation, Constraints constraints);
+  void verify(Element element, AnnotationMirror constrained, Constraints constraints);
 
   /**
    * Initializes the verifier. This method will be called exactly once for each verifier instance, and is guaranteed to

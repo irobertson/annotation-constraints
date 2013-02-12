@@ -18,7 +18,7 @@ import com.overstock.constraint.processor.Constraints;
 public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
+  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
     AnnotationMirror requireAnnotationsOnSupertype = constraints.get(TargetRequiresAnnotationsOnSupertype.class);
     if (requireAnnotationsOnSupertype == null) {
       return;
@@ -42,7 +42,7 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
       raiseAnnotatedClassMessage(
         Diagnostic.Kind.ERROR,
         element,
-        annotation,
+        constrained,
         " but does not have a supertype annotated with @" + missingRequiredAnnotation);
     }
   }
