@@ -11,10 +11,9 @@ public class CustomVerifier extends AbstractVerifier {
 
   @Override
   public void verify(Element element, AnnotationMirror annotation, Constraints constraints) {
-    String simpleName = "CustomVerifyFail";
-    if (element.getSimpleName().contentEquals(simpleName)) {
+    if (constraints.get(CustomConstraint.class) != null) {
       processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-        "Failing " + simpleName + ".class from a custom verifier", element);
+        "Failing " + element.getSimpleName() + ".class from a custom verifier", element);
     }
   }
 

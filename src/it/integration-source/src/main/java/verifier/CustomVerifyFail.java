@@ -2,6 +2,6 @@ package verifier;
 
 import requireconstructors.RequireNoArgConstructor;
 
-@RequireNoArgConstructor
+@CustomConstrained
 public class CustomVerifyFail {
 }
