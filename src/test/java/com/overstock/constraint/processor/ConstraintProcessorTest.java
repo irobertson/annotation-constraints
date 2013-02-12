@@ -6,6 +6,7 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -60,62 +61,79 @@ public class ConstraintProcessorTest {
   private ConstraintProcessor processor;
 
   @Test
-  public void processConstraint() {
-    final AnnotationMirror constraint = mockConstrained();
-
+  public void processConstraints() {
     TypeElement first = mock(TypeElement.class);
     TypeElement second = mock(TypeElement.class);
+    AnnotationMirror constrained = mockConstrained(first, second);
 
-    Answer<List<? extends AnnotationMirror>> constraintAnswer = new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Arrays.asList(constraint);
-      }
-    };
-    when(elementUtils.getAllAnnotationMirrors(first)).thenAnswer(constraintAnswer);
-    when(elementUtils.getAllAnnotationMirrors(second)).thenAnswer(constraintAnswer);
+    TypeElement notAnnotated = mock(TypeElement.class);
+    mockNotAnnotated(notAnnotated);
+    TypeElement unconstrained = mock(TypeElement.class);
+    mockUnconstrained(unconstrained);
 
-    final Set<TypeElement> typeElements = ImmutableSet.of(first, second);
-    when(roundEnvironment.getRootElements()).thenAnswer(new Answer<Set<? extends Element>>() {
-      @Override
-      public Set<? extends Element> answer(InvocationOnMock invocation) throws Throwable {
-        return typeElements;
-      }
-    });
+    mockRootElements(first, second, notAnnotated, unconstrained);
 
     assertFalse(processor.process(Collections.<TypeElement>emptySet(), roundEnvironment));
     verify(verifier).init(processingEnvironment);
-    verify(verifier).verify(same(first), same(constraint), any(Constraints.class));
-    verify(verifier).verify(same(second), same(constraint), any(Constraints.class));
+    verify(verifier).verify(same(first), same(constrained), any(Constraints.class));
+    verify(verifier).verify(same(second), same(constrained), any(Constraints.class));
+    verify(verifier, never()).verify(same(notAnnotated), any(AnnotationMirror.class), any(Constraints.class));
+    verify(verifier, never()).verify(same(unconstrained), any(AnnotationMirror.class), any(Constraints.class));
   }
 
   @Test
   public void processNoConstraints() {
-    final AnnotationMirror nonConstraint = mockUnconstrained();
-
     TypeElement first = mock(TypeElement.class);
     TypeElement second = mock(TypeElement.class);
+    mockUnconstrained(first, second);
 
-    Answer<List<? extends AnnotationMirror>> nonConstraintAnswer = new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Arrays.asList(nonConstraint);
-      }
-    };
-    when(elementUtils.getAllAnnotationMirrors(first)).thenAnswer(nonConstraintAnswer);
-    when(elementUtils.getAllAnnotationMirrors(second)).thenAnswer(nonConstraintAnswer);
+    mockRootElements(first, second);
 
-    final Set<TypeElement> typeElements = ImmutableSet.of(first, second);
+    assertFalse(processor.process(Collections.<TypeElement>emptySet(), roundEnvironment));
+    verify(verifier).init(processingEnvironment);
+    verifyNoMoreInteractions(verifier);
+  }
+
+  @Test
+  public void supportedSourceVersion() {
+    assertSame(SourceVersion.latestSupported(), processor.getSupportedSourceVersion());
+  }
+
+  private void mockRootElements(final TypeElement... elements) {
     when(roundEnvironment.getRootElements()).thenAnswer(new Answer<Set<? extends Element>>() {
       @Override
       public Set<? extends Element> answer(InvocationOnMock invocation) throws Throwable {
-        return typeElements;
+        return ImmutableSet.<TypeElement>builder().add(elements).build();
       }
     });
+  }
 
-    assertFalse(processor.process(typeElements, roundEnvironment));
-    verify(verifier).init(processingEnvironment);
-    verifyNoMoreInteractions(verifier);
+  private void mockNotAnnotated(TypeElement... elements) {
+    Answer<List<? extends AnnotationMirror>> notAnnotatedAnswer = new Answer<List<? extends AnnotationMirror>>() {
+      @Override
+      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
+        return Collections.emptyList();
+      }
+    };
+    for (TypeElement element : elements) {
+      when(element.getAnnotationMirrors()).thenAnswer(notAnnotatedAnswer);
+      when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(notAnnotatedAnswer);
+    }
+  }
+
+  private AnnotationMirror mockConstrained(TypeElement... elements) {
+    final AnnotationMirror constrained = mockConstrained();
+    Answer<List<? extends AnnotationMirror>> constrainedAnswer = new Answer<List<? extends AnnotationMirror>>() {
+      @Override
+      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
+        return Arrays.asList(constrained);
+      }
+    };
+    for (TypeElement element : elements) {
+      when(element.getAnnotationMirrors()).thenAnswer(constrainedAnswer);
+      when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(constrainedAnswer);
+    }
+    return constrained;
   }
 
   private AnnotationMirror mockConstrained() {
@@ -151,6 +169,21 @@ public class ConstraintProcessorTest {
     return constrained;
   }
 
+  private AnnotationMirror mockUnconstrained(TypeElement... elements) {
+    final AnnotationMirror unconstrained = mockUnconstrained();
+    Answer<List<? extends AnnotationMirror>> unconstrainedAnswer = new Answer<List<? extends AnnotationMirror>>() {
+      @Override
+      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
+        return Arrays.asList(unconstrained);
+      }
+    };
+    for (TypeElement element : elements) {
+      when(element.getAnnotationMirrors()).thenAnswer(unconstrainedAnswer);
+      when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(unconstrainedAnswer);
+    }
+    return unconstrained;
+  }
+
   private AnnotationMirror mockUnconstrained() {
     AnnotationMirror unconstrained = mock(AnnotationMirror.class);
     DeclaredType declared = mock(DeclaredType.class);
@@ -158,11 +191,6 @@ public class ConstraintProcessorTest {
     Element element = mock(Element.class);
     when(declared.asElement()).thenReturn(element);
     return unconstrained;
-  }
-
-  @Test
-  public void supportedSourceVersion() {
-    assertSame(SourceVersion.latestSupported(), processor.getSupportedSourceVersion());
   }
 
   @Before
