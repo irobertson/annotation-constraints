@@ -33,11 +33,11 @@ public class ConstraintProcessor extends AbstractProcessor {
     super.init(processingEnv);
 
     ClassLoader classLoader = getClass().getClassLoader();
-    verifiers = VerifierLoader.loadAll(classLoader);
+    verifiers = ServiceLoader.load(Verifier.class, classLoader);
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
-    constraintProviders = ConstraintProviderLoader.loadAll(classLoader);
+    constraintProviders = ServiceLoader.load(ConstraintProvider.class, classLoader);
   }
 
   @Override
@@ -55,38 +55,6 @@ public class ConstraintProcessor extends AbstractProcessor {
     }
 
     return false;
-  }
-
-  static class VerifierLoader {
-    private static VerifierLoader INSTANCE = new VerifierLoader();
-
-    public Iterable<Verifier> load(ClassLoader classLoader) {
-      return ServiceLoader.load(Verifier.class, classLoader);
-    }
-
-    public static Iterable<Verifier> loadAll(ClassLoader classLoader) {
-      return INSTANCE.load(classLoader);
-    }
-
-    static void set(VerifierLoader loader) { //for testing
-      INSTANCE = loader;
-    }
-  }
-
-  static class ConstraintProviderLoader {
-    private static ConstraintProviderLoader INSTANCE = new ConstraintProviderLoader();
-
-    public Iterable<ConstraintProvider> load(ClassLoader classLoader) {
-      return ServiceLoader.load(ConstraintProvider.class, classLoader);
-    }
-
-    public static Iterable<ConstraintProvider> loadAll(ClassLoader classLoader) {
-      return INSTANCE.load(classLoader);
-    }
-
-    static void set(ConstraintProviderLoader loader) { //for testing
-      INSTANCE = loader;
-    }
   }
 
 }
