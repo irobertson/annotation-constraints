@@ -19,7 +19,7 @@
   <dependencies>
     <dependency>
       <groupId>com.overstock</groupId>
-      <artifactId>custom-verifiers</artifactId>
+      <artifactId>custom-constraints</artifactId>
       <version>@annotation-constraints.version@</version>
     </dependency>
   </dependencies>

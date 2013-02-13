@@ -8,10 +8,18 @@
     <version>@annotation-constraints.version@</version>
   </parent>
 
-  <artifactId>custom-verifiers</artifactId>
+  <artifactId>custom-constraints</artifactId>
   <packaging>jar</packaging>
 
   <name>Custom Verifiers</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>

@@ -1,8 +1,12 @@
 package com.overstock.constraint.provider;
 
 /**
- * A provider of constraints for annotations which may or may not already be constrained. Implementations of this
- * interface must be annotated with {@link ConstraintsFor}, which specifies which annotation
+ * A provider of constraints for annotations which are not already constrained. This is used to provide constraints on
+ * annotations for which you cannot change the source code to add constraints (or if you choose not to do so).
+ *
+ * TODO define behavior for annotations which are doubly constrained.
+ *
+ * Implementations of this interface must be annotated with {@link ConstraintsFor}, which specifies which annotation
  * will receive the additional constraints and which annotation is providing constraints on its behalf.
  *
  * A ConstraintProvider is a <i>service</i> as defined by {@link java.util.ServiceLoader}, and implementors of this

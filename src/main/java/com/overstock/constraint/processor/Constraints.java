@@ -15,6 +15,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
 
 import com.overstock.constraint.Constraint;
 import com.overstock.constraint.provider.ConstraintProvider;
@@ -33,8 +34,6 @@ public class Constraints {
 
   /**
    * The constraints on the annotation represented by the {@link AnnotationMirror}.
-   *
-   *
    *
    * @param annotation the annotation mirror
    * @param constraintProviders the providers of external constraints
@@ -62,14 +61,17 @@ public class Constraints {
     Types typeUtils = processingEnv.getTypeUtils();
     for (ConstraintProvider constraintProvider : constraintProviders) {
       ConstraintsFor constraintsFor = constraintProvider.getClass().getAnnotation(ConstraintsFor.class); //TODO cache this
-      if (typeUtils.isSameType(annotation.asType(), getTypeMirror(constraintsFor.annotation(), processingEnv))) {
-        TypeElement providerElement = elementUtils.getTypeElement(constraintsFor.canBeFoundOn().getCanonicalName());
-        TypeMirror constraintMirror = getTypeMirror(Constraint.class, processingEnv);
-        for (AnnotationMirror maybeConstrained : elementUtils.getAllAnnotationMirrors(providerElement)) {
-          addConstraints(constraints, maybeConstrained.getAnnotationType().asElement(), constraintMirror, typeUtils);
-        }
+      if (constraintsFor == null) {
+        processingEnv.getMessager().printMessage(
+          Diagnostic.Kind.WARNING,
+          String.format("ConstraintProvider %s is not annotated with %s", constraintProvider.getClass().getName(),
+            ConstraintsFor.class.getName()));
+        continue;
       }
-
+      if (typeUtils.isSameType(annotation.asType(), getTypeMirror(constraintsFor.annotation(), processingEnv))) {
+        TypeElement providingAnnotation = elementUtils.getTypeElement(constraintsFor.canBeFoundOn().getCanonicalName());
+        addConstraints(constraints, providingAnnotation, getTypeMirror(Constraint.class, processingEnv), typeUtils);
+      }
     }
     return constraints;
   }

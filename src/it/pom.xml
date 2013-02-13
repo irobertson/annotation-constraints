@@ -11,7 +11,7 @@
 
   <modules>
     <module>integration-source</module>
-    <module>custom-verifiers</module>
+    <module>custom-constraints</module>
     <!-- Endpoint integration modules are not included here -->
   </modules>
 
