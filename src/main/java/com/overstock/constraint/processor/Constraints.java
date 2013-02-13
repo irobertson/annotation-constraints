@@ -11,10 +11,14 @@ import java.util.Set;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import com.overstock.constraint.Constraint;
+import com.overstock.constraint.provider.ConstraintProvider;
+import com.overstock.constraint.provider.ConstraintsFor;
 
 /**
  * The {@link Constraint Constraints} on an annotation.
@@ -30,29 +34,55 @@ public class Constraints {
   /**
    * The constraints on the annotation represented by the {@link AnnotationMirror}.
    *
+   *
+   *
    * @param annotation the annotation mirror
+   * @param constraintProviders the providers of external constraints
    * @param processingEnv the processing environment
    * @return the constraints for the annotation represented by the {@link AnnotationMirror}, never {@code null}.
    */
-  public static Constraints on(AnnotationMirror annotation, ProcessingEnvironment processingEnv) {
-    return on(annotation.getAnnotationType().asElement(), processingEnv);
-  }
-
-  /**
-   * The constraints on the annotation represented by the {@link Element}.
-   *
-   * @param annotation the annotation element
-   * @param processingEnv the processing environment
-   * @return the constraints for the annotation represented by the {@link Element}, never {@code null}.
-   */
-  private static Constraints on(Element annotation, ProcessingEnvironment processingEnv) {
-    Constraints cached = CACHE.get(annotation);
+  public static Constraints on(AnnotationMirror annotation, Iterable<ConstraintProvider> constraintProviders,
+      ProcessingEnvironment processingEnv) {
+    Element annotationElement = annotation.getAnnotationType().asElement();
+    Constraints cached = CACHE.get(annotationElement);
     if (cached != null) {
       return cached;
     }
+    Set<AnnotationMirror> constraints = annotatedConstraints(annotationElement, processingEnv);
+    constraints.addAll(externalConstraints(annotationElement, constraintProviders, processingEnv));
+    Constraints result = new Constraints(constraints, processingEnv);
+    CACHE.put(annotationElement, result);
+    return result;
+  }
+
+  private static Set<AnnotationMirror> externalConstraints(Element annotation,
+      Iterable<ConstraintProvider> constraintProviders, ProcessingEnvironment processingEnv) {
     Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
-    TypeMirror constraintMirror = getTypeMirror(Constraint.class, processingEnv);
-    Types types = processingEnv.getTypeUtils();
+    Elements elementUtils = processingEnv.getElementUtils();
+    Types typeUtils = processingEnv.getTypeUtils();
+    for (ConstraintProvider constraintProvider : constraintProviders) {
+      ConstraintsFor constraintsFor = constraintProvider.getClass().getAnnotation(ConstraintsFor.class); //TODO cache this
+      if (typeUtils.isSameType(annotation.asType(), getTypeMirror(constraintsFor.annotation(), processingEnv))) {
+        TypeElement providerElement = elementUtils.getTypeElement(constraintsFor.canBeFoundOn().getCanonicalName());
+        TypeMirror constraintMirror = getTypeMirror(Constraint.class, processingEnv);
+        for (AnnotationMirror maybeConstrained : elementUtils.getAllAnnotationMirrors(providerElement)) {
+          addConstraints(constraints, maybeConstrained.getAnnotationType().asElement(), constraintMirror, typeUtils);
+        }
+      }
+
+    }
+    return constraints;
+  }
+
+  private static Set<AnnotationMirror> annotatedConstraints(Element annotation, ProcessingEnvironment processingEnv) {
+    Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
+    addConstraints(constraints, annotation, getTypeMirror(Constraint.class, processingEnv),
+      processingEnv.getTypeUtils());
+    return constraints;
+  }
+
+  private static void addConstraints(Set<AnnotationMirror> constraints, Element annotation, TypeMirror constraintMirror,
+      Types types) {
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
       for (AnnotationMirror metaAnnotation : maybeConstraining.getAnnotationType().asElement().getAnnotationMirrors()) {
         if (types.isSameType(constraintMirror, metaAnnotation.getAnnotationType())) {
@@ -60,9 +90,6 @@ public class Constraints {
         }
       }
     }
-    Constraints result = new Constraints(constraints, processingEnv);
-    CACHE.put(annotation, result);
-    return result;
   }
 
   /**

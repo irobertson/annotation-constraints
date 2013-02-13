@@ -4,6 +4,8 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -14,6 +16,7 @@ import javax.lang.model.util.Elements;
 import org.junit.Test;
 
 import com.overstock.constraint.Constraint;
+import com.overstock.constraint.provider.ConstraintProvider;
 
 public class ConstraintsTest {
 
@@ -32,7 +35,9 @@ public class ConstraintsTest {
     TypeElement typeElement = mock(TypeElement.class);
     when(elementUtils.getTypeElement(Constraint.class.getCanonicalName())).thenReturn(typeElement);
 
-    assertSame(Constraints.on(annotation, env), Constraints.on(annotation, env));
+    Iterable<ConstraintProvider> constraintProviders = Collections.emptyList();
+    assertSame(Constraints.on(annotation, constraintProviders, env),
+      Constraints.on(annotation, constraintProviders, env));
   }
 
 }

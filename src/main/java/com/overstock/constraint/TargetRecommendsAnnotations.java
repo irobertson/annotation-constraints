@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Constraint
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface TargetRecommendsAnnotations {
 

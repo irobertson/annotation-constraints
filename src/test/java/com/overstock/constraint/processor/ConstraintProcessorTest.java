@@ -1,5 +1,6 @@
 package com.overstock.constraint.processor;
 
+import static com.overstock.constraint.processor.ConstraintProcessor.ConstraintProviderLoader;
 import static com.overstock.constraint.processor.ConstraintProcessor.VerifierLoader;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -26,6 +27,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +39,9 @@ import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableSet;
 import com.overstock.constraint.Constraint;
+import com.overstock.constraint.provider.ConstraintProvider;
+import com.overstock.constraint.provider.ConstraintsFor;
+import com.overstock.constraint.TargetRequiresAnnotations;
 import com.overstock.constraint.verifier.Verifier;
 
 public class ConstraintProcessorTest {
@@ -61,7 +67,52 @@ public class ConstraintProcessorTest {
   private ConstraintProcessor processor;
 
   @Test
+  public void processAdditionalConstraints() {
+    //TODO test constraints from same compilation unit as well
+    ConstraintProvider externalConstraintProvider = new ExternalConstraintProvider();
+    ConstraintProviderLoader constraintsLoader = mock(ConstraintProviderLoader.class);
+    when(constraintsLoader.load(any(ClassLoader.class))).thenReturn(Arrays.asList(externalConstraintProvider));
+    ConstraintProviderLoader.set(constraintsLoader);
+
+    processor.init(processingEnvironment);
+
+    AnnotationMirror externallyConstrained = mock(AnnotationMirror.class, "externallyConstrained");
+    DeclaredType externallyConstrainedType = mock(DeclaredType.class, "externallyConstrainedType");
+    when(externallyConstrained.getAnnotationType()).thenReturn(externallyConstrainedType);
+    Element externallyConstrainedElement = mock(Element.class, "externallyConstrainedElement");
+    when(externallyConstrainedType.asElement()).thenReturn(externallyConstrainedElement);
+    when(externallyConstrainedElement.asType()).thenReturn(externallyConstrainedType);
+
+    TypeElement entityElement = mock(TypeElement.class, "entityElement");
+    when(elementUtils.getTypeElement(Entity.class.getCanonicalName())).thenReturn(entityElement);
+    TypeMirror entityType = mock(TypeMirror.class, "entityType");
+    when(entityElement.asType()).thenReturn(entityType);
+
+    when(typeUtils.isSameType(entityType, externallyConstrainedType)).thenReturn(true);
+    when(typeUtils.isSameType(externallyConstrainedType, entityType)).thenReturn(true);
+
+    TypeElement providerElement = mock(TypeElement.class, "providerElement");
+    when(elementUtils.getTypeElement(ExternalConstraintProvider.class.getCanonicalName())).thenReturn(providerElement);
+    mockUnconstrained(providerElement);
+
+    TypeElement proxyElement = mock(TypeElement.class, "proxyElement");
+    when(elementUtils.getTypeElement(EntityProxy.class.getCanonicalName())).thenReturn(proxyElement);
+    mockConstrained(proxyElement);
+
+    TypeElement annotated = mock(TypeElement.class, "annotated");
+    mockGetAnnotationMirrors(annotated, externallyConstrained);
+
+    mockRootElements(annotated);
+
+    assertFalse(processor.process(Collections.<TypeElement>emptySet(), roundEnvironment));
+    verify(verifier).init(processingEnvironment);
+    verify(verifier).verify(same(annotated), same(externallyConstrained), any(Constraints.class));
+  }
+
+  @Test
   public void processConstraints() {
+    processor.init(processingEnvironment);
+
     TypeElement first = mock(TypeElement.class);
     TypeElement second = mock(TypeElement.class);
     AnnotationMirror constrained = mockConstrained(first, second);
@@ -83,6 +134,8 @@ public class ConstraintProcessorTest {
 
   @Test
   public void processNoConstraints() {
+    processor.init(processingEnvironment);
+
     TypeElement first = mock(TypeElement.class);
     TypeElement second = mock(TypeElement.class);
     mockUnconstrained(first, second);
@@ -96,6 +149,7 @@ public class ConstraintProcessorTest {
 
   @Test
   public void supportedSourceVersion() {
+    processor.init(processingEnvironment);
     assertSame(SourceVersion.latestSupported(), processor.getSupportedSourceVersion());
   }
 
@@ -109,77 +163,58 @@ public class ConstraintProcessorTest {
   }
 
   private void mockNotAnnotated(TypeElement... elements) {
-    Answer<List<? extends AnnotationMirror>> notAnnotatedAnswer = new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Collections.emptyList();
-      }
-    };
     for (TypeElement element : elements) {
-      when(element.getAnnotationMirrors()).thenAnswer(notAnnotatedAnswer);
-      when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(notAnnotatedAnswer);
+      mockGetAnnotationMirrors(element);
     }
   }
 
   private AnnotationMirror mockConstrained(TypeElement... elements) {
     final AnnotationMirror constrained = mockConstrained();
-    Answer<List<? extends AnnotationMirror>> constrainedAnswer = new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Arrays.asList(constrained);
-      }
-    };
     for (TypeElement element : elements) {
-      when(element.getAnnotationMirrors()).thenAnswer(constrainedAnswer);
-      when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(constrainedAnswer);
+      mockGetAnnotationMirrors(element, constrained);
     }
     return constrained;
   }
 
+  private void mockGetAnnotationMirrors(Element element, final AnnotationMirror... annotationMirrors) {
+    Answer<List<? extends AnnotationMirror>> constrainedAnswer = new Answer<List<? extends AnnotationMirror>>() {
+      @Override
+      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
+        return Arrays.asList(annotationMirrors);
+      }
+    };
+    when(element.getAnnotationMirrors()).thenAnswer(constrainedAnswer);
+    when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(constrainedAnswer);
+  }
+
   private AnnotationMirror mockConstrained() {
-    final AnnotationMirror constrained = mock(AnnotationMirror.class);
-    DeclaredType declared = mock(DeclaredType.class);
+    final AnnotationMirror constrained = mock(AnnotationMirror.class, "constrained");
+    DeclaredType declared = mock(DeclaredType.class, "constrainedDeclared");
     when(constrained.getAnnotationType()).thenReturn(declared);
-    Element element = mock(Element.class);
+    Element element = mock(Element.class, "constrainedElement");
     when(declared.asElement()).thenReturn(element);
 
-    final AnnotationMirror constraining = mock(AnnotationMirror.class);
-    when(element.getAnnotationMirrors()).thenAnswer(new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Arrays.asList(constraining);
-      }
-    });
-    DeclaredType constrainingType = mock(DeclaredType.class);
+    final AnnotationMirror constraining = mock(AnnotationMirror.class, "constraining");
+    mockGetAnnotationMirrors(element, constraining);
+    DeclaredType constrainingType = mock(DeclaredType.class, "constrainingType");
     when(constraining.getAnnotationType()).thenReturn(constrainingType);
-    Element constrainingElement = mock(Element.class);
+    Element constrainingElement = mock(Element.class, "constrainingElement");
     when(constrainingType.asElement()).thenReturn(constrainingElement);
 
-    final AnnotationMirror constraint = mock(AnnotationMirror.class);
-    when(constrainingElement.getAnnotationMirrors()).thenAnswer(new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Arrays.asList(constraint);
-      }
-    });
-    DeclaredType constraintDeclaredType = mock(DeclaredType.class);
+    final AnnotationMirror constraint = mock(AnnotationMirror.class, "constraint");
+    mockGetAnnotationMirrors(constrainingElement, constraint);
+    DeclaredType constraintDeclaredType = mock(DeclaredType.class, "constraintDeclared");
     when(constraint.getAnnotationType()).thenReturn(constraintDeclaredType);
     when(typeUtils.isSameType(constraintType, constraintDeclaredType)).thenReturn(true);
+    when(typeUtils.isSameType(constraintDeclaredType, constraintType)).thenReturn(true);
 
     return constrained;
   }
 
   private AnnotationMirror mockUnconstrained(TypeElement... elements) {
     final AnnotationMirror unconstrained = mockUnconstrained();
-    Answer<List<? extends AnnotationMirror>> unconstrainedAnswer = new Answer<List<? extends AnnotationMirror>>() {
-      @Override
-      public List<? extends AnnotationMirror> answer(InvocationOnMock invocation) throws Throwable {
-        return Arrays.asList(unconstrained);
-      }
-    };
     for (TypeElement element : elements) {
-      when(element.getAnnotationMirrors()).thenAnswer(unconstrainedAnswer);
-      when(elementUtils.getAllAnnotationMirrors(element)).thenAnswer(unconstrainedAnswer);
+      mockGetAnnotationMirrors(element, unconstrained);
     }
     return unconstrained;
   }
@@ -199,17 +234,27 @@ public class ConstraintProcessorTest {
     when(processingEnvironment.getElementUtils()).thenReturn(elementUtils);
     when(processingEnvironment.getTypeUtils()).thenReturn(typeUtils);
 
-    VerifierLoader loader = mock(VerifierLoader.class);
-    when(loader.load(any(ClassLoader.class))).thenReturn(Arrays.asList(verifier));
-    VerifierLoader.set(loader);
+    ConstraintProviderLoader constraintsLoader = mock(ConstraintProviderLoader.class);
+    when(constraintsLoader.load(any(ClassLoader.class))).thenReturn(Collections.<ConstraintProvider>emptyList());
+    ConstraintProviderLoader.set(constraintsLoader);
 
-    TypeElement constraintsElement = mock(TypeElement.class);
+    VerifierLoader verifierLoader = mock(VerifierLoader.class);
+    when(verifierLoader.load(any(ClassLoader.class))).thenReturn(Arrays.asList(verifier));
+    VerifierLoader.set(verifierLoader);
+
+    TypeElement constraintsElement = mock(TypeElement.class, "constraintsElement");
     when(elementUtils.getTypeElement(Constraint.class.getCanonicalName())).thenReturn(constraintsElement);
     when(constraintsElement.asType()).thenReturn(constraintType);
 
     when(typeUtils.isSameType(constraintType, constraintType)).thenReturn(true);
 
     processor = new ConstraintProcessor();
-    processor.init(processingEnvironment);
   }
+
+  @ConstraintsFor(annotation = Entity.class, canBeFoundOn = EntityProxy.class)
+  public static class ExternalConstraintProvider implements ConstraintProvider {
+  }
+
+  @TargetRequiresAnnotations(Table.class)
+  public static @interface EntityProxy {}
 }

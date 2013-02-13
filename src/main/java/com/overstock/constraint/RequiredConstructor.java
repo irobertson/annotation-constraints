@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  *
  * @see TargetRequiresConstructors
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({}) //cannot be annotated on anything directly
 public @interface RequiredConstructor {
 
