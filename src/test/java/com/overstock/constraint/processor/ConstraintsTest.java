@@ -35,9 +35,10 @@ public class ConstraintsTest {
     TypeElement typeElement = mock(TypeElement.class);
     when(elementUtils.getTypeElement(Constraint.class.getCanonicalName())).thenReturn(typeElement);
 
-    Iterable<ConstraintProvider> constraintProviders = Collections.emptyList();
-    assertSame(Constraints.on(annotation, constraintProviders, env),
-      Constraints.on(annotation, constraintProviders, env));
+    ExternalConstraints externalConstraints = ExternalConstraints.from(
+      Collections.<ConstraintProvider>emptyList(), env);
+    assertSame(Constraints.on(annotation, externalConstraints, env),
+      Constraints.on(annotation, externalConstraints, env));
   }
 
 }

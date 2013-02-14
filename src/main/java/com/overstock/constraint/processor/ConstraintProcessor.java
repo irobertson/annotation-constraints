@@ -21,7 +21,7 @@ public class ConstraintProcessor extends AbstractProcessor {
 
   private Iterable<Verifier> verifiers;
 
-  private Iterable<ConstraintProvider> constraintProviders;
+  private ExternalConstraints externalConstraints;
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
@@ -37,7 +37,8 @@ public class ConstraintProcessor extends AbstractProcessor {
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
-    constraintProviders = ServiceLoader.load(ConstraintProvider.class, classLoader);
+    externalConstraints = ExternalConstraints.from(
+      ServiceLoader.load(ConstraintProvider.class, classLoader), processingEnv);
   }
 
   @Override
@@ -45,7 +46,7 @@ public class ConstraintProcessor extends AbstractProcessor {
     Elements elementUtils = processingEnv.getElementUtils();
     for (Element element : roundEnv.getRootElements()) {
       for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
-        Constraints constraints = Constraints.on(annotationMirror, constraintProviders, processingEnv);
+        Constraints constraints = Constraints.on(annotationMirror, externalConstraints, processingEnv);
         if (!constraints.isEmpty()) {
           for (Verifier verifier : verifiers) {
             verifier.verify(element, annotationMirror, constraints);
