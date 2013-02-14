@@ -9,6 +9,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresSupertypes;
+import com.overstock.constraint.processor.ConstraintMirror;
 import com.overstock.constraint.processor.Constraints;
 import com.overstock.constraint.processor.MirrorUtils;
 
@@ -19,12 +20,12 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
 
   @Override
   public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    AnnotationMirror requireSupertypes = constraints.get(TargetRequiresSupertypes.class);
+    ConstraintMirror requireSupertypes = constraints.get(TargetRequiresSupertypes.class);
     if (requireSupertypes == null) {
       return;
     }
 
-    List<TypeMirror> requiredSupertypes = VerifierUtils.getValuesAsTypes(requireSupertypes);
+    List<TypeMirror> requiredSupertypes = VerifierUtils.getValuesAsTypes(requireSupertypes.getAnnotation());
     if (requiredSupertypes.isEmpty()) {
       return;
     }
@@ -39,7 +40,8 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
         Diagnostic.Kind.ERROR,
         element,
         constrained,
-        " but does not have " + missingRequiredSupertype + " as a supertype");
+        " but does not have " + missingRequiredSupertype + " as a supertype",
+        requireSupertypes);
     }
   }
 }

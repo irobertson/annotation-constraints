@@ -11,6 +11,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetDisallowsAnnotations;
+import com.overstock.constraint.processor.ConstraintMirror;
 import com.overstock.constraint.processor.Constraints;
 
 /**
@@ -20,12 +21,12 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
 
   @Override
   public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    AnnotationMirror disallowAnnotations = constraints.get(TargetDisallowsAnnotations.class);
+    ConstraintMirror disallowAnnotations = constraints.get(TargetDisallowsAnnotations.class);
     if (disallowAnnotations == null) {
       return;
     }
 
-    Collection<TypeMirror> disallowedAnnotations = VerifierUtils.getValuesAsTypes(disallowAnnotations);
+    Collection<TypeMirror> disallowedAnnotations = VerifierUtils.getValuesAsTypes(disallowAnnotations.getAnnotation());
     if (disallowedAnnotations.isEmpty()) {
       return;
     }
@@ -46,7 +47,8 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
         Diagnostic.Kind.ERROR,
         element,
         constrained,
-        " which is not allowed with @" + getSimpleName(presentAndDisallowedAnnotationType));
+        " which is not allowed with @" + getSimpleName(presentAndDisallowedAnnotationType),
+        disallowAnnotations);
     }
   }
 }

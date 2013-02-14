@@ -10,6 +10,7 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRecommendsAnnotations;
 import com.overstock.constraint.TargetRequiresAnnotations;
+import com.overstock.constraint.processor.ConstraintMirror;
 import com.overstock.constraint.processor.Constraints;
 
 /**
@@ -18,16 +19,16 @@ import com.overstock.constraint.processor.Constraints;
 public class CompanionAnnotationsVerifier extends AbstractVerifier {
 
   public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    AnnotationMirror requireAnnotations = constraints.get(TargetRequiresAnnotations.class);
-    AnnotationMirror recommendAnnotations = constraints.get(TargetRecommendsAnnotations.class);
+    ConstraintMirror requireAnnotations = constraints.get(TargetRequiresAnnotations.class);
+    ConstraintMirror recommendAnnotations = constraints.get(TargetRecommendsAnnotations.class);
     if (requireAnnotations == null && recommendAnnotations == null) {
       return;
     }
 
     final List<TypeMirror> requiredAnnotations = requireAnnotations == null ? Collections.<TypeMirror>emptyList()
-      : VerifierUtils.getValuesAsTypes(requireAnnotations);
+      : VerifierUtils.getValuesAsTypes(requireAnnotations.getAnnotation());
     final List<TypeMirror> recommendedAnnotations = recommendAnnotations == null ? Collections.<TypeMirror>emptyList()
-      : VerifierUtils.getValuesAsTypes(recommendAnnotations);
+      : VerifierUtils.getValuesAsTypes(recommendAnnotations.getAnnotation());
 
     if (requiredAnnotations.isEmpty() && recommendedAnnotations.isEmpty()) {
       return;
@@ -47,14 +48,16 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
         Diagnostic.Kind.ERROR,
         element,
         constrained,
-        " but not with @" + getSimpleName(missingRequiredAnnotationType));
+        " but not with @" + getSimpleName(missingRequiredAnnotationType),
+        requireAnnotations);
     }
     for (TypeMirror missingRecommendedAnnotationType : recommendedAnnotations) {
       printMessage(
         Diagnostic.Kind.WARNING,
         element,
         constrained,
-        " but not with @" + getSimpleName(missingRecommendedAnnotationType));
+        " but not with @" + getSimpleName(missingRecommendedAnnotationType),
+        recommendAnnotations);
     }
   }
 }

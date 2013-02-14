@@ -28,7 +28,7 @@ FileAssert.assertFileMatches(buildLog, new Matcher[] {
   //TODO javac only reports the first error for the class Matchers.containsString("Class requiresupertypes.RequireSupertypesFail is annotated with @RequireBaseClassAndSerializable but does not have java.io.Serializable as a supertype"),
   Matchers.containsString("Class verifier.VerifierSubclassFail is annotated with @ServiceProvider but does not have a constructor with no arguments"),
   Matchers.containsString("Failing CustomVerifyFail.class from a custom verifier"),
-  Matchers.containsString("Class provider.ExternalProviderFail is annotated with @Entity but does not have a constructor with no arguments"), //TODO specify where the external constraint comes from
-  Matchers.containsString("Class provider.InternalProviderFail is annotated with @Table but not with @Entity"), //TODO specify where the external constraint comes from
+  Matchers.containsString("Class provider.ExternalProviderFail is annotated with @Entity but does not have a constructor with no arguments as specified by provider.ExternalProvider"),
+  Matchers.containsString("Class provider.InternalProviderFail is annotated with @Table but not with @Entity as specified by provider.InternalProvider"),
   Matchers.not(Matchers.containsString("Pass")) //naming convention for classes which should compile cleanly
 });

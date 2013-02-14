@@ -7,6 +7,8 @@ import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
+import com.overstock.constraint.processor.ConstraintMirror;
+
 @ServiceProvider
 public abstract class AbstractVerifier implements Verifier {
 
@@ -25,12 +27,16 @@ public abstract class AbstractVerifier implements Verifier {
    * @param message the rest of the message
    */
   protected void printMessage(Diagnostic.Kind kind, Element element, AnnotationMirror constrained,
-      String message) {
+      String message, ConstraintMirror constraint) {
     processingEnv.getMessager().printMessage(
       kind,
-      "Class " + element + " is annotated with @" + getSimpleName(constrained) + message,
+      "Class " + element + " is annotated with @" + getSimpleName(constrained) + message + providerMessage(constraint),
       element,
       constrained);
+  }
+
+  private String providerMessage(ConstraintMirror constraint) {
+    return constraint.isProvided() ? " as specified by " + constraint.getProvider() : "";
   }
 
   protected final Name getSimpleName(AnnotationMirror constrained) {

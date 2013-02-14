@@ -26,12 +26,12 @@ import com.overstock.constraint.provider.ConstraintsFor;
  */
 class ProvidedConstraints {
 
-  private final Map<Element, Collection<AnnotationMirror>> constraints;
+  private final Map<Element, Collection<ConstraintMirror>> constraints;
 
   private final ProcessingEnvironment processingEnv;
 
   public static ProvidedConstraints from(Iterable<ConstraintProvider> providers, ProcessingEnvironment processingEnv) {
-    final Map<Element, Collection<AnnotationMirror>> constraints = new HashMap<Element, Collection<AnnotationMirror>>();
+    final Map<Element, Collection<ConstraintMirror>> constraints = new HashMap<Element, Collection<ConstraintMirror>>();
     final Elements elementUtils = processingEnv.getElementUtils();
     for (ConstraintProvider provider : providers) {
       ConstraintsFor constraintsFor = provider.getClass().getAnnotation(ConstraintsFor.class);
@@ -45,13 +45,14 @@ class ProvidedConstraints {
       Element target = elementUtils.getTypeElement(constraintsFor.annotation().getCanonicalName());
       Element providingAnnotation = elementUtils.getTypeElement(
         constraintsFor.canBeFoundOn().getCanonicalName());
-      putOrAddAll(constraints, target, getConstraints(providingAnnotation, processingEnv));
+      putOrAddAll(constraints, target, getConstraints(providingAnnotation, processingEnv,
+        provider.getClass().getCanonicalName()));
     }
     return new ProvidedConstraints(constraints, processingEnv);
   }
 
   public static ProvidedConstraints from(Set<? extends Element> elements, ProcessingEnvironment processingEnv) {
-    final Map<Element, Collection<AnnotationMirror>> constraints = new HashMap<Element, Collection<AnnotationMirror>>();
+    final Map<Element, Collection<ConstraintMirror>> constraints = new HashMap<Element, Collection<ConstraintMirror>>();
     final Types typeUtils = processingEnv.getTypeUtils();
     final Elements elementUtils = processingEnv.getElementUtils();
     final TypeMirror constraintsForMirror = MirrorUtils.getTypeMirror(ConstraintsFor.class,
@@ -78,7 +79,8 @@ class ProvidedConstraints {
             }
             Element target = typeUtils.asElement(targetMirror);
             Element providingAnnotation = typeUtils.asElement(providingMirror);
-            putOrAddAll(constraints, target, getConstraints(providingAnnotation, processingEnv));
+            putOrAddAll(constraints, target, getConstraints(providingAnnotation, processingEnv,
+              element.asType().toString()));
           }
         }
       }
@@ -86,24 +88,24 @@ class ProvidedConstraints {
     return new ProvidedConstraints(constraints, processingEnv);
   }
 
-  private static Collection<AnnotationMirror> getConstraints(Element annotation,
-      ProcessingEnvironment processingEnv) {
+  private static Collection<ConstraintMirror> getConstraints(Element annotation,
+      ProcessingEnvironment processingEnv, String providerName) {
     final Types typeUtils = processingEnv.getTypeUtils();
     final TypeMirror constraintMirror = MirrorUtils.getTypeMirror(Constraint.class, processingEnv.getElementUtils());
-    final List<AnnotationMirror> currentConstraints = new ArrayList<AnnotationMirror>();
+    final List<ConstraintMirror> currentConstraints = new ArrayList<ConstraintMirror>();
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
       for (AnnotationMirror metaAnnotation :
           maybeConstraining.getAnnotationType().asElement().getAnnotationMirrors()) {
         if (typeUtils.isSameType(constraintMirror, metaAnnotation.getAnnotationType())) {
-          currentConstraints.add(maybeConstraining);
+          currentConstraints.add(new ConstraintMirror(maybeConstraining, providerName));
         }
       }
     }
     return currentConstraints;
   }
 
-  private static void putOrAddAll(Map<Element, Collection<AnnotationMirror>> constraints, Element key,
-      Collection<AnnotationMirror> value) {
+  private static void putOrAddAll(Map<Element, Collection<ConstraintMirror>> constraints, Element key,
+      Collection<ConstraintMirror> value) {
     if (constraints.containsKey(key)) {
       constraints.get(key).addAll(value);
     }
@@ -112,7 +114,7 @@ class ProvidedConstraints {
     }
   }
 
-  public Collection<AnnotationMirror> get(Element annotation) {
+  public Collection<ConstraintMirror> get(Element annotation) {
     Types typeUtils = processingEnv.getTypeUtils();
     for (Element element : constraints.keySet()) {
       if (typeUtils.isSameType(annotation.asType(), element.asType())) {
@@ -123,14 +125,14 @@ class ProvidedConstraints {
   }
 
   public ProvidedConstraints combineWith(ProvidedConstraints providedConstraints) {
-    Map<Element, Collection<AnnotationMirror>> combined =
-      new HashMap<Element, Collection<AnnotationMirror>>(constraints);
+    Map<Element, Collection<ConstraintMirror>> combined =
+      new HashMap<Element, Collection<ConstraintMirror>>(constraints);
     combined.putAll(providedConstraints.constraints);
     return new ProvidedConstraints(combined, processingEnv);
   }
 
-  private ProvidedConstraints(Map<Element, Collection<AnnotationMirror>> constraints,
-    ProcessingEnvironment processingEnv) {
+  private ProvidedConstraints(Map<Element, Collection<ConstraintMirror>> constraints,
+      ProcessingEnvironment processingEnv) {
     this.constraints = constraints;
     this.processingEnv = processingEnv;
   }

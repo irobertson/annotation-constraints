@@ -24,7 +24,8 @@ import com.overstock.constraint.Constraint;
 public class Constraints {
   private static final Map<Element, Constraints> CACHE = new HashMap<Element, Constraints>();
 
-  private final Collection<AnnotationMirror> constraintAnnotations;
+  private final Collection<ConstraintMirror> constraints;
+
   private final ProcessingEnvironment processingEnv;
 
   /**
@@ -43,26 +44,26 @@ public class Constraints {
     if (cached != null) {
       return cached;
     }
-    Set<AnnotationMirror> constraints = annotatedConstraints(annotationElement, processingEnv);
+    Set<ConstraintMirror> constraints = annotatedConstraints(annotationElement, processingEnv);
     constraints.addAll(providedConstraints.get(annotationElement));
     Constraints result = new Constraints(constraints, processingEnv);
     CACHE.put(annotationElement, result);
     return result;
   }
 
-  private static Set<AnnotationMirror> annotatedConstraints(Element annotation, ProcessingEnvironment processingEnv) {
-    Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
-    addConstraints(constraints, annotation, MirrorUtils.getTypeMirror(Constraint.class, processingEnv.getElementUtils()),
-      processingEnv.getTypeUtils());
+  private static Set<ConstraintMirror> annotatedConstraints(Element annotation, ProcessingEnvironment processingEnv) {
+    Set<ConstraintMirror> constraints = new HashSet<ConstraintMirror>();
+    addConstraints(constraints, annotation, MirrorUtils.getTypeMirror(Constraint.class,
+      processingEnv.getElementUtils()), processingEnv.getTypeUtils());
     return constraints;
   }
 
-  private static void addConstraints(Set<AnnotationMirror> constraints, Element annotation, TypeMirror constraintMirror,
+  private static void addConstraints(Set<ConstraintMirror> constraints, Element annotation, TypeMirror constraintMirror,
       Types types) {
     for (AnnotationMirror maybeConstraining : annotation.getAnnotationMirrors()) {
       for (AnnotationMirror metaAnnotation : maybeConstraining.getAnnotationType().asElement().getAnnotationMirrors()) {
         if (types.isSameType(constraintMirror, metaAnnotation.getAnnotationType())) {
-          constraints.add(maybeConstraining);
+          constraints.add(new ConstraintMirror(maybeConstraining));
         }
       }
     }
@@ -74,11 +75,11 @@ public class Constraints {
    * @param constraintType the type of the constraint
    * @return the constraint of the given type or null if it is not present
    */
-  public AnnotationMirror get(Class<? extends Annotation> constraintType) {
+  public ConstraintMirror get(Class<? extends Annotation> constraintType) {
     final TypeMirror queried = MirrorUtils.getTypeMirror(constraintType, processingEnv.getElementUtils());
     final Types types = processingEnv.getTypeUtils();
-    for (AnnotationMirror constraint : constraintAnnotations) {
-      if (types.isSameType(queried, constraint.getAnnotationType())) {
+    for (ConstraintMirror constraint : constraints) {
+      if (types.isSameType(queried, constraint.getAnnotation().getAnnotationType())) {
         return constraint;
       }
     }
@@ -86,11 +87,11 @@ public class Constraints {
   }
 
   public boolean isEmpty() {
-    return constraintAnnotations.isEmpty();
+    return constraints.isEmpty();
   }
 
-  private Constraints(Collection<AnnotationMirror> constraintAnnotations, ProcessingEnvironment processingEnv) {
+  private Constraints(Collection<ConstraintMirror> constraints, ProcessingEnvironment processingEnv) {
     this.processingEnv = processingEnv;
-    this.constraintAnnotations = Collections.unmodifiableCollection(constraintAnnotations);
+    this.constraints = Collections.unmodifiableCollection(constraints);
   }
 }
