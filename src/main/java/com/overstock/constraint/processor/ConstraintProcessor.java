@@ -21,7 +21,7 @@ public class ConstraintProcessor extends AbstractProcessor {
 
   private Iterable<Verifier> verifiers;
 
-  private ExternalConstraints externalConstraints;
+  private ProvidedConstraints providedConstraints;
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
@@ -37,18 +37,19 @@ public class ConstraintProcessor extends AbstractProcessor {
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
-    externalConstraints = ExternalConstraints.from(
+    providedConstraints = ProvidedConstraints.from(
       ServiceLoader.load(ConstraintProvider.class, classLoader), processingEnv);
   }
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    InternalConstraints internalConstraints = InternalConstraints.from(roundEnv.getRootElements(), processingEnv);
+    ProvidedConstraints roundConstraints = ProvidedConstraints.from(roundEnv.getRootElements(), processingEnv);
+    providedConstraints = providedConstraints.combineWith(roundConstraints);
 
     Elements elementUtils = processingEnv.getElementUtils();
     for (Element element : roundEnv.getRootElements()) {
       for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
-        Constraints constraints = Constraints.on(annotationMirror, externalConstraints, internalConstraints, processingEnv);
+        Constraints constraints = Constraints.on(annotationMirror, providedConstraints, processingEnv);
         if (!constraints.isEmpty()) {
           for (Verifier verifier : verifiers) {
             verifier.verify(element, annotationMirror, constraints);

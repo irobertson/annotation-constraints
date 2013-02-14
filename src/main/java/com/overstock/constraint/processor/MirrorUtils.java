@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 public class MirrorUtils {
@@ -18,13 +18,13 @@ public class MirrorUtils {
    * Gets the TypeMirror representing the class.
    *
    * @param clazz the class
-   * @param processingEnv the ProcessingEnvironment
+   * @param elementUtils the element utils
    * @return the TypeMirror representing the class
    */
-  public static TypeMirror getTypeMirror(Class<?> clazz, ProcessingEnvironment processingEnv) {
+  public static TypeMirror getTypeMirror(Class<?> clazz, Elements elementUtils) {
     TypeMirror typeMirror = TYPE_MIRRORS.get(clazz);
     if (typeMirror == null) {
-      typeMirror = processingEnv.getElementUtils().getTypeElement(clazz.getCanonicalName()).asType();
+      typeMirror = elementUtils.getTypeElement(clazz.getCanonicalName()).asType();
       TYPE_MIRRORS.put(clazz, typeMirror);
     }
     return typeMirror;

@@ -35,11 +35,10 @@ public class ConstraintsTest {
     TypeElement typeElement = mock(TypeElement.class);
     when(elementUtils.getTypeElement(anyString())).thenReturn(typeElement);
 
-    ExternalConstraints externalConstraints = ExternalConstraints.from(
+    ProvidedConstraints providedConstraints = ProvidedConstraints.from(
       Collections.<ConstraintProvider>emptyList(), env);
-    InternalConstraints internalConstraints = InternalConstraints.from(Collections.<Element>emptySet(), env);
-    assertSame(Constraints.on(annotation, externalConstraints, internalConstraints, env),
-      Constraints.on(annotation, externalConstraints, internalConstraints, env));
+    assertSame(Constraints.on(annotation, providedConstraints, env),
+      Constraints.on(annotation, providedConstraints, env));
   }
 
 }
