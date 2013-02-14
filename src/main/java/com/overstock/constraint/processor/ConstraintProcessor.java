@@ -43,10 +43,12 @@ public class ConstraintProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    InternalConstraints internalConstraints = InternalConstraints.from(roundEnv.getRootElements(), processingEnv);
+
     Elements elementUtils = processingEnv.getElementUtils();
     for (Element element : roundEnv.getRootElements()) {
       for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
-        Constraints constraints = Constraints.on(annotationMirror, externalConstraints, processingEnv);
+        Constraints constraints = Constraints.on(annotationMirror, externalConstraints, internalConstraints, processingEnv);
         if (!constraints.isEmpty()) {
           for (Verifier verifier : verifiers) {
             verifier.verify(element, annotationMirror, constraints);

@@ -1,6 +1,7 @@
 package com.overstock.constraint.processor;
 
 import static org.junit.Assert.assertSame;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -15,7 +16,6 @@ import javax.lang.model.util.Elements;
 
 import org.junit.Test;
 
-import com.overstock.constraint.Constraint;
 import com.overstock.constraint.provider.ConstraintProvider;
 
 public class ConstraintsTest {
@@ -33,12 +33,13 @@ public class ConstraintsTest {
     Elements elementUtils = mock(Elements.class);
     when(env.getElementUtils()).thenReturn(elementUtils);
     TypeElement typeElement = mock(TypeElement.class);
-    when(elementUtils.getTypeElement(Constraint.class.getCanonicalName())).thenReturn(typeElement);
+    when(elementUtils.getTypeElement(anyString())).thenReturn(typeElement);
 
     ExternalConstraints externalConstraints = ExternalConstraints.from(
       Collections.<ConstraintProvider>emptyList(), env);
-    assertSame(Constraints.on(annotation, externalConstraints, env),
-      Constraints.on(annotation, externalConstraints, env));
+    InternalConstraints internalConstraints = InternalConstraints.from(Collections.<Element>emptySet(), env);
+    assertSame(Constraints.on(annotation, externalConstraints, internalConstraints, env),
+      Constraints.on(annotation, externalConstraints, internalConstraints, env));
   }
 
 }

@@ -2,11 +2,9 @@ package com.overstock.constraint.verifier;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -95,22 +93,6 @@ class VerifierUtils {
    */
   public static TypeMirror asType(AnnotationMirror annotation) {
     return asType(annotation.getAnnotationType().asElement());
-  }
-
-  /**
-   * Gets the supertypes of the type.
-   *
-   * @param type the type
-   * @param typeUtils the type utils
-   * @return the supertypes of the type
-   */
-  public static Set<TypeMirror> getSuperTypes(TypeMirror type, Types typeUtils) {
-    Set<TypeMirror> supertypes = new HashSet<TypeMirror>(); //TODO investigate caching
-    supertypes.add(type); //include the type itself
-    for (TypeMirror supertype : typeUtils.directSupertypes(type)) {
-      supertypes.addAll(getSuperTypes(supertype, typeUtils));
-    }
-    return supertypes;
   }
 
   /**

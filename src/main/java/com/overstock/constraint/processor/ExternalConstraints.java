@@ -16,11 +16,12 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+import com.overstock.constraint.Constraint;
 import com.overstock.constraint.provider.ConstraintProvider;
 import com.overstock.constraint.provider.ConstraintsFor;
 
 /**
- * Constraints defined externally via one or more {@link ConstraintProvider}s.
+ * Constraints defined in separate compilation units via one or more {@link ConstraintProvider}s.
  */
 class ExternalConstraints {
 
@@ -33,7 +34,7 @@ class ExternalConstraints {
       new HashMap<TypeElement, Collection<AnnotationMirror>>();
     final Types typeUtils = processingEnv.getTypeUtils();
     final Elements elementUtils = processingEnv.getElementUtils();
-    final TypeMirror constraintMirror = MirrorUtils.getConstraintMirror(processingEnv);
+    final TypeMirror constraintMirror = MirrorUtils.getTypeMirror(Constraint.class, processingEnv);
     for (ConstraintProvider provider : providers) {
       ConstraintsFor constraintsFor = provider.getClass().getAnnotation(ConstraintsFor.class);
       if (constraintsFor == null) {
@@ -63,10 +64,6 @@ class ExternalConstraints {
       }
     }
     return new ExternalConstraints(constraints, processingEnv);
-  }
-
-  public Collection<AnnotationMirror> get(AnnotationMirror annotation) {
-    return get(annotation.getAnnotationType().asElement());
   }
 
   public Collection<AnnotationMirror> get(Element annotation) {

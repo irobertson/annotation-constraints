@@ -11,6 +11,7 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
 import com.overstock.constraint.processor.Constraints;
+import com.overstock.constraint.processor.MirrorUtils;
 
 /**
  * A verifier for {@link TargetRequiresAnnotationsOnSupertype}.
@@ -30,7 +31,7 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
     }
 
     Types typeUtils = processingEnv.getTypeUtils();
-    for (TypeMirror supertypeMirror : VerifierUtils.getSuperTypes(element.asType(), typeUtils)) {
+    for (TypeMirror supertypeMirror : MirrorUtils.getSupertypes(element.asType(), typeUtils)) {
       TypeElement supertype = VerifierUtils.asTypeElement(supertypeMirror);
       for (AnnotationMirror supertypeAnnotationMirror : supertype.getAnnotationMirrors()) {
         VerifierUtils.removeType(requiredAnnotations, supertypeAnnotationMirror.getAnnotationType(), typeUtils);

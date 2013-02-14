@@ -10,6 +10,7 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresSupertypes;
 import com.overstock.constraint.processor.Constraints;
+import com.overstock.constraint.processor.MirrorUtils;
 
 /**
  * A verifier for {@link TargetRequiresSupertypes}.
@@ -29,7 +30,7 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
     }
 
     Types typeUtils = processingEnv.getTypeUtils();
-    for (TypeMirror supertype : VerifierUtils.getSuperTypes(element.asType(), typeUtils)) {
+    for (TypeMirror supertype : MirrorUtils.getSupertypes(element.asType(), typeUtils)) {
       VerifierUtils.removeType(requiredSupertypes, supertype, typeUtils);
     }
 

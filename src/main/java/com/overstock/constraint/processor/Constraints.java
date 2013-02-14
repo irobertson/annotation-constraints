@@ -30,13 +30,15 @@ public class Constraints {
   /**
    * The constraints on the annotation represented by the {@link AnnotationMirror}.
    *
+   *
    * @param annotation the annotation mirror
    * @param externalConstraints the external constraints
+   * @param internalConstraints the internal constraints
    * @param processingEnv the processing environment
    * @return the constraints for the annotation represented by the {@link AnnotationMirror}, never {@code null}.
    */
   public static Constraints on(AnnotationMirror annotation, ExternalConstraints externalConstraints,
-      ProcessingEnvironment processingEnv) {
+      InternalConstraints internalConstraints, ProcessingEnvironment processingEnv) {
     Element annotationElement = annotation.getAnnotationType().asElement();
     Constraints cached = CACHE.get(annotationElement);
     if (cached != null) {
@@ -44,6 +46,7 @@ public class Constraints {
     }
     Set<AnnotationMirror> constraints = annotatedConstraints(annotationElement, processingEnv);
     constraints.addAll(externalConstraints.get(annotationElement));
+    constraints.addAll(internalConstraints.get(annotationElement));
     Constraints result = new Constraints(constraints, processingEnv);
     CACHE.put(annotationElement, result);
     return result;
@@ -51,7 +54,7 @@ public class Constraints {
 
   private static Set<AnnotationMirror> annotatedConstraints(Element annotation, ProcessingEnvironment processingEnv) {
     Set<AnnotationMirror> constraints = new HashSet<AnnotationMirror>();
-    addConstraints(constraints, annotation, MirrorUtils.getConstraintMirror(processingEnv),
+    addConstraints(constraints, annotation, MirrorUtils.getTypeMirror(Constraint.class, processingEnv),
       processingEnv.getTypeUtils());
     return constraints;
   }
