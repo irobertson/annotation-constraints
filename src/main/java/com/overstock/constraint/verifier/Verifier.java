@@ -18,7 +18,7 @@ import com.overstock.constraint.provider.ConstraintsFor;
  *
  * @see <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">ServiceLoader documentation</a>
  */
-public interface Verifier {
+public interface Verifier { //TODO should we get rid fo this class and encourage use of the annotation processor API instead?
 
   /**
    * Verify that an annotated element satisfies contracts imposed by an annotation which has been annotated with
