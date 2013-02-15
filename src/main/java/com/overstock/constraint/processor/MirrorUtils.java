@@ -1,12 +1,10 @@
 package com.overstock.constraint.processor;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -38,9 +36,6 @@ public class MirrorUtils {
    * @return the supertypes of the type
    */
   public static Set<TypeMirror> getSupertypes(TypeMirror type, Types typeUtils) {
-    if (TypeKind.DECLARED != type.getKind()) {
-      return Collections.emptySet();
-    }
     Set<TypeMirror> supertypes = new HashSet<TypeMirror>(); //TODO investigate caching
     supertypes.add(type); //include the type itself
     for (TypeMirror supertype : typeUtils.directSupertypes(type)) {

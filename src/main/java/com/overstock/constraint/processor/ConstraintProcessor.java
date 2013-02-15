@@ -14,6 +14,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
 import com.overstock.constraint.provider.ConstraintProvider;
+import com.overstock.constraint.provider.ConstraintsFor;
 import com.overstock.constraint.verifier.Verifier;
 
 @SupportedAnnotationTypes("*")
@@ -43,7 +44,8 @@ public class ConstraintProcessor extends AbstractProcessor {
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-    ProvidedConstraints roundConstraints = ProvidedConstraints.from(roundEnv.getRootElements(), processingEnv);
+    ProvidedConstraints roundConstraints = ProvidedConstraints.from(
+      roundEnv.getElementsAnnotatedWith(ConstraintsFor.class), processingEnv);
     providedConstraints = providedConstraints.combineWith(roundConstraints);
 
     Elements elementUtils = processingEnv.getElementUtils();

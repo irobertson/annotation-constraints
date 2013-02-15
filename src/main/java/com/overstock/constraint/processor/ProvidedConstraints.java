@@ -52,40 +52,41 @@ class ProvidedConstraints {
   }
 
   public static ProvidedConstraints from(Set<? extends Element> elements, ProcessingEnvironment processingEnv) {
-    final Map<Element, Collection<ConstraintMirror>> constraints = new HashMap<Element, Collection<ConstraintMirror>>();
-    final Types typeUtils = processingEnv.getTypeUtils();
-    final Elements elementUtils = processingEnv.getElementUtils();
-    final TypeMirror constraintsForMirror = MirrorUtils.getTypeMirror(ConstraintsFor.class,
-      processingEnv.getElementUtils());
-    final TypeMirror constraintProviderMirror = MirrorUtils.getTypeMirror(ConstraintProvider.class,
-      processingEnv.getElementUtils());
+    Map<Element, Collection<ConstraintMirror>> constraints = new HashMap<Element, Collection<ConstraintMirror>>();
+    Types typeUtils = processingEnv.getTypeUtils();
+    Elements elementUtils = processingEnv.getElementUtils();
+    TypeMirror constraintsForMirror = MirrorUtils.getTypeMirror(ConstraintsFor.class, processingEnv.getElementUtils());
     for (Element element : elements) {
-      if (MirrorUtils.getSupertypes(element.asType(), typeUtils).contains(constraintProviderMirror)) {
-        for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
-          if (typeUtils.isSameType(constraintsForMirror, annotationMirror.getAnnotationType())) {
-            TypeMirror targetMirror = null;
-            TypeMirror providingMirror = null;
-            for (ExecutableElement executableElement : annotationMirror.getElementValues().keySet()) {
-              if (executableElement.getSimpleName().contentEquals("annotation")) {
-                targetMirror = (TypeMirror) annotationMirror.getElementValues().get(executableElement).getValue();
-              }
-              else if (executableElement.getSimpleName().contentEquals("canBeFoundOn")) {
-                providingMirror = (TypeMirror) annotationMirror.getElementValues().get(executableElement).getValue();
-              }
-            }
-            if (targetMirror == null || providingMirror == null) {
-              throw new IllegalStateException("Invalid " + ConstraintsFor.class.getSimpleName() + " annotation on " +
-                element.asType());
-            }
-            Element target = typeUtils.asElement(targetMirror);
-            Element providingAnnotation = typeUtils.asElement(providingMirror);
-            putOrAddAll(constraints, target, getConstraints(providingAnnotation, processingEnv,
-              element.asType().toString()));
-          }
-        }
-      }
+      putOrAddAll(constraints, element, constraintsForMirror, typeUtils, elementUtils, processingEnv);
     }
     return new ProvidedConstraints(constraints, processingEnv);
+  }
+
+  private static void putOrAddAll(Map<Element, Collection<ConstraintMirror>> constraints, Element provider,
+      TypeMirror constraintsForMirror, Types typeUtils, Elements elementUtils, ProcessingEnvironment processingEnv) {
+    for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(provider)) {
+      if (typeUtils.isSameType(constraintsForMirror, annotationMirror.getAnnotationType())) {
+        TypeMirror targetMirror = null;
+        TypeMirror providingMirror = null;
+        for (ExecutableElement executableElement : annotationMirror.getElementValues().keySet()) {
+          if (executableElement.getSimpleName().contentEquals("annotation")) {
+            targetMirror = (TypeMirror) annotationMirror.getElementValues().get(executableElement).getValue();
+          }
+          else if (executableElement.getSimpleName().contentEquals("canBeFoundOn")) {
+            providingMirror = (TypeMirror) annotationMirror.getElementValues().get(executableElement).getValue();
+          }
+        }
+        if (targetMirror == null || providingMirror == null) {
+          throw new IllegalStateException("Invalid " + ConstraintsFor.class.getSimpleName() + " annotation on " +
+            provider.asType());
+        }
+        Element target = typeUtils.asElement(targetMirror);
+        Element providingAnnotation = typeUtils.asElement(providingMirror);
+        putOrAddAll(constraints, target, getConstraints(providingAnnotation, processingEnv,
+          provider.asType().toString()));
+        break; //found the constraints
+      }
+    }
   }
 
   private static Collection<ConstraintMirror> getConstraints(Element annotation,
