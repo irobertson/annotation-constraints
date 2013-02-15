@@ -16,8 +16,6 @@ import javax.lang.model.util.Elements;
 
 import org.junit.Test;
 
-import com.overstock.constraint.provider.ConstraintProvider;
-
 public class ConstraintsTest {
 
   @Test
@@ -35,8 +33,7 @@ public class ConstraintsTest {
     TypeElement typeElement = mock(TypeElement.class);
     when(elementUtils.getTypeElement(anyString())).thenReturn(typeElement);
 
-    ProvidedConstraints providedConstraints = ProvidedConstraints.from(
-      Collections.<ConstraintProvider>emptyList(), env);
+    ProvidedConstraints providedConstraints = ProvidedConstraints.from(Collections.<Element>emptySet(), env);
     assertSame(Constraints.on(annotation, providedConstraints, env),
       Constraints.on(annotation, providedConstraints, env));
   }

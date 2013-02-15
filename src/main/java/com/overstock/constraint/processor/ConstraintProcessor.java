@@ -1,5 +1,11 @@
 package com.overstock.constraint.processor;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 
@@ -13,8 +19,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
-import com.overstock.constraint.provider.ConstraintProvider;
-import com.overstock.constraint.provider.ConstraintsFor;
+import com.overstock.constraint.provider.ProvidesConstraintsFor;
 import com.overstock.constraint.verifier.Verifier;
 
 @SupportedAnnotationTypes("*")
@@ -38,14 +43,14 @@ public class ConstraintProcessor extends AbstractProcessor {
     for (Verifier verifier : verifiers) {
       verifier.init(processingEnv);
     }
-    providedConstraints = ProvidedConstraints.from(
-      ServiceLoader.load(ConstraintProvider.class, classLoader), processingEnv);
+
+    providedConstraints = ProvidedConstraints.from(findConstraintProviders(classLoader), processingEnv);
   }
 
   @Override
   public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
     ProvidedConstraints roundConstraints = ProvidedConstraints.from(
-      roundEnv.getElementsAnnotatedWith(ConstraintsFor.class), processingEnv);
+      roundEnv.getElementsAnnotatedWith(ProvidesConstraintsFor.class), processingEnv);
     providedConstraints = providedConstraints.combineWith(roundConstraints);
 
     Elements elementUtils = processingEnv.getElementUtils();
@@ -61,6 +66,33 @@ public class ConstraintProcessor extends AbstractProcessor {
     }
 
     return false;
+  }
+
+  private Set<? extends Element> findConstraintProviders(ClassLoader classLoader) {
+    Set<Element> constraintProviders = new HashSet<Element>();
+    try {
+      Enumeration<URL> resources = classLoader.getResources(ProvidesConstraintsFor.PROVIDERS_FILE);
+      while (resources.hasMoreElements()) {
+        URL url = resources.nextElement();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+        try {
+          String line;
+          while ((line = reader.readLine()) != null) {
+            TypeElement providerElement = processingEnv.getElementUtils().getTypeElement(line);
+            if (providerElement != null) {
+              constraintProviders.add(providerElement);
+            }
+          }
+        }
+        finally {
+          reader.close();
+        }
+      }
+    }
+    catch (IOException e) {
+      throw new RuntimeException("Could not read constraint providers file", e);
+    }
+    return constraintProviders;
   }
 
 }

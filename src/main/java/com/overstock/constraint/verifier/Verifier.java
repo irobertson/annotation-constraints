@@ -6,7 +6,7 @@ import javax.lang.model.element.Element;
 
 import com.overstock.constraint.Constraint;
 import com.overstock.constraint.processor.Constraints;
-import com.overstock.constraint.provider.ConstraintsFor;
+import com.overstock.constraint.provider.ProvidesConstraintsFor;
 
 /**
  * Verifies that elements satisfy certain constraints presented by their annotations. A Verifier is a <i>service</i> as
@@ -22,7 +22,7 @@ public interface Verifier { //TODO should we get rid fo this class and encourage
 
   /**
    * Verify that an annotated element satisfies contracts imposed by an annotation which has been annotated with
-   * one or more {@link Constraint} annotations or is externally constrained via {@link ConstraintsFor}.
+   * one or more {@link Constraint} annotations or is externally constrained via {@link ProvidesConstraintsFor}.
    *
    * @param element the annotated element
    * @param constrained the constrained annotation, which is present on {@code element}
