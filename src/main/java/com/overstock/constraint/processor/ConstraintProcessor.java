@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.ServiceLoader;
@@ -16,6 +17,7 @@ import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
@@ -54,7 +56,7 @@ public class ConstraintProcessor extends AbstractProcessor {
     providedConstraints = providedConstraints.combineWith(roundConstraints);
 
     Elements elementUtils = processingEnv.getElementUtils();
-    for (Element element : roundEnv.getRootElements()) {
+    for (Element element : elementsToProcess(roundEnv)) {
       for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
         Constraints constraints = Constraints.on(annotationMirror, providedConstraints, processingEnv);
         if (!constraints.isEmpty()) {
@@ -66,6 +68,25 @@ public class ConstraintProcessor extends AbstractProcessor {
     }
 
     return false;
+  }
+
+  private Set<? extends Element> elementsToProcess(RoundEnvironment roundEnv) {
+    Set<? extends Element> rootElements = roundEnv.getRootElements();
+    Set<Element> elements = new HashSet<Element>(rootElements.size());
+    for (Element element : rootElements) {
+      addEnclosedTypes(elements, element);
+    }
+    return elements;
+  }
+
+  private Collection<? extends Element> addEnclosedTypes(Collection<Element> elements, Element element) {
+    elements.add(element);
+    if (ElementKind.PACKAGE != element.getKind()) {
+      for (Element enclosed : element.getEnclosedElements()) {
+        addEnclosedTypes(elements, enclosed);
+      }
+    }
+    return elements;
   }
 
   private Set<? extends Element> findConstraintProviders(ClassLoader classLoader) {
