@@ -55,6 +55,20 @@ have all of the required constructors with the necessary arguments types.
 * **@TargetRequiresSupertypes** issues an error when an element is annotated with the target annotation and does not
 have all of the required supertypes (classes and/or interfaces).
 
+Adding constraints to existing annotations
+======================
+You may want to add a constraint to an annotation for which you don't control the source code. Here's how to do that.
+
+1. Create a new annotation and add constraints to it.
+1. Annotate your new annotation with `@ProvidesConstraintsFor([existing annotation].class)`.
+1. To register your new annotation with annotation-constraints, create a text file named
+`com.overstock.constraint.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
+name of your new annotation in it. (See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for
+more details.)
+1. Make sure the `annotation-constraints` jar and your new annotation class are on the classpath during compilation.
+
+TODO real-world example
+
 Writing your own constraint
 ======================
 1. Create an annotation and add `@Constraint` to it.
@@ -62,7 +76,9 @@ Writing your own constraint
 1. To register your new `Verifier` with annotation-constraints, create a text file named
 `com.overstock.constraint.verifier.Verifier` under `META-INF/services/` with the fully-qualified binary class name of
 your verifier in it. (See the JavaDoc for `com.overstock.constraint.verifier.Verifier` for more details.)
-1. Make sure `annotation-constraints` and your new `Verifier` are on the classpath during compilation.
+1. Make sure `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
+
+TODO real-world example
 
 Maven usage
 ======================
@@ -81,3 +97,5 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
     ...
   </dependencies>
 ```
+
+TODO Eclipse usage, Eclipse and Maven usage with m2e-apt

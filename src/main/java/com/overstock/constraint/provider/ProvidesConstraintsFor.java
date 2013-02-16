@@ -7,8 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.overstock.constraint.Constraint;
-
 /**
  * <p>
  *   Marks the target annotation as providing constraints on behalf of another annotation. This is useful for
@@ -20,9 +18,7 @@ import com.overstock.constraint.Constraint;
  *   fully-qualified name of your new annotation and make sure this file is included in your jar.
  * </p>
  */
-//TODO README
 @Documented
-@Constraint
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface ProvidesConstraintsFor {
