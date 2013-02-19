@@ -98,4 +98,23 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
   </dependencies>
 ```
 
-TODO Eclipse usage, Eclipse and Maven usage with m2e-apt
+Eclipse with m2eclipse for Maven integration
+======================
+If you use Maven, the easiest way to use annotation-constraints within Eclipse is using m2eclipse and m2e-apt.
+
+* Install m2eclipse from the Eclipse Marketplace.
+* Install m2e-apt (from the Eclipse Marketplace or from the update site listed
+[here](https://github.com/jbosstools/m2e-apt).
+* Import your project or right-click and under Maven choose Update Project... and the m2e-apt configurator will
+configure annotation processors based on the project's Maven classpath.
+
+Eclipse usage
+======================
+If you're not using Maven you'll have to configure annotation processing in Eclipse by hand.
+
+* Under the project's properties, go to **Java Compiler** -> **Annotation Processing** and check
+"Enable project specific settings", "Enable annotation processing" and "Enable processing in editor".
+* Under **Annotation Processing**, go to **Factory Path** and add the annotation-constraints jar via **Add JARs...**,
+**Add External JARs** or **Add Variable...**.
+* Also add any jars which contain additional constraints (custom constraints or `@ProvidesConstraintsFor`) along with
+any jars which they depend on.
