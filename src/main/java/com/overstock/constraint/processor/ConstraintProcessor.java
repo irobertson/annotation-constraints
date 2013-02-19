@@ -20,6 +20,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 
 import com.overstock.constraint.provider.ProvidesConstraintsFor;
 import com.overstock.constraint.verifier.Verifier;
@@ -100,7 +101,11 @@ public class ConstraintProcessor extends AbstractProcessor {
           String line;
           while ((line = reader.readLine()) != null) {
             TypeElement providerElement = processingEnv.getElementUtils().getTypeElement(line);
-            if (providerElement != null) {
+            if (providerElement == null) {
+              processingEnv.getMessager().printMessage(Diagnostic.Kind.WARNING,
+                "Could not find element for constraint provider " + line + " which was declared in " + url);
+            }
+            else {
               constraintProviders.add(providerElement);
             }
           }
