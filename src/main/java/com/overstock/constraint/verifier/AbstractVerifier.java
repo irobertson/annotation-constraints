@@ -9,6 +9,7 @@ import javax.lang.model.element.Name;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 
+import com.overstock.constraint.ServiceProvider;
 import com.overstock.constraint.processor.ConstraintMirror;
 
 @ServiceProvider

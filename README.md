@@ -29,10 +29,11 @@ public class Person {
 }
 ```
 
-This results in two compilation errors:
+Compiling the `Person` class results in two compilation errors:
 ```
 Class Person is annotated with @Model but does not have AbstractModel as a supertype
-
+```
+```
 Class Person is annotated with @Model but does not have a constructor with no arguments
 ```
 Out of the box
@@ -54,6 +55,10 @@ annotations which are not `@Inherited`).
 have all of the required constructors with the necessary arguments types.
 * **@TargetRequiresSupertypes** issues an error when an element is annotated with the target annotation and does not
 have all of the required supertypes (classes and/or interfaces).
+
+There is also one constrained annotation included.
+
+* **@ServiceProvider** requires that the target type have a constructor with no arguments per `java.util.ServiceLoader`.
 
 Adding constraints to existing annotations
 ======================
