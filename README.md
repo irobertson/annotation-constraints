@@ -7,14 +7,14 @@ example, the following `@Model` annotation can only be placed on a class which e
 no-argument constructor.
 
 ```java
-@TargetRequiresSupertypes(AbstractModel.class) //must extend AbstractModel
-@TargetRequiresConstructors(@RequiredConstructor({})) //must have a no-arg constructor
+@TargetRequiresSupertypes(AbstractModel.class) //target must extend AbstractModel
+@TargetRequiresConstructors(@RequiredConstructor({})) //target must have a no-arg constructor
 @Target(ElementType.TYPE)
 public @interface Model {
 }
 ```
 
-These constraints are violated at compile-time when `annotation-constraints` is on the compiler's classpath.
+These constraints are validated at compile-time when `annotation-constraints` is on the compiler's classpath.
 If you violate any of the constraints, you'll receive an error from the compiler. For example:
 
 ```java
@@ -49,7 +49,7 @@ one of the recommended annotations.
 * **@TargetRequiresAnnotations** issues an error when an element is annotated with the target annotation and not with
 one of the required annotations.
 * **@TargetRequiresAnnotationsOnSupertype** same as `@TargetRequiresAnnotations` except it checks supertypes (i.e. for
-annotations which are not @Inherited).
+annotations which are not `@Inherited`).
 * **@TargetRequiresConstructors** issues an error when an element is annotated with the target annotation and does not
 have all of the required constructors with the necessary arguments types.
 * **@TargetRequiresSupertypes** issues an error when an element is annotated with the target annotation and does not
@@ -60,14 +60,15 @@ Adding constraints to existing annotations
 You may want to add a constraint to an annotation for which you don't control the source code. Here's how to do that.
 
 1. Create a new annotation and add constraints to it.
-1. Annotate your new annotation with `@ProvidesConstraintsFor([existing annotation].class)`.
+1. Annotate your new annotation with `@ProvidesConstraintsFor(ExistingAnnotation.class)`.
 1. To register your new annotation with annotation-constraints, create a text file named
 `com.overstock.constraint.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
-name of your new annotation in it. (See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for
-more details.)
+name of your new annotation in it.
 1. Make sure the `annotation-constraints` jar and your new annotation class are on the classpath during compilation.
 
 TODO real-world example
+
+See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for more details.
 
 Writing your own constraint
 ======================
