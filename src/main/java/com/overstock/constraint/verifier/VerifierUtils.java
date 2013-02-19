@@ -105,7 +105,7 @@ class VerifierUtils {
    * @see #getArrayValues(javax.lang.model.element.AnnotationMirror)
    */
   public static List<TypeMirror> getValuesAsTypes(AnnotationMirror annotation) {
-    return asTypes(getArrayValues(annotation)); //TODO investigate caching
+    return asTypes(getArrayValues(annotation));
   }
 
   /**
