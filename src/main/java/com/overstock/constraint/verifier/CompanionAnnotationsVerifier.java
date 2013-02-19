@@ -43,21 +43,18 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
       }
     }
 
-    for (TypeMirror missingRequiredAnnotationType : requiredAnnotations) {
-      printMessage(
-        Diagnostic.Kind.ERROR,
-        element,
-        constrained,
-        " but not with @" + getSimpleName(missingRequiredAnnotationType),
-        requireAnnotations);
-    }
-    for (TypeMirror missingRecommendedAnnotationType : recommendedAnnotations) {
-      printMessage(
-        Diagnostic.Kind.WARNING,
-        element,
-        constrained,
-        " but not with @" + getSimpleName(missingRecommendedAnnotationType),
-        recommendAnnotations);
-    }
+    printMessage(
+      Diagnostic.Kind.WARNING,
+      element,
+      constrained,
+      " but not with " + formatAnnotations(recommendedAnnotations, " and "),
+      recommendAnnotations);
+
+    printMessage(
+      Diagnostic.Kind.ERROR,
+      element,
+      constrained,
+      " but not with " + formatAnnotations(requiredAnnotations, " and "),
+      requireAnnotations);
   }
 }

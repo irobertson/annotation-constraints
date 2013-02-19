@@ -42,13 +42,12 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       }
     }
 
-    for (TypeMirror presentAndDisallowedAnnotationType : presentAndDisallowed) {
-      printMessage(
-        Diagnostic.Kind.ERROR,
-        element,
-        constrained,
-        " which is not allowed with @" + getSimpleName(presentAndDisallowedAnnotationType),
-        disallowAnnotations);
-    }
+    printMessage(
+      Diagnostic.Kind.ERROR,
+      element,
+      constrained,
+      " which is not allowed with " + formatAnnotations(presentAndDisallowed, " or "),
+      disallowAnnotations);
   }
+
 }

@@ -41,13 +41,11 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
       }
     }
 
-    for (TypeMirror missingRequiredAnnotation : requiredAnnotations) {
-      printMessage(
-        Diagnostic.Kind.ERROR,
-        element,
-        constrained,
-        " but does not have a supertype annotated with @" + getSimpleName(missingRequiredAnnotation),
-        requireAnnotationsOnSupertype);
-    }
+    printMessage(
+      Diagnostic.Kind.ERROR,
+      element,
+      constrained,
+      " but does not have a supertype annotated with " + formatAnnotations(requiredAnnotations, " or "),
+      requireAnnotationsOnSupertype);
   }
 }

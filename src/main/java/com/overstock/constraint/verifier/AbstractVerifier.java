@@ -1,5 +1,7 @@
 package com.overstock.constraint.verifier;
 
+import java.util.Collection;
+
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
@@ -36,7 +38,7 @@ public abstract class AbstractVerifier implements Verifier {
   }
 
   private String providerMessage(ConstraintMirror constraint) {
-    return constraint.isProvided() ? " as specified by " + constraint.getProvider() : "";
+    return constraint != null && constraint.isProvided() ? " as specified by " + constraint.getProvider() : "";
   }
 
   protected final Name getSimpleName(AnnotationMirror constrained) {
@@ -45,5 +47,22 @@ public abstract class AbstractVerifier implements Verifier {
 
   protected final Name getSimpleName(TypeMirror typeMirror) {
     return processingEnv.getTypeUtils().asElement(typeMirror).getSimpleName();
+  }
+
+  protected String formatAnnotations(Collection<TypeMirror> annotations, String delimiter) {
+    return formatTypes(annotations, "@", delimiter);
+  }
+
+  protected String formatTypes(Collection<TypeMirror> annotations, String typePrefix, String delimiter) {
+    StringBuilder builder = new StringBuilder(annotations.size() * 5);
+    boolean first = true;
+    for (TypeMirror annotation : annotations) {
+      if (!first) {
+        builder.append(delimiter);
+      }
+      builder.append(typePrefix).append(getSimpleName(annotation));
+      first = false;
+    }
+    return builder.toString();
   }
 }
