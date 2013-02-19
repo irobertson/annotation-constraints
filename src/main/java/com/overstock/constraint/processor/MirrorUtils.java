@@ -12,6 +12,8 @@ import javax.lang.model.util.Types;
 public class MirrorUtils {
   private static final Map<Class<?>, TypeMirror> TYPE_MIRRORS = new HashMap<Class<?>, TypeMirror>();
 
+  private static final Map<TypeMirror, Set<TypeMirror>> SUPERTYPES = new HashMap<TypeMirror, Set<TypeMirror>>();
+
   /**
    * Gets the TypeMirror representing the class.
    *
@@ -36,7 +38,16 @@ public class MirrorUtils {
    * @return the supertypes of the type
    */
   public static Set<TypeMirror> getSupertypes(TypeMirror type, Types typeUtils) {
-    Set<TypeMirror> supertypes = new HashSet<TypeMirror>(); //TODO investigate caching
+    Set<TypeMirror> supertypes = SUPERTYPES.get(type);
+    if (supertypes == null) {
+      supertypes = calculateSupertypes(type, typeUtils);
+      SUPERTYPES.put(type, supertypes);
+    }
+    return supertypes;
+  }
+
+  private static Set<TypeMirror> calculateSupertypes(TypeMirror type, Types typeUtils) {
+    Set<TypeMirror> supertypes = new HashSet<TypeMirror>();
     supertypes.add(type); //include the type itself
     for (TypeMirror supertype : typeUtils.directSupertypes(type)) {
       supertypes.addAll(getSupertypes(supertype, typeUtils));
