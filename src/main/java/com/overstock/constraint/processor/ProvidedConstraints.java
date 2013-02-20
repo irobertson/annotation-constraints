@@ -55,14 +55,14 @@ class ProvidedConstraints {
             + provider.asType());
         }
         putOrAddAll(constraints, typeUtils.asElement(targetMirror), getConstraints(provider, processingEnv,
-          provider.asType().toString()));
+          provider.asType()));
         break; //found the constraints
       }
     }
   }
 
   private static Collection<ConstraintMirror> getConstraints(Element annotation,
-      ProcessingEnvironment processingEnv, String providerName) {
+      ProcessingEnvironment processingEnv, TypeMirror provider) {
     final Types typeUtils = processingEnv.getTypeUtils();
     final TypeMirror constraintMirror = MirrorUtils.getTypeMirror(Constraint.class, processingEnv.getElementUtils());
     final List<ConstraintMirror> currentConstraints = new ArrayList<ConstraintMirror>();
@@ -70,7 +70,7 @@ class ProvidedConstraints {
       for (AnnotationMirror metaAnnotation :
           maybeConstraining.getAnnotationType().asElement().getAnnotationMirrors()) {
         if (typeUtils.isSameType(constraintMirror, metaAnnotation.getAnnotationType())) {
-          currentConstraints.add(new ConstraintMirror(maybeConstraining, providerName));
+          currentConstraints.add(new ConstraintMirror(maybeConstraining, provider));
         }
       }
     }

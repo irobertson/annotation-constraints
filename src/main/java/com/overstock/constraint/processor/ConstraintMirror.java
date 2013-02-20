@@ -1,21 +1,25 @@
 package com.overstock.constraint.processor;
 
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.type.TypeMirror;
+
+import com.overstock.constraint.provider.ProvidesConstraintsFor;
 
 /**
- * A mirror for a constraint annotation.
+ * A mirror for a constraint annotation. If a constraint is provided via {@link ProvidesConstraintsFor}, you can access
+ * the provider via {@link #getProvider()}.
  */
 public final class ConstraintMirror {
 
   private final AnnotationMirror annotation;
 
-  private final String provider;
+  private final TypeMirror provider;
 
   public ConstraintMirror(AnnotationMirror annotation) {
     this(annotation, null);
   }
 
-  public ConstraintMirror(AnnotationMirror annotation, String provider) {
+  public ConstraintMirror(AnnotationMirror annotation, TypeMirror provider) {
     this.annotation = annotation;
     this.provider = provider;
   }
@@ -24,7 +28,7 @@ public final class ConstraintMirror {
     return annotation;
   }
 
-  public String getProvider() {
+  public TypeMirror getProvider() {
     return provider;
   }
 
