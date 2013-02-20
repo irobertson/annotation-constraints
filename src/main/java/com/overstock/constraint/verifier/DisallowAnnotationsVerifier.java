@@ -42,12 +42,14 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
       }
     }
 
-    printMessage(
-      Diagnostic.Kind.ERROR,
-      element,
-      constrained,
-      " which is not allowed with " + formatAnnotations(presentAndDisallowed, " or "),
-      disallowAnnotations);
+    if (!presentAndDisallowed.isEmpty()) {
+      printMessage(
+        Diagnostic.Kind.ERROR,
+        element,
+        constrained,
+        " which is not allowed with " + formatAnnotations(presentAndDisallowed, " or "),
+        disallowAnnotations);
+    }
   }
 
 }

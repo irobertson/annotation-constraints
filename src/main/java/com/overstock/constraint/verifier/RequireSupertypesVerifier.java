@@ -35,11 +35,13 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
       VerifierUtils.removeType(requiredSupertypes, supertype, typeUtils);
     }
 
-    printMessage(
-      Diagnostic.Kind.ERROR,
-      element,
-      constrained,
-      " but does not have " + formatTypes(requiredSupertypes, "", " or ") + " as a supertype",
-      requireSupertypes);
+    if (!requiredSupertypes.isEmpty()) {
+      printMessage(
+        Diagnostic.Kind.ERROR,
+        element,
+        constrained,
+        " but does not have " + formatTypes(requiredSupertypes, "", " or ") + " as a supertype",
+        requireSupertypes);
+    }
   }
 }
