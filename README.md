@@ -1,10 +1,8 @@
 # Annotation Constraints
 
-Requires Java 6 or greater.
-
-Annotation Constraints allows you to specify constraints on annotated types which are verified at compile-time. For
-example, the following `@Model` annotation can only be placed on a class which extends `AbstractModel` and has a
-no-argument constructor.
+Annotation Constraints is a library for Java 6 or newer that allows you to specify constraints on annotated elements
+which are verified at compile-time. For example, the following `@Model` annotation can only be placed on a class which
+extends `AbstractModel` and has a no-argument constructor.
 
 ```java
 @TargetRequiresSupertypes(AbstractModel.class) //target must extend AbstractModel
@@ -14,8 +12,9 @@ public @interface Model {
 }
 ```
 
-These constraints are validated at compile-time when `annotation-constraints` is on the compiler's classpath.
-If you violate any of the constraints, you'll receive an error from the compiler. For example:
+These constraints are validated at compile-time when `annotation-constraints` is on the compiler's classpath. No
+configuration is necessary because it uses an annotation processor which is picked up automatically by the compiler.
+If you violate any of the constraints, you'll receive an error. For example:
 
 ```java
 @Model
