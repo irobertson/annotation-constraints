@@ -32,10 +32,12 @@ public class FileAssert {
     StringDescription description = new StringDescription(errorMessage);
     boolean failed = false;
     for (Matcher<String> matcher : matchers) {
-      if (matches(lines, matcher)) {
+      String matchingLine = matches(lines, matcher);
+      if (matchingLine != null) {
         failed = true;
         errorMessage.append("\n  ");
         matcher.describeTo(description);
+        errorMessage.append("\n    on ").append(matchingLine);
       }
     }
     if (failed) {
@@ -53,7 +55,7 @@ public class FileAssert {
     StringDescription description = new StringDescription(errorMessage);
     boolean failed = false;
     for (Matcher<String> matcher : matchers) {
-      if (!matches(lines, matcher)) {
+      if (matches(lines, matcher) == null) {
         failed = true;
         errorMessage.append("\n  ");
         matcher.describeTo(description);
@@ -64,12 +66,12 @@ public class FileAssert {
     }
   }
 
-  private static boolean matches(List<String> list, Matcher<String> matcher) {
+  private String matches(List<String> list, Matcher<String> matcher) {
     for (String s : list) {
       if (matcher.matches(s)) {
-        return true;
+        return s;
       }
     }
-    return false;
+    return null;
   }
 }
