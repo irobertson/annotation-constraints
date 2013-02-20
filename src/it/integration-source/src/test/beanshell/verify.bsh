@@ -19,6 +19,7 @@ file.assertAnyLineMatches(new Matcher[] {
   Matchers.containsString("Class requireannotationsonsupertype.RequireAnnotationsOnSupertypeFail is annotated with @RequireUnconstrainedSupertype but does not have a supertype annotated with @Unconstrained or @RequireUnconstrained"),
   Matchers.containsString("Class requireconstructors.RequireNoArgConstructorFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
   Matchers.containsString("Class requireconstructors.RequireStringLongIntArrayConstructorFail is annotated with @RequireStringLongIntArrayConstructor but does not have a constructor with arguments (java.lang.String, long, int[])"),
+  Matchers.containsString("Class requireconstructors.RequireCallableConstructorFail is annotated with @RequireCallableConstructor but does not have a constructor with arguments (java.util.concurrent.Callable)"),
   Matchers.containsString("Class requiresupertypes.RequireSupertypesFail is annotated with @RequireBaseClassAndSerializable but does not have BaseClass or Serializable as a supertype"),
   Matchers.containsString("Class requiresupertypes.RequireGenericInterfaceFail is annotated with @RequireGenericInterface but does not have GenericInterface as a supertype"),
   Matchers.containsString("Class verifier.VerifierSubclassFail is annotated with @ServiceProvider but does not have a constructor with no arguments"),

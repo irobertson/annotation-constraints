@@ -79,8 +79,8 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
     Types typeUtils = processingEnv.getTypeUtils();
     for (int i = 0; i < parameters.size(); ++i) {
       if (!typeUtils.isSameType(
-          VerifierUtils.asType(parameters.get(i)),
-          VerifierUtils.asType(expected.get(i)))) {
+          typeUtils.erasure(VerifierUtils.asType(parameters.get(i))),
+          typeUtils.erasure(VerifierUtils.asType(expected.get(i))))) {
         return false;
       }
     }
