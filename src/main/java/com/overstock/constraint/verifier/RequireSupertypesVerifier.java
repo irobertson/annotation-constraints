@@ -25,14 +25,15 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
       return;
     }
 
-    List<TypeMirror> requiredSupertypes = VerifierUtils.getValuesAsTypes(requireSupertypes.getAnnotation());
+    Types typeUtils = processingEnv.getTypeUtils();
+    List<TypeMirror> requiredSupertypes = VerifierUtils.eraseGenerics(
+      VerifierUtils.getValuesAsTypes(requireSupertypes.getAnnotation()), typeUtils);
     if (requiredSupertypes.isEmpty()) {
       return;
     }
 
-    Types typeUtils = processingEnv.getTypeUtils();
     for (TypeMirror supertype : MirrorUtils.getSupertypes(element.asType(), typeUtils)) {
-      VerifierUtils.removeType(requiredSupertypes, supertype, typeUtils);
+      VerifierUtils.removeType(requiredSupertypes, typeUtils.erasure(supertype), typeUtils);
     }
 
     if (!requiredSupertypes.isEmpty()) {
