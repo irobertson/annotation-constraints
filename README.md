@@ -71,9 +71,36 @@ You may want to add a constraint to an annotation for which you don't control th
 name of your new annotation in it.
 1. Make sure the `annotation-constraints` jar and your new annotation class are on the classpath during compilation.
 
-TODO real-world example
-
 See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for more details.
+
+### Example of adding constraints to an existing annotation ###
+
+For example, JAX-RS (JSR 311) has `@ApplicationPath`, which is required to only be applied to a subclass of
+`Application`. To have this validated at compile-time we would do the following.
+
+First, create an annotation on which to put constraints like so (the name of this annotation doesn't really matter):
+
+```java
+package example;
+
+import ...
+
+@Target({})
+@Retention(RetentionPolicy.RUNTIME)
+@ProvidesConstraintsFor(ApplicationPath.class)
+@TargetRequiresSupertypes(Application.class)
+public @interface ApplicationPathConstraints {
+}
+```
+
+Next, create a text file named `META-INF/com.overstock.constraint.provider.constraint-providers` with the following line of text:
+
+```
+ example.ApplicationPathProvider
+```
+
+That's it. As long as these files are in the same compilation unit or on the classpath during compilation, the
+validation will occur at compile-time.
 
 Writing your own constraint
 ======================
@@ -84,7 +111,14 @@ Writing your own constraint
 your verifier in it. (See the JavaDoc for `com.overstock.constraint.verifier.Verifier` for more details.)
 1. Make sure `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
 
-TODO real-world example
+### Example of writing your own constraint ###
+
+For example, JAX-RS (JSR 311) introduced annotations for some common HTTP methods, namely `@GET`, `@PUT`, `@POST`,
+`@HEAD` and `@DELETE`, which are all annotated with `@HttpMethod`. The JavaDoc for `@HttpMethod` states, "It is an error
+for a method to be annotated with more than one annotation that is annotated with `@HttpMethod`". To have this validated
+at compile-time instead of runtime, we could create a new constraint, say `@TargetHasOneHttpMethod`, write a
+`Verifier` which does the necessary validation and apply this constraint to via
+`@ProvidesConstraintsFor(HttpMethod.class)`.
 
 Maven usage
 ======================
