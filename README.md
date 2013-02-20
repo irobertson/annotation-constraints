@@ -1,5 +1,5 @@
-Annotation Constraints
-======================
+# Annotation Constraints
+
 Requires Java 6 or greater.
 
 Annotation Constraints allows you to specify constraints on annotated types which are verified at compile-time. For
@@ -36,8 +36,8 @@ Class Person is annotated with @Model but does not have AbstractModel as a super
 ```
 Class Person is annotated with @Model but does not have a constructor with no arguments
 ```
-Out of the box
-======================
+## Out of the box
+
 The following constraints are included in the `com.overstock.constraint` package. They can be combined with one another
 and/or with your own custom constraints. The "target annotation" below refers to the annotation which is being
 constrained (i.e. annotated with one or more of these constraint annotations).
@@ -60,8 +60,8 @@ There is also one constrained annotation included.
 
 * **@ServiceProvider** requires that the target type have a constructor with no arguments per `java.util.ServiceLoader`.
 
-Adding constraints to existing annotations
-======================
+## Adding constraints to existing annotations
+
 You may want to add a constraint to an annotation for which you don't control the source code. Here's how to do that.
 
 1. Create a new annotation and add constraints to it.
@@ -73,7 +73,7 @@ name of your new annotation in it.
 
 See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for more details.
 
-### Example of adding constraints to an existing annotation ###
+### Example of adding constraints to an existing annotation
 
 For example, JAX-RS (JSR 311) has `@ApplicationPath`, which is required to only be applied to a subclass of
 `Application`. To have this validated at compile-time we would do the following.
@@ -102,8 +102,8 @@ Next, create a text file named `META-INF/com.overstock.constraint.provider.const
 That's it. As long as these files are in the same compilation unit or on the classpath during compilation, the
 validation will occur at compile-time.
 
-Writing your own constraint
-======================
+## Writing your own constraint
+
 1. Create an annotation and add `@Constraint` to it.
 1. Implement a `Verifier` for your new constraint.
 1. To register your new `Verifier` with annotation-constraints, create a text file named
@@ -111,7 +111,7 @@ Writing your own constraint
 your verifier in it. (See the JavaDoc for `com.overstock.constraint.verifier.Verifier` for more details.)
 1. Make sure `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
 
-### Example of writing your own constraint ###
+### Example of writing your own constraint
 
 For example, JAX-RS (JSR 311) introduced annotations for some common HTTP methods, namely `@GET`, `@PUT`, `@POST`,
 `@HEAD` and `@DELETE`, which are all annotated with `@HttpMethod`. The JavaDoc for `@HttpMethod` states, "It is an error
@@ -120,8 +120,8 @@ at compile-time instead of runtime, we could create a new constraint, say `@Targ
 `Verifier` which does the necessary validation and apply this constraint to via
 `@ProvidesConstraintsFor(HttpMethod.class)`.
 
-Maven usage
-======================
+## Maven usage
+
 `annotation-constraints` runs as an annotation processor, which happens automatically when it's on the classpath at
 compile-time (for Java 6 and greater). No extra configuration is necessary other than declaring a dependency on
 `annotation-constraints`.
@@ -138,8 +138,8 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
   </dependencies>
 ```
 
-Eclipse with m2eclipse for Maven integration
-======================
+## Eclipse with m2eclipse for Maven integration
+
 If you use Maven, the easiest way to use annotation-constraints within Eclipse is using m2eclipse and m2e-apt.
 
 * Install m2eclipse from the Eclipse Marketplace.
@@ -148,8 +148,8 @@ If you use Maven, the easiest way to use annotation-constraints within Eclipse i
 * Import your project or right-click and under Maven choose Update Project... and the m2e-apt configurator will
 configure annotation processors based on the project's Maven classpath.
 
-Eclipse usage
-======================
+## Eclipse without Maven
+
 If you're not using Maven you'll have to configure annotation processing in Eclipse by hand.
 
 * Under the project's properties, go to **Java Compiler** -> **Annotation Processing** and check
