@@ -38,7 +38,7 @@ public interface Verifier {
    * @param constrained the constrained annotation, which is present on {@code element}
    * @param constraints the constraints on the annotation represented by {@code annotation}.
    */
-  void verify(Element element, AnnotationMirror constrained, Constraints constraints);
+  void verify(Element element, AnnotationMirror constrained, Constraints constraints); //TODO I don't like that the Messager is ultimately important here and yet not involved in this interface. Messager could be passed into verify or messages objects could be returned from verify.
 
   /**
    * Initializes the verifier. This method will be called exactly once for each verifier instance, and is guaranteed to

@@ -13,7 +13,7 @@ import com.overstock.constraint.ServiceProvider;
 import com.overstock.constraint.processor.ConstraintMirror;
 
 @ServiceProvider
-public abstract class AbstractVerifier implements Verifier {
+public abstract class AbstractVerifier implements Verifier { //TODO this class seems like a collection of utility methods
 
   protected ProcessingEnvironment processingEnv;
 
