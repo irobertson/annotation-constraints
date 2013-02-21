@@ -27,21 +27,21 @@ public class FileAssert {
    *
    * @param matchers the text matchers
    */
-  public void assertNoLineMatches(Matcher<String>... matchers) throws IOException { //TODO reduce duplication
-    StringBuilder errorMessage = new StringBuilder(file.toString()).append(" matched: ");
-    StringDescription description = new StringDescription(errorMessage);
+  public void assertNoLineMatches(Matcher<String>... matchers) throws IOException {
+    StringDescription description = new StringDescription(new StringBuilder(file.toString()).append(" matched:"));
     boolean failed = false;
     for (Matcher<String> matcher : matchers) {
-      String matchingLine = matches(lines, matcher);
-      if (matchingLine != null) {
-        failed = true;
-        errorMessage.append("\n  ");
-        matcher.describeTo(description);
-        errorMessage.append("\n    on ").append(matchingLine);
+      for (int lineNumber = 0; lineNumber < lines.size(); ++lineNumber) {
+        String line = lines.get(lineNumber);
+        if (matcher.matches(line)) {
+          failed = true;
+          description.appendText("\n  ").appendDescriptionOf(matcher).appendText("\n    on line ")
+            .appendText(String.valueOf(lineNumber)).appendText(": ").appendText(line);
+        }
       }
     }
     if (failed) {
-      throw new RuntimeException(errorMessage.toString());
+      throw new RuntimeException(description.toString());
     }
   }
 
@@ -51,27 +51,25 @@ public class FileAssert {
    * @param matchers the text matchers
    */
   public void assertAnyLineMatches(Matcher<String>... matchers) throws IOException {
-    StringBuilder errorMessage = new StringBuilder(file.toString()).append(" did not match: ");
-    StringDescription description = new StringDescription(errorMessage);
+    StringDescription description = new StringDescription(new StringBuilder(file.toString()).append(" did not match:"));
     boolean failed = false;
     for (Matcher<String> matcher : matchers) {
-      if (matches(lines, matcher) == null) {
+      if (!anyLineMatches(matcher)) {
         failed = true;
-        errorMessage.append("\n  ");
-        matcher.describeTo(description);
+        description.appendText("\n  ").appendDescriptionOf(matcher);
       }
     }
     if (failed) {
-      throw new RuntimeException(errorMessage.toString());
+      throw new RuntimeException(description.toString());
     }
   }
 
-  private String matches(List<String> list, Matcher<String> matcher) {
-    for (String s : list) {
+  private boolean anyLineMatches(Matcher<String> matcher) {
+    for (String s : lines) {
       if (matcher.matches(s)) {
-        return s;
+        return true;
       }
     }
-    return null;
+    return false;
   }
 }
