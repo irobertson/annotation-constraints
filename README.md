@@ -39,21 +39,23 @@ Class Person is annotated with @Model but does not have a constructor with no ar
 
 The following constraints are included in the `com.overstock.constraint` package. They can be combined with one another
 and/or with your own custom constraints. The "target annotation" below refers to the annotation which is being
-constrained (i.e. annotated with one or more of these constraint annotations). TODO example which explains what "target annotation" means
+constrained (i.e. annotated with one or more of these constraint annotations). In the example above, `@Model` is the
+"target annotation" because it is annotated with `@TargetRequiresSupertypes` and `@TargetRequiresConstructors`.
+"Element" below refers to the program element which is annotated with the "target annotation", e.g. `Person` above.
 
-* **@TargetDisallowsAnnotations** issues an error when an element is annotated with both the target annotation and any
-of the disallowed annotations. This is a way of specifying that the target annotation is not compatible with one or more
-other annotations.
-* **@TargetRecommendsAnnotations** issues a warning when an element is annotated with the target annotation and not with
-one of the recommended annotations.
-* **@TargetRequiresAnnotations** issues an error when an element is annotated with the target annotation and not with
-one of the required annotations.
-* **@TargetRequiresAnnotationsOnSupertype** same as `@TargetRequiresAnnotations` except it checks supertypes (i.e. for
-annotations which are not `@Inherited`).
-* **@TargetRequiresConstructors** issues an error when an element is annotated with the target annotation and does not
-have all of the required constructors with the necessary arguments types.
-* **@TargetRequiresSupertypes** issues an error when an element is annotated with the target annotation and does not
-have all of the required supertypes (classes and/or interfaces).
+* **@TargetDisallowsAnnotations(Class<? extends Annotation[])** issues an error when an element is annotated with both
+the target annotation and any of the disallowed annotations. This is a way of specifying that the target annotation is
+not compatible with the specified annotations.
+* **@TargetRecommendsAnnotations(Class<? extends Annotation[])** issues a warning when an element is annotated with
+the target annotation and not with all of the specified annotations.
+* **@TargetRequiresAnnotations(Class<? extends Annotation[])** issues an error when an element is annotated with the
+target annotation and not with all of the specified annotations.
+* **@TargetRequiresAnnotationsOnSupertype(Class<? extends Annotation[])** is the same as
+`@TargetRequiresAnnotations` except it checks supertypes (i.e. for annotations which are not `@Inherited`).
+* **@TargetRequiresConstructors(RequiredConstructor[])** issues an error when an element is annotated with the target
+annotation and does not have all of the required constructors with the necessary arguments types.
+* **@TargetRequiresSupertypes(Class<?>[])** issues an error when an element is annotated with the target annotation
+and does not have all of the required supertypes (classes and/or interfaces).
 
 There is also one constrained annotation included.
 
