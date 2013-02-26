@@ -57,8 +57,8 @@ have all of the required supertypes (classes and/or interfaces).
 
 There is also one constrained annotation included.
 
-* **@NewInstanceConstructable** requires that the target type have a constructor with no arguments
-per `java.util.ServiceLoader`.
+* **@NewInstanceConstructable** requires that the target type have a constructor with no arguments so that it can be
+constructed via `Class.newInstance()`.
 
 ## Adding constraints to existing annotations
 
