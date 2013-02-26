@@ -39,7 +39,7 @@ Class Person is annotated with @Model but does not have a constructor with no ar
 
 The following constraints are included in the `com.overstock.constraint` package. They can be combined with one another
 and/or with your own custom constraints. The "target annotation" below refers to the annotation which is being
-constrained (i.e. annotated with one or more of these constraint annotations).
+constrained (i.e. annotated with one or more of these constraint annotations). TODO example which explains what "target annotation" means
 
 * **@TargetDisallowsAnnotations** issues an error when an element is annotated with both the target annotation and any
 of the disallowed annotations. This is a way of specifying that the target annotation is not compatible with one or more
@@ -109,6 +109,9 @@ validation will occur at compile-time.
 `com.overstock.constraint.verifier.Verifier` under `META-INF/services/` with the fully-qualified binary class name of
 your verifier in it. (See the JavaDoc for `com.overstock.constraint.verifier.Verifier` for more details.)
 1. Make sure `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
+
+Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
+because they have yet to be compiled).
 
 ### Example of writing your own constraint
 
