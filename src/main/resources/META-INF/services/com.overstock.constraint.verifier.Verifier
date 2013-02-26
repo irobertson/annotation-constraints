@@ -1,5 +1,0 @@
-com.overstock.constraint.verifier.CompanionAnnotationsVerifier
-com.overstock.constraint.verifier.DisallowAnnotationsVerifier
-com.overstock.constraint.verifier.RequireAnnotationsOnSupertypeVerifier
-com.overstock.constraint.verifier.RequireConstructorsVerifier
-com.overstock.constraint.verifier.RequireSupertypesVerifier

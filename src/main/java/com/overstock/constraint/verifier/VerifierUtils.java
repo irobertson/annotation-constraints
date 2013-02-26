@@ -129,8 +129,6 @@ class VerifierUtils {
     }
   }
 
-  private VerifierUtils() {}
-
   public static List<TypeMirror> eraseGenerics(List<TypeMirror> types, Types typeUtils) {
     ArrayList<TypeMirror> result = new ArrayList<TypeMirror>(types.size());
     for (TypeMirror type : types) {
@@ -138,4 +136,6 @@ class VerifierUtils {
     }
     return result;
   }
+
+  private VerifierUtils() {}
 }

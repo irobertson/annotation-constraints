@@ -7,11 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.overstock.constraint.verifier.DisallowAnnotationsVerifier;
+
 /**
  * Requires that annotated types NOT have specific annotations.
  */
+@Constraint(verifiedBy = DisallowAnnotationsVerifier.class)
 @Documented
-@Constraint
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface TargetDisallowsAnnotations {

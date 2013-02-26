@@ -12,7 +12,6 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetDisallowsAnnotations;
 import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.processor.Constraints;
 
 /**
  * A verifier for {@link TargetDisallowsAnnotations}.
@@ -20,13 +19,8 @@ import com.overstock.constraint.processor.Constraints;
 public class DisallowAnnotationsVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    ConstraintMirror disallowAnnotations = constraints.get(TargetDisallowsAnnotations.class);
-    if (disallowAnnotations == null) {
-      return;
-    }
-
-    Collection<TypeMirror> disallowedAnnotations = VerifierUtils.getValuesAsTypes(disallowAnnotations.getAnnotation());
+  public void verify(Element element, AnnotationMirror constrained, ConstraintMirror constraint) {
+    Collection<TypeMirror> disallowedAnnotations = VerifierUtils.getValuesAsTypes(constraint.getAnnotation());
     if (disallowedAnnotations.isEmpty()) {
       return;
     }
@@ -48,7 +42,7 @@ public class DisallowAnnotationsVerifier extends AbstractVerifier {
         element,
         constrained,
         " which is not allowed with " + formatAnnotations(presentAndDisallowed, " or "),
-        disallowAnnotations);
+        constraint);
     }
   }
 

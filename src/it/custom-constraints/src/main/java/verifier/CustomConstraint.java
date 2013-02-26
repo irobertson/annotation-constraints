@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 import com.overstock.constraint.Constraint;
 
-@Constraint
+@Constraint(verifiedBy = CustomVerifier.class)
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface CustomConstraint {

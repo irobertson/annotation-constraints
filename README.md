@@ -57,7 +57,8 @@ have all of the required supertypes (classes and/or interfaces).
 
 There is also one constrained annotation included.
 
-* **@ServiceProvider** requires that the target type have a constructor with no arguments per `java.util.ServiceLoader`.
+* **@NewInstanceConstructable** requires that the target type have a constructor with no arguments
+per `java.util.ServiceLoader`.
 
 ## Adding constraints to existing annotations
 
@@ -103,12 +104,10 @@ validation will occur at compile-time.
 
 ## Writing your own constraint
 
-1. Create an annotation and add `@Constraint` to it.
-1. Implement a `Verifier` for your new constraint.
-1. To register your new `Verifier` with annotation-constraints, create a text file named
-`com.overstock.constraint.verifier.Verifier` under `META-INF/services/` with the fully-qualified binary class name of
-your verifier in it. (See the JavaDoc for `com.overstock.constraint.verifier.Verifier` for more details.)
-1. Make sure `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
+1. Create an annotation and add `@Constraint(verifiedBy = ...)` to it.
+1. Implement the `Verifier` for your new constraint.
+(See com.overstock.constraint.verifier.Verifier JavaDoc for details.)
+1. Make sure both `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
 
 Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
 because they have yet to be compiled).

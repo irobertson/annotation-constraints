@@ -7,11 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.overstock.constraint.verifier.RequireAnnotationsOnSupertypeVerifier;
+
 /**
  * Requires that annotated types have specific annotations amongst all supertypes.
  */
+@Constraint(verifiedBy = RequireAnnotationsOnSupertypeVerifier.class)
 @Documented
-@Constraint
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 public @interface TargetRequiresAnnotationsOnSupertype {

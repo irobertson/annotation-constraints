@@ -6,8 +6,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.ServiceLoader;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -16,21 +18,29 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+import com.overstock.constraint.Constraint;
 import com.overstock.constraint.provider.ProvidesConstraintsFor;
 import com.overstock.constraint.verifier.Verifier;
 
 @SupportedAnnotationTypes("*")
 public class ConstraintProcessor extends AbstractProcessor {
 
-  private Iterable<Verifier> verifiers;
+  private Map<DeclaredType, Verifier> verifiers = new HashMap<DeclaredType, Verifier>();
 
   private ProvidedConstraints providedConstraints;
+
+  private ClassLoader classLoader;
 
   @Override
   public SourceVersion getSupportedSourceVersion() {
@@ -41,11 +51,7 @@ public class ConstraintProcessor extends AbstractProcessor {
   public synchronized void init(ProcessingEnvironment processingEnv) {
     super.init(processingEnv);
 
-    ClassLoader classLoader = getClass().getClassLoader();
-    verifiers = ServiceLoader.load(Verifier.class, classLoader);
-    for (Verifier verifier : verifiers) {
-      verifier.init(processingEnv);
-    }
+    classLoader = getClass().getClassLoader();
 
     providedConstraints = ProvidedConstraints.from(findConstraintProviders(classLoader), processingEnv);
   }
@@ -60,15 +66,60 @@ public class ConstraintProcessor extends AbstractProcessor {
     for (Element element : elementsToProcess(roundEnv)) {
       for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
         Constraints constraints = Constraints.on(annotationMirror, providedConstraints, processingEnv);
-        if (!constraints.isEmpty()) {
-          for (Verifier verifier : verifiers) {
-            verifier.verify(element, annotationMirror, constraints);
+        for (ConstraintMirror constraint : constraints) {
+          DeclaredType constraintType = constraint.getAnnotation().getAnnotationType();
+          Verifier verifier = verifiers.get(constraintType);
+          if (verifier == null) {
+            verifier = initializeVerifier(constraint, element, annotationMirror);
+            if (verifier == null) {
+              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                "Verifier for " + constraintType + " could not be constructed, which is required for "
+                  + annotationMirror.getAnnotationType(), element, annotationMirror);
+              continue;
+            }
+            else {
+              verifiers.put(constraintType, verifier);
+            }
           }
+          verifier.verify(element, annotationMirror, constraint);
         }
       }
     }
-
     return false;
+  }
+
+  private Verifier initializeVerifier(ConstraintMirror constraint, Element element, AnnotationMirror constrained) {
+    TypeMirror constraintMirror = MirrorUtils.getTypeMirror(Constraint.class, processingEnv.getElementUtils());
+    Types typeUtils = processingEnv.getTypeUtils();
+    List<? extends AnnotationMirror> annotationMirrors = constraint.getAnnotation().getAnnotationType().asElement()
+      .getAnnotationMirrors();
+    for (AnnotationMirror annotationMirror : annotationMirrors) {
+      if (typeUtils.isSameType(constraintMirror, annotationMirror.getAnnotationType())) {
+        Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = annotationMirror.getElementValues();
+        for (ExecutableElement executableElement : elementValues.keySet()) {
+          if (executableElement.getSimpleName().contentEquals("verifiedBy")) {
+            TypeMirror verifierType = (TypeMirror) elementValues.get(executableElement).getValue();
+            Verifier verifier = newInstance(verifierType, element, constrained);
+            verifier.init(processingEnv);
+            return verifier;
+          }
+        }
+
+      }
+    }
+    return null;
+  }
+
+  private Verifier newInstance(TypeMirror verifierType, Element element, AnnotationMirror constrained) {
+    try {
+      return (Verifier) Class.forName(verifierType.toString(), true, classLoader).newInstance();
+    }
+    catch (Exception e) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error instantiating verifier " + verifierType
+        + " which is required for " + constrained.getAnnotationType() + " due to an exception: " + e.getMessage(),
+        element, constrained);
+      return null;
+    }
   }
 
   private Set<? extends Element> elementsToProcess(RoundEnvironment roundEnv) {

@@ -13,7 +13,6 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresConstructors;
 import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.processor.Constraints;
 
 /**
  * A verifier for {@link TargetRequiresConstructors}.
@@ -21,14 +20,9 @@ import com.overstock.constraint.processor.Constraints;
 public class RequireConstructorsVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    ConstraintMirror requireConstructors = constraints.get(TargetRequiresConstructors.class);
-    if (requireConstructors == null) {
-      return;
-    }
-
+  public void verify(Element element, AnnotationMirror constrained, ConstraintMirror constraint) {
     @SuppressWarnings("unchecked")
-    List<AnnotationValue> requiredConstructorValues = (List<AnnotationValue>) requireConstructors.getAnnotation()
+    List<AnnotationValue> requiredConstructorValues = (List<AnnotationValue>) constraint.getAnnotation()
       .getElementValues().values().iterator().next().getValue();
     for (AnnotationValue requiredConstructorValue : requiredConstructorValues) {
       AnnotationMirror requiredConstructorMirror = (AnnotationMirror) requiredConstructorValue.getValue();
@@ -41,7 +35,7 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
           element,
           constrained,
           " but does not have a constructor with " + argumentLabel(argumentList),
-          requireConstructors);
+          constraint);
       }
     }
   }

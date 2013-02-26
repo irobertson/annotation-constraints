@@ -11,7 +11,6 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
 import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.processor.Constraints;
 import com.overstock.constraint.processor.MirrorUtils;
 
 /**
@@ -20,14 +19,8 @@ import com.overstock.constraint.processor.MirrorUtils;
 public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    ConstraintMirror requireAnnotationsOnSupertype = constraints.get(TargetRequiresAnnotationsOnSupertype.class);
-    if (requireAnnotationsOnSupertype == null) {
-      return;
-    }
-
-    List<TypeMirror> requiredAnnotations = VerifierUtils.getValuesAsTypes(
-      requireAnnotationsOnSupertype.getAnnotation());
+  public void verify(Element element, AnnotationMirror constrained, ConstraintMirror constraint) {
+    List<TypeMirror> requiredAnnotations = VerifierUtils.getValuesAsTypes(constraint.getAnnotation());
     if (requiredAnnotations.isEmpty()) {
       return;
     }
@@ -47,7 +40,7 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
         element,
         constrained,
         " but does not have a supertype annotated with " + formatAnnotations(requiredAnnotations, " or "),
-        requireAnnotationsOnSupertype);
+        constraint);
     }
   }
 }

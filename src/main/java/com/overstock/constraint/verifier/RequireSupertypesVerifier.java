@@ -10,7 +10,6 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.TargetRequiresSupertypes;
 import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.processor.Constraints;
 import com.overstock.constraint.processor.MirrorUtils;
 
 /**
@@ -19,15 +18,10 @@ import com.overstock.constraint.processor.MirrorUtils;
 public class RequireSupertypesVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(Element element, AnnotationMirror constrained, Constraints constraints) {
-    ConstraintMirror requireSupertypes = constraints.get(TargetRequiresSupertypes.class);
-    if (requireSupertypes == null) {
-      return;
-    }
-
+  public void verify(Element element, AnnotationMirror constrained, ConstraintMirror constraint) {
     Types typeUtils = processingEnv.getTypeUtils();
     List<TypeMirror> requiredSupertypes = VerifierUtils.eraseGenerics(
-      VerifierUtils.getValuesAsTypes(requireSupertypes.getAnnotation()), typeUtils);
+      VerifierUtils.getValuesAsTypes(constraint.getAnnotation()), typeUtils);
     if (requiredSupertypes.isEmpty()) {
       return;
     }
@@ -42,7 +36,7 @@ public class RequireSupertypesVerifier extends AbstractVerifier {
         element,
         constrained,
         " but does not have " + formatTypes(requiredSupertypes, "", " or ") + " as a supertype",
-        requireSupertypes);
+        constraint);
     }
   }
 }

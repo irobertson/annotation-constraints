@@ -54,4 +54,10 @@ public class MirrorUtils {
     }
     return supertypes;
   }
+
+  public static boolean isSameType(Class<?> clazz, TypeMirror type, Types typeUtils, Elements elementUtils) {
+    return typeUtils.isSameType(getTypeMirror(clazz, elementUtils), type);
+  }
+
+  private MirrorUtils() {}
 }
