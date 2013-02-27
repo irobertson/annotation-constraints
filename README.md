@@ -86,21 +86,22 @@ Here's how to do just that.
 name of your new annotation in it.
 1. Make sure the **annotation-constraints** jar and your new annotation class are on the classpath during compilation.
 
-See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for more details.
+See the JavaDoc for [com.overstock.constraint.provider.ProvidesConstraintsFor](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/provider/ProvidesConstraintsFor.java) for more details.
 
 ### Example of adding constraints to an existing annotation
 
 For example, JAX-RS (JSR 311) has `@ApplicationPath`, which is required to only be applied to a subclass of
 `Application`. To have this validated at compile-time we would do the following.
 
-First, create an annotation on which to put constraints like so (the name of this annotation doesn't really matter):
+First, create an annotation on which to put constraints like so (the name or location of this annotation doesn't really
+matter):
 
 ```java
 package example;
 
 import ...
 
-@Target({})
+@Target({}) //this annotation is not intended to be placed on any program element
 @Retention(RetentionPolicy.RUNTIME)
 @ProvidesConstraintsFor(ApplicationPath.class)
 @TargetRequiresSupertypes(Application.class)
