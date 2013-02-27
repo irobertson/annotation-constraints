@@ -8,7 +8,7 @@ are only mentioned in the annotation's JavaDoc and enforced at runtime. However,
 verified at compile-time if there was a way to express them, and odds are that you'd prefer compile-time errors to
 runtime ones since you are already using Java.
 
-`annotation-constraints` is a library for Java 6 or newer that allows you to specify constraints on annotations which
+**annotation-constraints** is a library for Java 6 or newer that allows you to specify constraints on annotations which
 are verified at compile-time via the included annotation processor. It includes commonly-used constraint
 meta-annotations and allows you to create your own. Additionally, it allows you to add constraints to existing (e.g.
 third-party) annotations.
@@ -24,9 +24,9 @@ public @interface Model {
 }
 ```
 
-These constraints are validated at compile-time when `annotation-constraints` is on the compiler's classpath. No
+These constraints are validated at compile-time when **annotation-constraints** is on the compiler's classpath. No
 configuration is necessary because it includes an annotation processor which is picked up automatically by javac
-(see Eclipse usage below). If you violate any of the constraints, you'll receive an error. For example:
+(see below for Eclipse usage). If you violate any of the constraints, you'll receive an error. For example:
 
 ```java
 @Model
@@ -81,10 +81,10 @@ Here's how to do just that.
 
 1. Create a new annotation and add constraint meta-annotations to it.
 1. Annotate your new annotation with `@ProvidesConstraintsFor(ExistingAnnotation.class)`.
-1. To register your new annotation with annotation-constraints, create a text file named
+1. To register your new annotation with **annotation-constraints**, create a text file named
 `com.overstock.constraint.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
 name of your new annotation in it.
-1. Make sure the `annotation-constraints` jar and your new annotation class are on the classpath during compilation.
+1. Make sure the **annotation-constraints** jar and your new annotation class are on the classpath during compilation.
 
 See the JavaDoc for `com.overstock.constraint.provider.ProvidesConstraintsFor` for more details.
 
@@ -126,7 +126,7 @@ Though there is some overlap, we think writing a `Verifier` is easier than writi
 1. Implement the `Verifier` for your new constraint.
 (See the JavaDoc for [com.overstock.constraint.verifier.Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/Verifier.java)
 for more details and/or have a look at [an example Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/DisallowAnnotationsVerifier.java).)
-1. Make sure both `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
+1. Make sure both **annotation-constraints** and your new `Verifier` class are on the classpath during compilation.
 
 Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
 because they have yet to be compiled).
@@ -142,9 +142,9 @@ necessary validation and apply this constraint to `@HttpMethod` via `@ProvidesCo
 
 ## Maven usage
 
-`annotation-constraints` runs as an annotation processor, which happens automatically when it's on the classpath at
+**annotation-constraints** runs as an annotation processor, which happens automatically when it's on the classpath at
 compile-time (for Java 6 and greater). No extra configuration is necessary other than declaring a dependency on
-`annotation-constraints`.
+**annotation-constraints**.
 
 ```xml
   <dependencies>
@@ -160,7 +160,7 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
 
 ## Eclipse with m2eclipse for Maven integration
 
-If you use Maven, the easiest way to use annotation-constraints within Eclipse is using m2eclipse and m2e-apt.
+If you use Maven, the easiest way to use **annotation-constraints** within Eclipse is using m2eclipse and m2e-apt.
 
 * Install m2eclipse from the Eclipse Marketplace.
 * Install m2e-apt (from the Eclipse Marketplace or from the update site listed
@@ -174,7 +174,7 @@ If you're not using Maven you'll have to configure annotation processing in Ecli
 
 * Under the project's properties, go to **Java Compiler** -> **Annotation Processing** and check
 "Enable project specific settings", "Enable annotation processing" and "Enable processing in editor".
-* Under **Annotation Processing**, go to **Factory Path** and add the annotation-constraints jar via **Add JARs...**,
-**Add External JARs** or **Add Variable...**.
+* Under **Annotation Processing**, go to **Factory Path** and add the **annotation-constraints** jar via
+**Add JARs...**, **Add External JARs** or **Add Variable...**.
 * Also add any jars which contain additional constraints (custom constraints or `@ProvidesConstraintsFor`) along with
 any jars which they depend on.
