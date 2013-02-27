@@ -1,8 +1,20 @@
-# Annotation Constraints
+# annotation-constraints
 
-Annotation Constraints is a library for Java 6 or newer that allows you to specify constraints on annotated elements
-which are verified at compile-time. For example, the following `@Model` annotation can only be placed on a class which
-extends `AbstractModel` and has a no-argument constructor.
+Intended audience: Java (6+) developers who write annotations.
+
+You've probably come across Java annotations which are constrained in some way (e.g. require a no argument constructor
+on the annotated class, or are incompatible with one ore more other annotations), but most of the time the constraints
+are only mentioned in the annotation's JavaDoc and enforced at runtime. However, most of these constraints could be
+verified at compile-time if there was a way to express them, and odds are that you'd prefer compile-time errors to
+runtime ones since you are already using Java.
+
+`annotation-constraints` is a library for Java 6 or newer that allows you to specify constraints on annotations which
+are verified at compile-time via the included annotation processor. It includes commonly-used constraint
+meta-annotations and allows you to create your own. Additionally, it allows you to add constraints to existing (e.g.
+third-party) annotations.
+
+For example, suppose you had a `@Model` annotation which should only be placed on a class which extends `AbstractModel`
+and has a no-argument constructor. You could add some constraint meta-annotations to it like so:
 
 ```java
 @TargetRequiresSupertypes(AbstractModel.class) //target must extend AbstractModel
@@ -13,8 +25,8 @@ public @interface Model {
 ```
 
 These constraints are validated at compile-time when `annotation-constraints` is on the compiler's classpath. No
-configuration is necessary because it uses an annotation processor which is picked up automatically by the compiler.
-If you violate any of the constraints, you'll receive an error. For example:
+configuration is necessary because it includes an annotation processor which is picked up automatically by javac
+(see Eclipse usage below). If you violate any of the constraints, you'll receive an error. For example:
 
 ```java
 @Model
@@ -39,8 +51,8 @@ Class Person is annotated with @Model but does not have a constructor with no ar
 
 The following constraints are included in the `com.overstock.constraint` package. They can be combined with one another
 and/or with your own custom constraints. The "target annotation" below refers to the annotation which is being
-constrained (i.e. annotated with one or more of these constraint annotations). In the example above, `@Model` is the
-"target annotation" because it is annotated with `@TargetRequiresSupertypes` and `@TargetRequiresConstructors`.
+constrained (i.e. annotated with one or more of these constraint meta-annotations). In the example above, `@Model` is
+the "target annotation" because it is annotated with `@TargetRequiresSupertypes` and `@TargetRequiresConstructors`.
 "Element" below refers to the program element which is annotated with the "target annotation", e.g. `Person` above.
 
 * **@TargetDisallowsAnnotations(Class<? extends Annotation[])** issues an error when an element is annotated with both
@@ -62,11 +74,12 @@ There is also one constrained annotation included.
 * **@NewInstanceConstructible** requires that the target type have a constructor with no arguments so that it can be
 constructed via `Class.newInstance()`.
 
-## Adding constraints to existing annotations
+## Adding constraint meta-annotations to existing annotations
 
-You may want to add a constraint to an annotation for which you don't control the source code. Here's how to do that.
+You may want to add a constraint meta-annotation to some annotation for which you don't control the source code.
+Here's how to do just that.
 
-1. Create a new annotation and add constraints to it.
+1. Create a new annotation and add constraint meta-annotations to it.
 1. Annotate your new annotation with `@ProvidesConstraintsFor(ExistingAnnotation.class)`.
 1. To register your new annotation with annotation-constraints, create a text file named
 `com.overstock.constraint.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
@@ -104,11 +117,15 @@ Next, create a text file named `META-INF/com.overstock.constraint.provider.const
 That's it. As long as these files are in the same compilation unit or on the classpath during compilation, the
 validation will occur at compile-time.
 
-## Writing your own constraint
+## Writing your own constraint meta-annotation
+
+If you need a constraint which is not provided, you can write your own meta-annotation and a `Verifier` for it.
+Though there is some overlap, we think writing a `Verifier` is easier than writing an annotation processor from scratch.
 
 1. Create an annotation and add `@Constraint(verifiedBy = ...)` to it.
 1. Implement the `Verifier` for your new constraint.
-(See com.overstock.constraint.verifier.Verifier JavaDoc for details.)
+(See the JavaDoc for [com.overstock.constraint.verifier.Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/Verifier.java)
+for more details and/or have a look at [an example Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/DisallowAnnotationsVerifier.java).)
 1. Make sure both `annotation-constraints` and your new `Verifier` class are on the classpath during compilation.
 
 Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
@@ -119,9 +136,9 @@ because they have yet to be compiled).
 For example, JAX-RS (JSR 311) introduced annotations for some common HTTP methods, namely `@GET`, `@PUT`, `@POST`,
 `@HEAD` and `@DELETE`, which are all annotated with `@HttpMethod`. The JavaDoc for `@HttpMethod` states, "It is an error
 for a method to be annotated with more than one annotation that is annotated with `@HttpMethod`". To have this validated
-at compile-time instead of runtime, we could create a new constraint, say `@TargetHasOneHttpMethod`, write a
-`Verifier` which does the necessary validation and apply this constraint to via
-`@ProvidesConstraintsFor(HttpMethod.class)`.
+at compile-time instead of runtime, we could create a new constraint, say
+`@TargetHasAtMostOneHttpMethod(verifiedBy = HttpMethodVerifier.class)`, implement `HttpMethodVerifier` which does the
+necessary validation and apply this constraint to `@HttpMethod` via `@ProvidesConstraintsFor(HttpMethod.class)`.
 
 ## Maven usage
 
