@@ -83,7 +83,8 @@ Here's how to do just that.
 1. Annotate your new annotation with `@ProvidesConstraintsFor(ExistingAnnotation.class)`.
 1. To register your new annotation with **annotation-constraints**, create a text file named
 `com.overstock.constraint.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
-name of your new annotation in it.
+name of your new annotation in it. Without this file, the constraints will only be validated in the compilation unit in
+which they're defined.
 1. Make sure the **annotation-constraints** jar and your new annotation class are on the classpath during compilation.
 
 See the JavaDoc for [com.overstock.constraint.provider.ProvidesConstraintsFor](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/provider/ProvidesConstraintsFor.java) for more details.
@@ -93,8 +94,8 @@ See the JavaDoc for [com.overstock.constraint.provider.ProvidesConstraintsFor](h
 For example, JAX-RS (JSR 311) has `@ApplicationPath`, which is required to only be applied to a subclass of
 `Application`. To have this validated at compile-time we would do the following.
 
-First, create an annotation on which to put constraints like so (the name or location of this annotation doesn't really
-matter):
+First, create an annotation on which to put constraints. The name or location of this annotation doesn't really
+matter, so let's call it [ApplicationPathConstraints](https://github.com/overstock/annotation-constraints/blob/master/src/it/integration-source/src/main/java/example/ApplicationPathConstraints.java):
 
 ```java
 package example;
@@ -109,13 +110,14 @@ public @interface ApplicationPathConstraints {
 }
 ```
 
-Next, create a text file named `META-INF/com.overstock.constraint.provider.constraint-providers` with the following line of text:
+Next, create a text file named [META-INF/com.overstock.constraint.provider.constraint-providers](https://github.com/overstock/annotation-constraints/blob/master/src/it/integration-source/src/main/resources/META-INF/com.overstock.constraint.provider.constraint-providers)
+with the following line of text:
 
 ```
  example.ApplicationPathProvider
 ```
 
-That's it. As long as these files are in the same compilation unit or on the classpath during compilation, the
+That's it. As long as these files are in the current compilation unit or on the classpath during compilation, the
 validation will occur at compile-time.
 
 ## Writing your own constraint meta-annotation
@@ -140,6 +142,8 @@ for a method to be annotated with more than one annotation that is annotated wit
 at compile-time instead of runtime, we could create a new constraint, say
 `@TargetHasAtMostOneHttpMethod(verifiedBy = HttpMethodVerifier.class)`, implement `HttpMethodVerifier` which does the
 necessary validation and apply this constraint to `@HttpMethod` via `@ProvidesConstraintsFor(HttpMethod.class)`.
+
+TODO write up the example and link to it
 
 ## Maven usage
 
