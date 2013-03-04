@@ -2,8 +2,8 @@ package disallowannotations;
 
 import noconstraints.Unconstrained;
 
-import com.overstock.constraint.TargetDisallowsAnnotations;
+import com.overstock.constraint.TargetCannotBeAnnotatedWith;
 
-@TargetDisallowsAnnotations(Unconstrained.class)
+@TargetCannotBeAnnotatedWith(Unconstrained.class)
 public @interface DisallowUnconstrained {
 }

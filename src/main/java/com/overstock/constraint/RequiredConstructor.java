@@ -5,9 +5,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Describes a required constructor for use with {@link TargetRequiresConstructors}.
+ * Describes a required constructor for use with {@link TargetMustHaveConstructors}.
  *
- * @see TargetRequiresConstructors
+ * @see TargetMustHaveConstructors
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({}) //cannot be annotated on anything directly

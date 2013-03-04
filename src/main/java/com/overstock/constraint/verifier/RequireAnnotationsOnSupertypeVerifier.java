@@ -9,12 +9,11 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
 import com.overstock.constraint.processor.ConstraintMirror;
 import com.overstock.constraint.processor.MirrorUtils;
 
 /**
- * A verifier for {@link TargetRequiresAnnotationsOnSupertype}.
+ * A verifier for {@link com.overstock.constraint.TargetMustHaveASupertypeAnnotatedWith}.
  */
 public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 

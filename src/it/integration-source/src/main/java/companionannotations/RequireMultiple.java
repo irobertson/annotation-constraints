@@ -5,9 +5,9 @@ import requireconstructors.RequireNoArgConstructor;
 
 import java.lang.annotation.Inherited;
 
-import com.overstock.constraint.TargetRequiresAnnotations;
+import com.overstock.constraint.TargetMustBeAnnotatedWith;
 
 @Inherited
-@TargetRequiresAnnotations({Unconstrained.class, RequireNoArgConstructor.class})
+@TargetMustBeAnnotatedWith({Unconstrained.class, RequireNoArgConstructor.class})
 public @interface RequireMultiple {
 }

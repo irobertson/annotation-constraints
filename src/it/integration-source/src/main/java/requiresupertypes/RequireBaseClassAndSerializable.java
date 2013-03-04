@@ -2,8 +2,8 @@ package requiresupertypes;
 
 import java.io.Serializable;
 
-import com.overstock.constraint.TargetRequiresSupertypes;
+import com.overstock.constraint.TargetMustHaveSupertypes;
 
-@TargetRequiresSupertypes({BaseClass.class, Serializable.class})
+@TargetMustHaveSupertypes({BaseClass.class, Serializable.class})
 public @interface RequireBaseClassAndSerializable {
 }

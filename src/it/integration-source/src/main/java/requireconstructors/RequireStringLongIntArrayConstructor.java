@@ -1,8 +1,8 @@
 package requireconstructors;
 
 import com.overstock.constraint.RequiredConstructor;
-import com.overstock.constraint.TargetRequiresConstructors;
+import com.overstock.constraint.TargetMustHaveConstructors;
 
-@TargetRequiresConstructors(@RequiredConstructor({String.class, long.class, int[].class}))
+@TargetMustHaveConstructors(@RequiredConstructor({String.class, long.class, int[].class}))
 public @interface RequireStringLongIntArrayConstructor {
 }

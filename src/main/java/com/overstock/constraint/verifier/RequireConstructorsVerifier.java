@@ -11,11 +11,10 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.TargetRequiresConstructors;
 import com.overstock.constraint.processor.ConstraintMirror;
 
 /**
- * A verifier for {@link TargetRequiresConstructors}.
+ * A verifier for {@link com.overstock.constraint.TargetMustHaveConstructors}.
  */
 public class RequireConstructorsVerifier extends AbstractVerifier {
 

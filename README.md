@@ -17,8 +17,8 @@ For example, suppose you had a `@Model` annotation which should only be placed o
 and has a no-argument constructor. You could add some constraint meta-annotations to it like so:
 
 ```java
-@TargetRequiresSupertypes(AbstractModel.class) //target must extend AbstractModel
-@TargetRequiresConstructors(@RequiredConstructor({})) //target must have a no-arg constructor
+@TargetMustHaveSupertypes(AbstractModel.class) //target must extend AbstractModel
+@TargetMustHaveConstructors(@RequiredConstructor({})) //target must have a no-arg constructor
 @Target(ElementType.TYPE)
 public @interface Model {
 }
@@ -52,23 +52,23 @@ Class Person is annotated with @Model but does not have a constructor with no ar
 The following constraints are included in the `com.overstock.constraint` package. They can be combined with one another
 and/or with your own custom constraints. The phrase _target annotation_ below refers to the annotation which is being
 constrained (i.e. annotated with one or more of these constraint meta-annotations). In the example above, `@Model` is
-the _target annotation_ because it is annotated with `@TargetRequiresSupertypes` and `@TargetRequiresConstructors`. The
+the _target annotation_ because it is annotated with `@TargetMustHaveSupertypes` and `@TargetMustHaveConstructors`. The
 phrase _target element_ below refers to the program element which is annotated with the _target annotation_, e.g.
 `Person` above.
 
-* **@TargetDisallowsAnnotations(Class<? extends Annotation[])** issues an error when the _target element_ is annotated with both
-the _target annotation_ and any of the incompatible annotations. This is a way of specifying that the target annotation is
-not compatible with the specified annotations.
-* **@TargetRecommendsAnnotations(Class<? extends Annotation[])** issues a warning when the _target element_ is annotated with
-the _target annotation_ and not with all of the specified annotations.
-* **@TargetRequiresAnnotations(Class<? extends Annotation[])** issues an error when the _target element_ is annotated with the
-_target annotation_ and not with all of the specified annotations.
-* **@TargetRequiresAnnotationsOnSupertype(Class<? extends Annotation[])** is the same as
-`@TargetRequiresAnnotations` except it checks supertypes (i.e. for annotations which are not `@Inherited`).
-* **@TargetRequiresConstructors(RequiredConstructor[])** issues an error when the _target element_ is annotated with the
+* **@TargetCannotBeAnnotatedWith(Class<? extends Annotation[])** issues an error when the _target element_ is annotated
+with both the _target annotation_ and any of the incompatible annotations. This is a way of specifying that the target
+annotation is not compatible with the specified annotations.
+* **@TargetShouldBeAnnotatedWith(Class<? extends Annotation[])** issues a warning when the _target element_ is annotated
+with the _target annotation_ and not with all of the specified annotations.
+* **@TargetMustBeAnnotatedWith(Class<? extends Annotation[])** issues an error when the _target element_ is annotated
+with the _target annotation_ and not with all of the specified annotations.
+* **@TargetMustHaveASupertypeAnnotatedWith(Class<? extends Annotation[])** is the same as
+`@TargetMustBeAnnotatedWith` except it checks supertypes (i.e. for annotations which are not `@Inherited`).
+* **@TargetMustHaveConstructors(RequiredConstructor[])** issues an error when the _target element_ is annotated with the
 _target annotation_ and does not have all of the required constructors with the necessary arguments types.
-* **@TargetRequiresSupertypes(Class<?>[])** issues an error when an _target element_ is annotated with the _target annotation_
-and does not have all of the required supertypes (classes and/or interfaces).
+* **@TargetMustHaveSupertypes(Class<?>[])** issues an error when an _target element_ is annotated with the
+_target annotation_ and does not have all of the required supertypes (classes and/or interfaces).
 
 There is also one constrained annotation included.
 
@@ -106,7 +106,7 @@ import ...
 @Target({}) //this annotation is not intended to be placed on any program element
 @Retention(RetentionPolicy.RUNTIME)
 @ProvidesConstraintsFor(ApplicationPath.class)
-@TargetRequiresSupertypes(Application.class)
+@TargetMustHaveSupertypes(Application.class)
 public @interface ApplicationPathConstraints {
 }
 ```

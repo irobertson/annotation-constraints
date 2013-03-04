@@ -5,9 +5,9 @@ import requireconstructors.RequireNoArgConstructor;
 
 import java.lang.annotation.Inherited;
 
-import com.overstock.constraint.TargetRecommendsAnnotations;
+import com.overstock.constraint.TargetShouldBeAnnotatedWith;
 
 @Inherited
-@TargetRecommendsAnnotations({Unconstrained.class, RequireNoArgConstructor.class})
+@TargetShouldBeAnnotatedWith({Unconstrained.class, RequireNoArgConstructor.class})
 public @interface RecommendMultiple {
 }

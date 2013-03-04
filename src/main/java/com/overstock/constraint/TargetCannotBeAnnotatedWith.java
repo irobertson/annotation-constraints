@@ -7,21 +7,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.overstock.constraint.verifier.DisallowAnnotationsVerifier;
+import com.overstock.constraint.verifier.IncompatibleAnnotationsVerifier;
 
 /**
  * Requires that annotated types NOT have specific annotations.
  */
-@Constraint(verifiedBy = DisallowAnnotationsVerifier.class)
+@Constraint(verifiedBy = IncompatibleAnnotationsVerifier.class)
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface TargetDisallowsAnnotations {
+public @interface TargetCannotBeAnnotatedWith {
 
   /**
    * The annotations which cannot be present alongside the target annotation.
    *
-   * For example, if {@code @SomeAnnotation} is annotated with {@code @TargetDisallowsAnnotations}, then it will be an error
+   * For example, if {@code @SomeAnnotation} is annotated with {@code @TargetCannotBeAnnotatedWith}, then it will be an error
    * for any class annotated with {@code @SomeAnnotation} to also be annotated with a type from this array.
    */
   Class<? extends Annotation>[] value();

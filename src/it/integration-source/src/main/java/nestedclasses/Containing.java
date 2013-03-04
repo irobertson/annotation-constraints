@@ -4,7 +4,7 @@ import requireconstructors.RequireNoArgConstructor;
 
 import java.io.Serializable;
 
-import com.overstock.constraint.TargetRequiresSupertypes;
+import com.overstock.constraint.TargetMustHaveSupertypes;
 
 public class Containing {
 
@@ -17,7 +17,7 @@ public class Containing {
     public NestedClassFail(String s) {}
   }
 
-  @TargetRequiresSupertypes(Serializable.class)
+  @TargetMustHaveSupertypes(Serializable.class)
   private static @interface NestedConstrained {}
 
   @NestedConstrained

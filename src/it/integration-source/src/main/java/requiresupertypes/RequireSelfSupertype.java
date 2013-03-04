@@ -1,7 +1,7 @@
 package requiresupertypes;
 
-import com.overstock.constraint.TargetRequiresSupertypes;
+import com.overstock.constraint.TargetMustHaveSupertypes;
 
-@TargetRequiresSupertypes(RequireSelfSupertypePass.class)
+@TargetMustHaveSupertypes(RequireSelfSupertypePass.class)
 public @interface RequireSelfSupertype {
 }

@@ -16,12 +16,12 @@ import com.overstock.constraint.verifier.CompanionAnnotationsVerifier;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface TargetRequiresAnnotations {
+public @interface TargetMustBeAnnotatedWith {
 
   /**
    * An array of annotations which MUST be present on any class annotated with the target annotation.
    *
-   * For example, if {@code SomeAnnotation} is annotated with {@code TargetRequiresAnnotations(OtherAnnotation.class)},
+   * For example, if {@code SomeAnnotation} is annotated with {@code TargetMustBeAnnotatedWith(OtherAnnotation.class)},
    * then it will be an error whenever a class annotated with {@code @SomeAnnotation} is not also annotated with
    * {@code @OtherAnnotation}.
    */

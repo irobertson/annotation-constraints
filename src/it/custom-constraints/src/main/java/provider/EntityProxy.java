@@ -6,13 +6,13 @@ import java.lang.annotation.Target;
 
 import javax.persistence.Entity;
 
+import com.overstock.constraint.TargetMustHaveConstructors;
 import com.overstock.constraint.provider.ProvidesConstraintsFor;
 import com.overstock.constraint.RequiredConstructor;
-import com.overstock.constraint.TargetRequiresConstructors;
 
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)
-@TargetRequiresConstructors(@RequiredConstructor({}))
+@TargetMustHaveConstructors(@RequiredConstructor({}))
 @ProvidesConstraintsFor(Entity.class)
 public @interface EntityProxy {
 }

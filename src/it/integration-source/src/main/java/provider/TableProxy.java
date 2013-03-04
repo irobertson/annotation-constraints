@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.overstock.constraint.TargetMustBeAnnotatedWith;
 import com.overstock.constraint.provider.ProvidesConstraintsFor;
-import com.overstock.constraint.TargetRequiresAnnotations;
 
 @Target({})
-@TargetRequiresAnnotations(Entity.class)
+@TargetMustBeAnnotatedWith(Entity.class)
 @ProvidesConstraintsFor(Table.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TableProxy {

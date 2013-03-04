@@ -15,13 +15,13 @@ import com.overstock.constraint.verifier.RequireSupertypesVerifier;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface TargetRequiresSupertypes {
+public @interface TargetMustHaveSupertypes {
 
   /**
    * The classes which must be supertypes of any class annotated with the target annotation.
    *
    * For example, if {@code @SomeAnnotation} is annotated with
-   * {@code @TargetRequiresSupertypes(Superclass.class, Superinterface.class)} then it will be an error if a class
+   * {@code @TargetMustHaveSupertypes(Superclass.class, Superinterface.class)} then it will be an error if a class
    * annotated with {@code @SomeAnnotation} does not extend {@code Superclass} and implement {@code Superinterface}.
    */
   Class<?>[] value();

@@ -5,9 +5,9 @@ import noconstraints.Unconstrained;
 
 import java.lang.annotation.Inherited;
 
-import com.overstock.constraint.TargetRequiresAnnotationsOnSupertype;
+import com.overstock.constraint.TargetMustHaveASupertypeAnnotatedWith;
 
 @Inherited
-@TargetRequiresAnnotationsOnSupertype({Unconstrained.class, RequireUnconstrained.class})
+@TargetMustHaveASupertypeAnnotatedWith({Unconstrained.class, RequireUnconstrained.class})
 public @interface RequireUnconstrainedSupertype {
 }

@@ -11,13 +11,13 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.TargetRecommendsAnnotations;
-import com.overstock.constraint.TargetRequiresAnnotations;
+import com.overstock.constraint.TargetMustBeAnnotatedWith;
+import com.overstock.constraint.TargetShouldBeAnnotatedWith;
 import com.overstock.constraint.processor.ConstraintMirror;
 import com.overstock.constraint.processor.MirrorUtils;
 
 /**
- * A verifier for {@link TargetRequiresAnnotations} and {@link TargetRecommendsAnnotations}.
+ * A verifier for {@link com.overstock.constraint.TargetMustBeAnnotatedWith} and {@link com.overstock.constraint.TargetShouldBeAnnotatedWith}.
  */
 public class CompanionAnnotationsVerifier extends AbstractVerifier {
 
@@ -26,12 +26,12 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
     Types typeUtils = processingEnv.getTypeUtils();
     Elements elementUtils = processingEnv.getElementUtils();
     DeclaredType constraintType = constraint.getAnnotation().getAnnotationType();
-    if (MirrorUtils.isSameType(TargetRequiresAnnotations.class, constraintType, typeUtils, elementUtils)) {
+    if (MirrorUtils.isSameType(TargetMustBeAnnotatedWith.class, constraintType, typeUtils, elementUtils)) {
       requireAnnotations = constraint;
     }
 
     ConstraintMirror recommendAnnotations = null;
-    if (MirrorUtils.isSameType(TargetRecommendsAnnotations.class, constraintType, typeUtils, elementUtils)) {
+    if (MirrorUtils.isSameType(TargetShouldBeAnnotatedWith.class, constraintType, typeUtils, elementUtils)) {
       recommendAnnotations = constraint;
     }
     if (requireAnnotations == null && recommendAnnotations == null) {
