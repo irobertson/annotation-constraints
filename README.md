@@ -129,7 +129,7 @@ Though there is some overlap, we think writing a `Verifier` is easier than writi
 1. Create an annotation and add `@Constraint(verifiedBy = ...)` to it.
 1. Implement the `Verifier` for your new constraint.
 (See the JavaDoc for [com.overstock.constraint.verifier.Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/Verifier.java)
-for more details and/or have a look at [an example Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/DisallowAnnotationsVerifier.java).)
+for more details and/or have a look at [an example Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/IncompatibleAnnotationsVerifier.java).)
 1. Make sure both **annotation-constraints** and your new `Verifier` class are on the classpath during compilation.
 
 Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
