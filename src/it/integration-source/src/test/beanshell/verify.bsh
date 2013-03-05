@@ -6,6 +6,15 @@ import com.overstock.constraint.test.FileAssert;
 String localBasedir = basedir.getPath().split("../integration-source")[0];
 File buildLog = new File(localBasedir, "build.log");
 FileAssert file = new FileAssert(buildLog);
+
+file.assertNoLineMatches(new Matcher[] {
+  Matchers.containsString("IllegalStateException"),
+  Matchers.containsString("RuntimeException"),
+  Matchers.containsString("Fatal error compiling"),
+  Matchers.containsString("Internal compiler error"),
+  Matchers.containsString("Pass") //naming convention for classes which should compile cleanly
+});
+
 file.assertAnyLineMatches(new Matcher[] {
   Matchers.containsString("Class companionannotations.RequireUnconstrainedFail is annotated with @RequireUnconstrained but not with @Unconstrained"),
   Matchers.containsString("Class companionannotations.RequireMultipleFailOne is annotated with @RequireMultiple but not with @Unconstrained"),
@@ -29,10 +38,6 @@ file.assertAnyLineMatches(new Matcher[] {
   Matchers.containsString("Class nestedclasses.Containing.NestedClassFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
   Matchers.containsString("Class nestedclasses.Containing.NestedConstrainedFail is annotated with @NestedConstrained but does not have Serializable as a supertype"),
   Matchers.containsString("Class example.Person is annotated with @Model but does not have a constructor with no arguments"),
-  //TODO javac only reports the first error for the annotation Matchers.containsString("Class example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
+  //TODO javac only reports a single error for the annotation Matchers.containsString("Class example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
   Matchers.containsString("Class example.ApplicationPathFail is annotated with @ApplicationPath but does not have Application as a supertype")
-});
-
-file.assertNoLineMatches(new Matcher[] {
-  Matchers.containsString("Pass") //naming convention for classes which should compile cleanly
 });

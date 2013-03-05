@@ -16,14 +16,6 @@
     Source code for integration tests. Some should have errors and/or warnings from annotation processing.
   </description>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.overstock</groupId>
-      <artifactId>custom-constraints</artifactId>
-      <version>@annotation-constraints.version@</version>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
       <plugin>

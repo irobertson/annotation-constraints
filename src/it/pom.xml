@@ -10,7 +10,6 @@
   <name>Integration Parent</name>
 
   <modules>
-    <module>integration-source</module>
     <module>custom-constraints</module>
     <!-- Endpoint integration modules are not included here -->
   </modules>
@@ -36,30 +35,5 @@
       <version>1.1.1</version>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <inherited>true</inherited>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>../integration-source/src/main/java</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
 
 </project>

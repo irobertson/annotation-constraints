@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -13,6 +16,22 @@ public class MirrorUtils {
   private static final Map<Class<?>, TypeMirror> TYPE_MIRRORS = new HashMap<Class<?>, TypeMirror>();
 
   private static final Map<TypeMirror, Set<TypeMirror>> SUPERTYPES = new HashMap<TypeMirror, Set<TypeMirror>>();
+
+  /**
+   * Gets the value of an annotation's element.
+   *
+   * @param annotationMirror the annotation mirror
+   * @param elementName the name of the element
+   * @return the value of the annotation's element with the specified name or {@code null} if it doesn't exist
+   */
+  public static AnnotationValue getAnnotationValue(AnnotationMirror annotationMirror, String elementName) {
+    for (ExecutableElement executableElement : annotationMirror.getElementValues().keySet()) {
+      if (executableElement.getSimpleName().contentEquals(elementName)) {
+        return annotationMirror.getElementValues().get(executableElement);
+      }
+    }
+    return null;
+  }
 
   /**
    * Gets the TypeMirror representing the class.

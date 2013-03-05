@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+
+import com.overstock.constraint.processor.MirrorUtils;
 
 class VerifierUtils {
 
@@ -26,15 +26,14 @@ class VerifierUtils {
    * @return the array values for the element on the annotation with the specified name
    */
   public static List<AnnotationValue> getArrayValues(AnnotationMirror annotation, String elementName) {
-    Map<? extends ExecutableElement, ? extends AnnotationValue> elementValues = annotation.getElementValues();
-    for (ExecutableElement executableElement : elementValues.keySet()) {
-      if (executableElement.getSimpleName().contentEquals(elementName)) {
-        @SuppressWarnings("unchecked")
-        List<AnnotationValue> values = (List<AnnotationValue>) elementValues.get(executableElement).getValue();
-        return values;
-      }
+    AnnotationValue annotationValue = MirrorUtils.getAnnotationValue(annotation, elementName);
+    if (annotationValue == null) {
+      throw new IllegalStateException(annotation + "." + elementName + " was not found");
     }
-    throw new IllegalStateException(annotation + "." + elementName + " was not found");
+
+    @SuppressWarnings("unchecked")
+    List<AnnotationValue> values = (List<AnnotationValue>) annotationValue.getValue();
+    return values;
   }
 
   /**

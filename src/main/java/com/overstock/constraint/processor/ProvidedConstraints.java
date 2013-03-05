@@ -10,8 +10,8 @@ import java.util.Set;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
@@ -44,19 +44,12 @@ class ProvidedConstraints {
       TypeMirror constraintsForMirror, Types typeUtils, Elements elementUtils, ProcessingEnvironment processingEnv) {
     for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(provider)) {
       if (typeUtils.isSameType(constraintsForMirror, annotationMirror.getAnnotationType())) {
-        TypeMirror targetMirror = null;
-        for (ExecutableElement executableElement : annotationMirror.getElementValues().keySet()) {
-          if (executableElement.getSimpleName().contentEquals("value")) {
-            targetMirror = (TypeMirror) annotationMirror.getElementValues().get(executableElement).getValue();
-          }
+        AnnotationValue value = MirrorUtils.getAnnotationValue(annotationMirror, "value");
+        if (value == null) {
+          continue; //apparently isSameType can return true for javac when one is a missing type!!!
         }
-        if (targetMirror == null) {
-          throw new IllegalStateException("Invalid " + ProvidesConstraintsFor.class.getSimpleName() + " annotation on "
-            + provider.asType());
-        }
-        putOrAddAll(constraints, typeUtils.asElement(targetMirror), getConstraints(provider, processingEnv,
-          provider.asType()));
-        break; //found the constraints
+        putOrAddAll(constraints, typeUtils.asElement((TypeMirror) value.getValue()), getConstraints(provider,
+          processingEnv, provider.asType()));
       }
     }
   }

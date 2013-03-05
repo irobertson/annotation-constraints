@@ -1,0 +1,4 @@
+
+@MissingAnnotation
+public class SomeClass {
+}
