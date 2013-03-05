@@ -31,6 +31,7 @@ import javax.tools.Diagnostic;
 
 import com.overstock.constraint.Constraint;
 import com.overstock.constraint.provider.ProvidesConstraintsFor;
+import com.overstock.constraint.verifier.VerificationContext;
 import com.overstock.constraint.verifier.Verifier;
 
 @SupportedAnnotationTypes("*")
@@ -81,7 +82,7 @@ public class ConstraintProcessor extends AbstractProcessor {
               verifiers.put(constraintType, verifier);
             }
           }
-          verifier.verify(element, annotationMirror, constraint);
+          verifier.verify(new VerificationContext(processingEnv, element, annotationMirror, constraint));
         }
       }
     }

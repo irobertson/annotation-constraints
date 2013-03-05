@@ -63,4 +63,12 @@ public final class ConstraintMirror {
 
     return true;
   }
+
+  @Override
+  public String toString() {
+    return "ConstraintMirror{" +
+      "annotation=" + annotation +
+      ", provider=" + provider +
+      '}';
+  }
 }
