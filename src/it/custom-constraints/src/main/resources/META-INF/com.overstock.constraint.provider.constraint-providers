@@ -1,1 +1,2 @@
 provider.EntityProxy
+provider.PathConstraintProvider

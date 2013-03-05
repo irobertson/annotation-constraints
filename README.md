@@ -2,8 +2,8 @@
 
 Intended audience: Java (6+) developers who write annotations.
 
-You've probably come across Java annotations which are constrained in some way (e.g. require a no argument constructor
-on the annotated class, or are incompatible with one ore more other annotations), but most of the time the constraints
+You've probably come across Java annotations which are constrained in some way (are incompatible with one ore more other
+annotations, require a no argument constructor on the annotated class, etc.), but most of the time these constraints
 are only mentioned in the annotation's JavaDoc and enforced at runtime. However, most of these constraints could be
 verified at compile-time if there was a way to express them, and odds are that you'd prefer compile-time errors to
 runtime ones since you are already using Java.
@@ -115,7 +115,7 @@ Next, create a text file named [META-INF/com.overstock.constraint.provider.const
 with the following line of text:
 
 ```
- example.ApplicationPathProvider
+example.ApplicationPathProvider
 ```
 
 That's it. As long as these files are in the current compilation unit or on the classpath during compilation, the
@@ -137,14 +137,19 @@ because they have yet to be compiled).
 
 ### Example of writing your own constraint
 
-For example, JAX-RS (JSR 311) introduced annotations for some common HTTP methods, namely `@GET`, `@PUT`, `@POST`,
-`@HEAD` and `@DELETE`, which are all annotated with `@HttpMethod`. The JavaDoc for `@HttpMethod` states, "It is an error
-for a method to be annotated with more than one annotation that is annotated with `@HttpMethod`". To have this validated
-at compile-time instead of runtime, we could create a new constraint, say
-`@TargetHasAtMostOneHttpMethod(verifiedBy = HttpMethodVerifier.class)`, implement `HttpMethodVerifier` which does the
-necessary validation and apply this constraint to `@HttpMethod` via `@ProvidesConstraintsFor(HttpMethod.class)`.
+Suppose that you had several web service projects using JAX-RS (JSR 311) annotations and you wanted to reserve a certain
+path for health checks, say "/health", across all web services. To implement this, you would:
 
-TODO write up the example and link to it
+1. Create a new constraint annotation, [@ReservedPaths](https://github.com/overstock/annotation-constraints/blob/master/src/it/custom-constraints/src/main/java/provider/ReservedPaths.java).
+1. Implement a new verifier, [ReservedPathVerifier](https://github.com/overstock/annotation-constraints/blob/master/src/it/custom-constraints/src/main/java/verifier/ReservedPathVerifier.java).
+1. In this case, since we're adding a constraint an existing annotation we need to create a provider, [PathConstraintProvider](https://github.com/overstock/annotation-constraints/blob/master/src/it/custom-constraints/src/main/java/provider/PathConstraintProvider.java).
+This is only necessary if you're not able to add the constraint to the annotation's source code.
+
+Then, if you have a class which uses a reserved path, you get a compilation error similar to:
+
+```
+verifier.ReservedPathFail is annotated with @Path using a reserved path: /health
+```
 
 ## Maven usage
 
