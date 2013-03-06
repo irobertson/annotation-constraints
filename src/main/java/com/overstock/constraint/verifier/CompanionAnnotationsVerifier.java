@@ -3,8 +3,8 @@ package com.overstock.constraint.verifier;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
@@ -19,22 +19,22 @@ import com.overstock.constraint.processor.MirrorUtils;
 /**
  * A verifier for {@link com.overstock.constraint.TargetMustBeAnnotatedWith} and {@link com.overstock.constraint.TargetShouldBeAnnotatedWith}.
  */
-public class CompanionAnnotationsVerifier implements Verifier {
+public class CompanionAnnotationsVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(VerificationContext context) {
-    Types typeUtils = context.getTypeUtils();
-    Elements elementUtils = context.getElementUtils();
-    DeclaredType constraintType = context.getConstraint().getAnnotation().getAnnotationType();
+  public void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint) {
+    Types typeUtils = getTypeUtils();
+    Elements elementUtils = getElementUtils();
+    DeclaredType constraintType = constraint.getAnnotation().getAnnotationType();
 
     ConstraintMirror requireAnnotations = null;
     if (MirrorUtils.isSameType(TargetMustBeAnnotatedWith.class, constraintType, typeUtils, elementUtils)) {
-      requireAnnotations = context.getConstraint();
+      requireAnnotations = constraint;
     }
 
     ConstraintMirror recommendAnnotations = null;
     if (MirrorUtils.isSameType(TargetShouldBeAnnotatedWith.class, constraintType, typeUtils, elementUtils)) {
-      recommendAnnotations = context.getConstraint();
+      recommendAnnotations = constraint;
     }
 
     final List<TypeMirror> requiredAnnotations = requireAnnotations == null ? Collections.<TypeMirror>emptyList()
@@ -46,7 +46,7 @@ public class CompanionAnnotationsVerifier implements Verifier {
       return; //no constraints
     }
 
-    for (AnnotationMirror annotated : context.getElement().getAnnotationMirrors()) {
+    for (AnnotationMirror annotated : element.getAnnotationMirrors()) {
       TypeMirror annotatedType = annotated.getAnnotationType().asElement().asType();
       VerifierUtils.removeType(requiredAnnotations, annotatedType, typeUtils);
       VerifierUtils.removeType(recommendedAnnotations, annotatedType, typeUtils);
@@ -56,21 +56,17 @@ public class CompanionAnnotationsVerifier implements Verifier {
     }
 
     if (!recommendedAnnotations.isEmpty()) {
-      MessageBuilder.format(Diagnostic.Kind.WARNING, context)
+      messageBuilder(Diagnostic.Kind.WARNING, element, annotationMirror, constraint)
         .appendText(" but not with ")
         .appendAnnotations(recommendedAnnotations, " and ")
         .print();
     }
 
     if (!requiredAnnotations.isEmpty()) {
-      MessageBuilder.format(Diagnostic.Kind.ERROR, context)
+      messageBuilder(Diagnostic.Kind.WARNING, element, annotationMirror, constraint)
         .appendText(" but not with ")
         .appendAnnotations(requiredAnnotations, " and ")
         .print();
     }
-  }
-
-  @Override
-  public void init(ProcessingEnvironment environment) {
   }
 }

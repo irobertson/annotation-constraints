@@ -1,9 +1,13 @@
 package com.overstock.constraint.verifier;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
+
+import com.overstock.constraint.processor.ConstraintMirror;
 
 /**
  * A convenience builder for verification messages. Verifiers are recommended (but not required) to use this class so
@@ -11,23 +15,59 @@ import javax.tools.Diagnostic;
  */
 public final class MessageBuilder {
 
-  private Diagnostic.Kind kind;
+  private final Diagnostic.Kind kind;
 
-  private VerificationContext context;
+  private final ProcessingEnvironment processingEnv;
 
   private AnnotationValue value;
 
-  private StringBuilder text = new StringBuilder();
+  private final Element element;
 
-  public MessageBuilder(Diagnostic.Kind kind, VerificationContext context) {
-    if (kind == null) {
-      throw new NullPointerException("Kind cannot be null");
+  private final AnnotationMirror annotationMirror;
+
+  private final ConstraintMirror constraintMirror;
+
+  private final StringBuilder text = new StringBuilder();
+
+
+  public MessageBuilder(
+      Diagnostic.Kind kind,
+      ProcessingEnvironment processingEnv,
+      Element element,
+      AnnotationMirror annotationMirror,
+      ConstraintMirror constraintMirror) {
+    this.kind = verifyNotNull(kind, Diagnostic.Kind.class);
+    this.processingEnv = verifyNotNull(processingEnv, ProcessingEnvironment.class);
+    this.element = verifyNotNull(element, Element.class);
+    this.annotationMirror = verifyNotNull(annotationMirror, AnnotationMirror.class);
+    this.constraintMirror = verifyNotNull(constraintMirror, ConstraintMirror.class);
+  }
+
+  private static <T> T verifyNotNull(T value, Class<T> clazz) {
+    if (value == null) {
+      throw new NullPointerException(clazz.getSimpleName() + " cannot be null");
     }
-    this.kind = kind;
-    if (context == null) {
-      throw new NullPointerException("Context cannot be null");
+    else {
+      return value;
     }
-    this.context = context;
+  }
+
+  /**
+   * Creates a {@link MessageBuilder} with common formatting based on the context.
+   *
+   * @param kind the {@link Diagnostic.Kind}, which cannot be {@code null}
+   * @param context the context for verification
+   */
+  public static MessageBuilder format(
+      Diagnostic.Kind kind,
+      ProcessingEnvironment processingEnv,
+      Element element,
+      AnnotationMirror annotationMirror,
+      ConstraintMirror constraintMirror) {
+    return new MessageBuilder(kind, processingEnv, element, annotationMirror, constraintMirror)
+      .appendText(element)
+      .appendText(" is annotated with @")
+      .appendSimpleName(annotationMirror);
   }
 
   /**
@@ -37,9 +77,10 @@ public final class MessageBuilder {
    * @param context the context for verification
    */
   public static MessageBuilder format(Diagnostic.Kind kind, VerificationContext context) {
-    return new MessageBuilder(kind, context).appendText(context.getElement())
-      .appendText(" is annotated with @")
-      .appendSimpleName(context.getAnnotation());
+    return new MessageBuilder(kind, context.getProcessingEnvironment(), context.getElement(), context.getAnnotation(), context.getConstraint())
+    .appendText(context.getElement())
+    .appendText(" is annotated with @")
+    .appendSimpleName(context.getAnnotation());
   }
 
 
@@ -64,7 +105,7 @@ public final class MessageBuilder {
   }
 
   public MessageBuilder appendSimpleName(TypeMirror typeMirror) {
-    appendText(context.getTypeUtils().asElement(typeMirror).getSimpleName());
+    appendText(processingEnv.getTypeUtils().asElement(typeMirror).getSimpleName());
     return this;
   }
 
@@ -85,9 +126,9 @@ public final class MessageBuilder {
   }
 
   public void print() {
-    if (context.getConstraint().isProvided()) {
-      appendText(" as specified by ").appendText(context.getConstraint().getProvider());
+    if (constraintMirror.isProvided()) {
+      appendText(" as specified by ").appendText(constraintMirror.getProvider());
     }
-    context.getMessager().printMessage(kind, text, context.getElement(), context.getAnnotation(), value);
+    processingEnv.getMessager().printMessage(kind, text, element, annotationMirror, value);
   }
 }

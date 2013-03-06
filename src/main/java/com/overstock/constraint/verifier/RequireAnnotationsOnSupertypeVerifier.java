@@ -2,29 +2,30 @@ package com.overstock.constraint.verifier;
 
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
+import com.overstock.constraint.processor.ConstraintMirror;
 import com.overstock.constraint.processor.MirrorUtils;
 
 /**
  * A verifier for {@link com.overstock.constraint.TargetMustHaveASupertypeAnnotatedWith}.
  */
-public class RequireAnnotationsOnSupertypeVerifier implements Verifier {
+public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(VerificationContext context) {
-    List<TypeMirror> requiredAnnotations = VerifierUtils.getValuesAsTypes(context.getConstraint().getAnnotation());
+  public void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint) {
+    List<TypeMirror> requiredAnnotations = VerifierUtils.getValuesAsTypes(constraint.getAnnotation());
     if (requiredAnnotations.isEmpty()) {
       return;
     }
 
-    Types typeUtils = context.getTypeUtils();
-    for (TypeMirror supertypeMirror : MirrorUtils.getSupertypes(context.getElement().asType(), typeUtils)) {
+    Types typeUtils = getTypeUtils();
+    for (TypeMirror supertypeMirror : MirrorUtils.getSupertypes(element.asType(), typeUtils)) {
       TypeElement supertype = VerifierUtils.asTypeElement(supertypeMirror);
       for (AnnotationMirror supertypeAnnotationMirror : supertype.getAnnotationMirrors()) {
         VerifierUtils.removeType(requiredAnnotations, supertypeAnnotationMirror.getAnnotationType(), typeUtils);
@@ -33,14 +34,10 @@ public class RequireAnnotationsOnSupertypeVerifier implements Verifier {
     }
 
     if (!requiredAnnotations.isEmpty()) {
-      MessageBuilder.format(Diagnostic.Kind.ERROR, context)
+      messageBuilder(Diagnostic.Kind.ERROR, element, annotationMirror, constraint)
         .appendText(" but does not have a supertype annotated with ")
         .appendAnnotations(requiredAnnotations, " or ")
         .print();
     }
-  }
-
-  @Override
-  public void init(ProcessingEnvironment environment) {
   }
 }

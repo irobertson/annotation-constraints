@@ -2,44 +2,37 @@ package com.overstock.constraint.verifier;
 
 import java.util.List;
 
-import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.ElementFilter;
-import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
+
+import com.overstock.constraint.processor.ConstraintMirror;
 
 /**
  * A verifier for {@link com.overstock.constraint.TargetMustHaveConstructors}.
  */
-public class RequireConstructorsVerifier implements Verifier {
-
-  private Types typeUtils;
+public class RequireConstructorsVerifier extends AbstractVerifier {
 
   @Override
-  public void verify(VerificationContext context) {
+  public void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint) {
     @SuppressWarnings("unchecked")
-    List<AnnotationValue> requiredConstructorValues = (List<AnnotationValue>) context.getConstraint().getAnnotation()
+    List<AnnotationValue> requiredConstructorValues = (List<AnnotationValue>) constraint.getAnnotation()
       .getElementValues().values().iterator().next().getValue();
     for (AnnotationValue requiredConstructorValue : requiredConstructorValues) {
       AnnotationMirror requiredConstructorMirror = (AnnotationMirror) requiredConstructorValue.getValue();
     @SuppressWarnings("unchecked")
       List<AnnotationValue> argumentList = (List<AnnotationValue>) requiredConstructorMirror.getElementValues().values()
         .iterator().next().getValue();
-      if (!hasConstructor(context.getElement(), argumentList)) {
-        MessageBuilder.format(Diagnostic.Kind.ERROR, context)
+      if (!hasConstructor(element, argumentList)) {
+        messageBuilder(Diagnostic.Kind.ERROR, element, annotationMirror, constraint)
           .appendText(" but does not have a constructor with " + argumentLabel(argumentList))
           .print();
       }
     }
-  }
-
-  @Override
-  public void init(ProcessingEnvironment environment) {
-    this.typeUtils = environment.getTypeUtils();
   }
 
   private String argumentLabel(List<AnnotationValue> argumentList) {
@@ -73,9 +66,9 @@ public class RequireConstructorsVerifier implements Verifier {
       return false;
     }
     for (int i = 0; i < parameters.size(); ++i) {
-      if (!typeUtils.isSameType(
-          typeUtils.erasure(VerifierUtils.asType(parameters.get(i))),
-          typeUtils.erasure(VerifierUtils.asType(expected.get(i))))) {
+      if (!getTypeUtils().isSameType(
+          getTypeUtils().erasure(VerifierUtils.asType(parameters.get(i))),
+          getTypeUtils().erasure(VerifierUtils.asType(expected.get(i))))) {
         return false;
       }
     }
