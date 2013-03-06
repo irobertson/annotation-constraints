@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Documented
-@TargetMustHaveConstructors(@RequiredConstructor({}))
+@TargetMustHaveConstructors(@Constructor({}))
 @Target(ElementType.TYPE)
 public @interface NewInstanceConstructible {
 }

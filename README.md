@@ -2,8 +2,8 @@
 
 Intended audience: Java (6+) developers who write annotations.
 
-You've probably come across Java annotations which are constrained in some way (are incompatible with one ore more other
-annotations, require a no argument constructor on the annotated class, etc.), but most of the time these constraints
+You've probably come across Java annotations which are constrained in some way (they are incompatible with one ore more
+other annotations, require a no argument constructor on the annotated class, etc.), but most of the time these constraints
 are only mentioned in the annotation's JavaDoc and enforced at runtime. However, most of these constraints could be
 verified at compile-time if there was a way to express them, and odds are that you'd prefer compile-time errors to
 runtime ones since you are already using Java.
@@ -18,7 +18,7 @@ and has a no-argument constructor. You could add some constraint meta-annotation
 
 ```java
 @TargetMustHaveSupertypes(AbstractModel.class) //target must extend AbstractModel
-@TargetMustHaveConstructors(@RequiredConstructor({})) //target must have a no-arg constructor
+@TargetMustHaveConstructors(@Constructor({})) //target must have a no-arg constructor
 @Target(ElementType.TYPE)
 public @interface Model {
 }
@@ -65,7 +65,7 @@ with the _target annotation_ and not with all of the specified annotations.
 with the _target annotation_ and not with all of the specified annotations.
 * **@TargetMustHaveASupertypeAnnotatedWith(Class<? extends Annotation[])** is the same as
 `@TargetMustBeAnnotatedWith` except it checks supertypes (i.e. for annotations which are not `@Inherited`).
-* **@TargetMustHaveConstructors(RequiredConstructor[])** issues an error when the _target element_ is annotated with the
+* **@TargetMustHaveConstructors(Constructor[])** issues an error when the _target element_ is annotated with the
 _target annotation_ and does not have all of the required constructors with the necessary arguments types.
 * **@TargetMustHaveSupertypes(Class<?>[])** issues an error when an _target element_ is annotated with the
 _target annotation_ and does not have all of the required supertypes (classes and/or interfaces).
