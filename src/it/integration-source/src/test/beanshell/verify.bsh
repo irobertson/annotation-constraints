@@ -37,7 +37,8 @@ file.assertAnyLineMatches(new Matcher[] {
   Matchers.containsString("nestedclasses.Containing.NestedClassFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
   Matchers.containsString("nestedclasses.Containing.NestedConstrainedFail is annotated with @NestedConstrained but does not have Serializable as a supertype"),
   Matchers.containsString("verifier.ReservedPathFail is annotated with @Path using a reserved path: /health"),
-  Matchers.containsString("example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
-  //TODO javac only reports a single error for the annotation Matchers.containsString("example.Person is annotated with @Model but does not have a constructor with no arguments"),
+  Matchers.anyOf( //TODO javac only reports a single error for the annotation, but eclipse reports both
+    Matchers.containsString("example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
+    Matchers.containsString("example.Person is annotated with @Model but does not have a constructor with no arguments")),
   Matchers.containsString("example.ApplicationPathFail is annotated with @ApplicationPath but does not have Application as a supertype")
 });

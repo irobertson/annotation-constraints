@@ -11,7 +11,8 @@ import java.lang.annotation.Target;
  * <p>
  *   Marks the target annotation as providing constraints on behalf of another annotation. This is useful for
  *   constraining annotations for which you do not control the source code. It is recommended that the target annotation
- *   have {@code @Target({})} so that it cannot be placed on an element since doing so would have no effect.
+ *   have {@code @Target({})} so that it cannot be placed on an element since doing so would not have the intended
+ *   effect.
  * </p>
  * <p>
  *   To use this annotation, create an annotation and annotate it with {@code @ProvidesConstraintsFor(...)}. Then create

@@ -24,6 +24,6 @@ public @interface TargetMustHaveConstructors {
    * then it will be an error if a class annotated with {@code SomeAnnotation} does not have a constructor with
    * signature {@code (String, int)}.
    */
-  RequiredConstructor[] value();
+  Constructor[] value();
 
 }

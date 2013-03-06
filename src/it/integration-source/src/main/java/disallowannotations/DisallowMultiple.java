@@ -3,8 +3,8 @@ package disallowannotations;
 import noconstraints.Unconstrained;
 import requireconstructors.RequireNoArgConstructor;
 
-import com.overstock.constraint.TargetCannotBeAnnotatedWith;
+import com.overstock.constraint.TargetMustNotBeAnnotatedWith;
 
-@TargetCannotBeAnnotatedWith({Unconstrained.class, RequireNoArgConstructor.class})
+@TargetMustNotBeAnnotatedWith({Unconstrained.class, RequireNoArgConstructor.class})
 public @interface DisallowMultiple {
 }

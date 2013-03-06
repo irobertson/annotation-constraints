@@ -13,7 +13,7 @@ import javax.tools.Diagnostic;
 import com.overstock.constraint.processor.ConstraintMirror;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetCannotBeAnnotatedWith}.
+ * A verifier for {@link com.overstock.constraint.TargetMustNotBeAnnotatedWith}.
  */
 public class IncompatibleAnnotationsVerifier extends AbstractVerifier {
 

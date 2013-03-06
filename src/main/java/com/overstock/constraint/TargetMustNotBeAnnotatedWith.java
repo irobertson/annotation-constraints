@@ -16,12 +16,12 @@ import com.overstock.constraint.verifier.IncompatibleAnnotationsVerifier;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface TargetCannotBeAnnotatedWith {
+public @interface TargetMustNotBeAnnotatedWith {
 
   /**
    * The annotations which cannot be present alongside the target annotation.
    *
-   * For example, if {@code @SomeAnnotation} is annotated with {@code @TargetCannotBeAnnotatedWith}, then it will be an error
+   * For example, if {@code @SomeAnnotation} is annotated with {@code @TargetMustNotBeAnnotatedWith}, then it will be an error
    * for any class annotated with {@code @SomeAnnotation} to also be annotated with a type from this array.
    */
   Class<? extends Annotation>[] value();
