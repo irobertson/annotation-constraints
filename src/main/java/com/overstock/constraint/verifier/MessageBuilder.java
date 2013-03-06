@@ -42,7 +42,6 @@ public final class MessageBuilder {
       .appendSimpleName(context.getAnnotation());
   }
 
-
   public MessageBuilder setValue(AnnotationValue value) {
     this.value = value;
     return this;

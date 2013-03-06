@@ -11,7 +11,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 /**
- * A verifier for {@link com.overstock.constraint.TargetCannotBeAnnotatedWith}.
+ * A verifier for {@link com.overstock.constraint.TargetMustNotBeAnnotatedWith}.
  */
 public class IncompatibleAnnotationsVerifier implements Verifier {
 
