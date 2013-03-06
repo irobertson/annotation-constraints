@@ -27,7 +27,7 @@ public class FileAssert {
    *
    * @param matchers the text matchers
    */
-  public void assertNoLineMatches(Matcher<String>... matchers) throws IOException {
+  public void assertNoLineMatches(Matcher<String>... matchers) {
     StringDescription description = new StringDescription(new StringBuilder(file.toString()).append(" matched:"));
     boolean failed = false;
     for (Matcher<String> matcher : matchers) {
@@ -50,7 +50,7 @@ public class FileAssert {
    *
    * @param matchers the text matchers
    */
-  public void assertAnyLineMatches(Matcher<String>... matchers) throws IOException {
+  public void assertAnyLineMatches(Matcher<String>... matchers) {
     StringDescription description = new StringDescription(new StringBuilder(file.toString()).append(" did not match:"));
     boolean failed = false;
     for (Matcher<String> matcher : matchers) {
