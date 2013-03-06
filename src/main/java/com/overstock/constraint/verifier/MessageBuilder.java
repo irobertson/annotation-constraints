@@ -30,6 +30,16 @@ public final class MessageBuilder {
   private final StringBuilder text = new StringBuilder();
 
 
+  /**
+   * Constructs a {@link MessageBuilder}.
+   *
+   * @param kind the {@link Diagnostic.Kind}, which cannot be {@code null}
+   * @param processingEnv the current ProcessingEnvironment
+   * @param element the annotated element
+   * @param annotationMirror a mirror for the annotation on {@code element}
+   * @param constraintMirror a mirror for the constraint annotation on the annotation mirrored by
+   *   {@code AnnotationMirror}
+   */
   public MessageBuilder(
       Diagnostic.Kind kind,
       ProcessingEnvironment processingEnv,
@@ -56,7 +66,12 @@ public final class MessageBuilder {
    * Creates a {@link MessageBuilder} with common formatting based on the context.
    *
    * @param kind the {@link Diagnostic.Kind}, which cannot be {@code null}
-   * @param context the context for verification
+   * @param processingEnv the current ProcessingEnvironment
+   * @param element the annotated element
+   * @param annotationMirror a mirror for the annotation on {@code element}
+   * @param constraintMirror a mirror for the constraint annotation on the annotation mirrored by
+   *   {@code AnnotationMirror}
+   * @return a new MessageBuilder instance.
    */
   public static MessageBuilder format(
       Diagnostic.Kind kind,
@@ -71,19 +86,11 @@ public final class MessageBuilder {
   }
 
   /**
-   * Creates a {@link MessageBuilder} with common formatting based on the context.
-   *
-   * @param kind the {@link Diagnostic.Kind}, which cannot be {@code null}
-   * @param context the context for verification
+   * Set the particular field of the annotation which this message should be applied to. By default, messages
+   * only apply to the annotation as a whole.
+   * @param value the particular field of the annotation which this message should be applied to
+   * @return {@code this}
    */
-  public static MessageBuilder format(Diagnostic.Kind kind, VerificationContext context) {
-    return new MessageBuilder(kind, context.getProcessingEnvironment(), context.getElement(), context.getAnnotation(), context.getConstraint())
-    .appendText(context.getElement())
-    .appendText(" is annotated with @")
-    .appendSimpleName(context.getAnnotation());
-  }
-
-
   public MessageBuilder setValue(AnnotationValue value) {
     this.value = value;
     return this;

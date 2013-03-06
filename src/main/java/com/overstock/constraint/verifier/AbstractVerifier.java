@@ -15,13 +15,6 @@ public abstract class AbstractVerifier implements Verifier {
    */
   protected ProcessingEnvironment processingEnv;
 
-  @Override
-  public void verify(VerificationContext context) {
-    verify(context.getElement(), context.getAnnotation(), context.getConstraint());
-  }
-
-  public abstract void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint);
-
   /**
    * @return convenience method returning {@link #processingEnv}.getElementUtils();
    */
