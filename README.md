@@ -70,11 +70,6 @@ _target annotation_ and does not have all of the required constructors with the 
 * **@TargetMustHaveSupertypes(Class<?>[])** issues an error when an _target element_ is annotated with the
 _target annotation_ and does not have all of the required supertypes (classes and/or interfaces).
 
-There is also one constrained annotation included.
-
-* **@NewInstanceConstructible** requires that the target type have a constructor with no arguments so that it can be
-constructed via `Class.newInstance()`.
-
 ## Adding constraint meta-annotations to existing annotations
 
 You may want to add a constraint meta-annotation to some annotation for which you don't control the source code.
