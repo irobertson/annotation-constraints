@@ -37,6 +37,8 @@ file.assertAnyLineMatches(new Matcher[] {
   Matchers.containsString("nestedclasses.Containing.NestedClassFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
   Matchers.containsString("nestedclasses.Containing.NestedConstrainedFail is annotated with @NestedConstrained but does not have Serializable as a supertype"),
   Matchers.containsString("verifier.ReservedPathFail is annotated with @Path using a reserved path: /health"),
+  Matchers.containsString("Error instantiating verifier verifier.UninstantiableVerifier which is required for verifier.UninstantiableVerifierConstrained due to an exception: verifier.BrokenVerifierException: UninstantiableVerifier is not instantiable"),
+  Matchers.containsString("Verifier class verifier.BrokenVerifier threw an exception: verifier.BrokenVerifierException: BrokenVerifier is broken"),
   Matchers.anyOf( //TODO javac only reports a single error for the annotation, but eclipse reports both
     Matchers.containsString("example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
     Matchers.containsString("example.Person is annotated with @Model but does not have a constructor with no arguments")),

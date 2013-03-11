@@ -64,31 +64,44 @@ public class ConstraintProcessor extends AbstractProcessor {
 
     Elements elementUtils = processingEnv.getElementUtils();
     for (Element element : elementsToProcess(roundEnv)) {
-      for (AnnotationMirror annotationMirror : elementUtils.getAllAnnotationMirrors(element)) {
-        Constraints constraints = Constraints.on(annotationMirror, providedConstraints, processingEnv);
+      for (AnnotationMirror constrained : elementUtils.getAllAnnotationMirrors(element)) {
+        Constraints constraints = Constraints.on(constrained, providedConstraints, processingEnv);
         for (ConstraintMirror constraint : constraints) {
           DeclaredType constraintType = constraint.getAnnotation().getAnnotationType();
           Verifier verifier = verifiers.get(constraintType);
           if (verifier == null) {
-            verifier = initializeVerifier(constraint, element, annotationMirror);
-            if (verifier == null) {
-              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                "Verifier for " + constraintType + " could not be constructed, which is required for "
-                  + annotationMirror.getAnnotationType(), element, annotationMirror);
-              continue;
-            }
-            else {
+            try {
+              verifier = initializeVerifier(constraint);
               verifiers.put(constraintType, verifier);
             }
+            catch (VerifierNotFoundException e) {
+              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                "The verifier for " + constraintType + " was not found, which is required for "
+                  + constrained.getAnnotationType(), element, constrained);
+              continue;
+            }
+            catch (VerifierInstantiationException e) {
+              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error instantiating verifier "
+                + e.verifierType + " which is required for " + constrained.getAnnotationType()
+                + " due to an exception: " + e.getMessage(), element, constrained);
+              continue;
+            }
           }
-          verifier.verify(element, annotationMirror, constraint);
+          try {
+            verifier.verify(element, constrained, constraint);
+          }
+          catch (Exception e) {
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Verifier " + verifier.getClass()
+              + " threw an exception: " + new Exception(e).getMessage(), element, constrained);
+          }
         }
       }
     }
     return false;
   }
 
-  private Verifier initializeVerifier(ConstraintMirror constraint, Element element, AnnotationMirror constrained) {
+  private Verifier initializeVerifier(ConstraintMirror constraint) throws VerifierNotFoundException,
+      VerifierInstantiationException {
     TypeMirror constraintMirror = MirrorUtils.getTypeMirror(Constraint.class, processingEnv.getElementUtils());
     Types typeUtils = processingEnv.getTypeUtils();
     List<? extends AnnotationMirror> annotationMirrors = constraint.getAnnotation().getAnnotationType().asElement()
@@ -99,7 +112,13 @@ public class ConstraintProcessor extends AbstractProcessor {
         for (ExecutableElement executableElement : elementValues.keySet()) {
           if (executableElement.getSimpleName().contentEquals("verifiedBy")) {
             TypeMirror verifierType = (TypeMirror) elementValues.get(executableElement).getValue();
-            Verifier verifier = newInstance(verifierType, element, constrained);
+            Verifier verifier;
+            try {
+              verifier = newInstance(verifierType);
+            }
+            catch (Exception e) {
+              throw new VerifierInstantiationException(verifierType, e);
+            }
             verifier.init(processingEnv);
             return verifier;
           }
@@ -107,19 +126,11 @@ public class ConstraintProcessor extends AbstractProcessor {
 
       }
     }
-    return null;
+    throw new VerifierNotFoundException();
   }
 
-  private Verifier newInstance(TypeMirror verifierType, Element element, AnnotationMirror constrained) {
-    try {
-      return (Verifier) Class.forName(verifierType.toString(), true, classLoader).newInstance();
-    }
-    catch (Exception e) {
-      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error instantiating verifier " + verifierType
-        + " which is required for " + constrained.getAnnotationType() + " due to an exception: " + e.getMessage(),
-        element, constrained);
-      return null;
-    }
+  private Verifier newInstance(TypeMirror verifierType) throws Exception {
+    return (Verifier) Class.forName(verifierType.toString(), true, classLoader).newInstance();
   }
 
   private Set<? extends Element> elementsToProcess(RoundEnvironment roundEnv) {
@@ -170,6 +181,18 @@ public class ConstraintProcessor extends AbstractProcessor {
       throw new RuntimeException("Could not read constraint providers file", e);
     }
     return constraintProviders;
+  }
+
+  private static class VerifierNotFoundException extends Exception {}
+
+  private static class VerifierInstantiationException extends Exception {
+
+    private final TypeMirror verifierType;
+
+    public VerifierInstantiationException(TypeMirror verifierType, Throwable cause) {
+      super(cause);
+      this.verifierType = verifierType;
+    }
   }
 
 }
