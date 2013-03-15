@@ -1,6 +1,9 @@
+import java.util.regex.Pattern;
+
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import com.overstock.constraint.test.ContainsRegExMatcher;
 import com.overstock.constraint.test.FileAssert;
 
 String localBasedir = basedir.getPath().split("../integration-source")[0];
@@ -15,32 +18,42 @@ file.assertNoLineMatches(new Matcher[] {
   Matchers.containsString("Pass") //naming convention for classes which should compile cleanly
 });
 
+Matcher containsMessage(String level, String message) {
+  return ContainsRegExMatcher.containsMatch(Pattern.compile("^\\[" + level + "\\].+" + Pattern.quote(message) + "$"));
+}
+
+Matcher containsError(String message) {
+  return containsMessage("ERROR", message);
+}
+
+//TODO Eclipse messages are multiline so warnings cannot be validated using this line-by-line approach. Errors just happen to be output by Maven with "[ERROR] ...".
+
 file.assertAnyLineMatches(new Matcher[] {
-  Matchers.containsString("companionannotations.RequireUnconstrainedFail is annotated with @RequireUnconstrained but not with @Unconstrained"),
-  Matchers.containsString("companionannotations.RequireMultipleFailOne is annotated with @RequireMultiple but not with @Unconstrained"),
-  Matchers.containsString("companionannotations.RequireMultipleFailAll is annotated with @RequireMultiple but not with @Unconstrained and @RequireNoArgConstructor"),
+  containsError("companionannotations.RequireUnconstrainedFail is annotated with @RequireUnconstrained but not with @Unconstrained"),
+  containsError("companionannotations.RequireMultipleFailOne is annotated with @RequireMultiple but not with @Unconstrained"),
+  containsError("companionannotations.RequireMultipleFailAll is annotated with @RequireMultiple but not with @Unconstrained and @RequireNoArgConstructor"),
   Matchers.containsString("companionannotations.RecommendUnconstrainedFail is annotated with @RecommendUnconstrained but not with @Unconstrained"),
   Matchers.containsString("companionannotations.RecommendMultipleFailOne is annotated with @RecommendMultiple but not with @Unconstrained"),
   Matchers.containsString("companionannotations.RecommendMultipleFailAll is annotated with @RecommendMultiple but not with @Unconstrained and @RequireNoArgConstructor"),
-  Matchers.containsString("disallowannotations.DisallowUnconstrainedFail is annotated with @DisallowUnconstrained which is not allowed with @Unconstrained"),
-  Matchers.containsString("disallowannotations.DisallowMultipleFailOne is annotated with @DisallowMultiple which is not allowed with @Unconstrained"),
-  Matchers.containsString("disallowannotations.DisallowMultipleFailAll is annotated with @DisallowMultiple which is not allowed with @Unconstrained or @RequireNoArgConstructor"),
-  Matchers.containsString("requireannotationsonsupertype.RequireAnnotationsOnSupertypeFail is annotated with @RequireUnconstrainedSupertype but does not have a supertype annotated with @Unconstrained or @RequireUnconstrained"),
-  Matchers.containsString("requireconstructors.RequireNoArgConstructorFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
-  Matchers.containsString("requireconstructors.RequireStringLongIntArrayConstructorFail is annotated with @RequireStringLongIntArrayConstructor but does not have a constructor with arguments (java.lang.String, long, int[])"),
-  Matchers.containsString("requireconstructors.RequireCallableConstructorFail is annotated with @RequireCallableConstructor but does not have a constructor with arguments (java.util.concurrent.Callable)"),
-  Matchers.containsString("requiresupertypes.RequireSupertypesFail is annotated with @RequireBaseClassAndSerializable but does not have BaseClass or Serializable as a supertype"),
-  Matchers.containsString("requiresupertypes.RequireGenericInterfaceFail is annotated with @RequireGenericInterface but does not have GenericInterface as a supertype"),
-  Matchers.containsString("Failing CustomVerifyFail.class from a custom verifier"),
-  Matchers.containsString("provider.ExternalProviderFail is annotated with @Entity but does not have a constructor with no arguments as specified by provider.EntityProxy"),
-  Matchers.containsString("provider.InternalProviderFail is annotated with @Table but not with @Entity as specified by provider.TableProxy"),
-  Matchers.containsString("nestedclasses.Containing.NestedClassFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
-  Matchers.containsString("nestedclasses.Containing.NestedConstrainedFail is annotated with @NestedConstrained but does not have Serializable as a supertype"),
-  Matchers.containsString("verifier.ReservedPathFail is annotated with @Path using a reserved path: /health"),
-  Matchers.containsString("Error instantiating verifier verifier.UninstantiableVerifier which is required for verifier.UninstantiableVerifierConstrained due to an exception: verifier.BrokenVerifierException: UninstantiableVerifier is not instantiable"),
-  Matchers.containsString("Verifier class verifier.BrokenVerifier threw an exception: verifier.BrokenVerifierException: BrokenVerifier is broken"),
+  containsError("disallowannotations.DisallowUnconstrainedFail is annotated with @DisallowUnconstrained which is not allowed with @Unconstrained"),
+  containsError("disallowannotations.DisallowMultipleFailOne is annotated with @DisallowMultiple which is not allowed with @Unconstrained"),
+  containsError("disallowannotations.DisallowMultipleFailAll is annotated with @DisallowMultiple which is not allowed with @Unconstrained or @RequireNoArgConstructor"),
+  containsError("requireannotationsonsupertype.RequireAnnotationsOnSupertypeFail is annotated with @RequireUnconstrainedSupertype but does not have a supertype annotated with @Unconstrained or @RequireUnconstrained"),
+  containsError("requireconstructors.RequireNoArgConstructorFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
+  containsError("requireconstructors.RequireStringLongIntArrayConstructorFail is annotated with @RequireStringLongIntArrayConstructor but does not have a constructor with arguments (java.lang.String, long, int[])"),
+  containsError("requireconstructors.RequireCallableConstructorFail is annotated with @RequireCallableConstructor but does not have a constructor with arguments (java.util.concurrent.Callable)"),
+  containsError("requiresupertypes.RequireSupertypesFail is annotated with @RequireBaseClassAndSerializable but does not have BaseClass or Serializable as a supertype"),
+  containsError("requiresupertypes.RequireGenericInterfaceFail is annotated with @RequireGenericInterface but does not have GenericInterface as a supertype"),
+  containsError("Failing CustomVerifyFail.class from a custom verifier"),
+  containsError("provider.ExternalProviderFail is annotated with @Entity but does not have a constructor with no arguments as specified by provider.EntityProxy"),
+  containsError("provider.InternalProviderFail is annotated with @Table but not with @Entity as specified by provider.TableProxy"),
+  containsError("nestedclasses.Containing.NestedClassFail is annotated with @RequireNoArgConstructor but does not have a constructor with no arguments"),
+  containsError("nestedclasses.Containing.NestedConstrainedFail is annotated with @NestedConstrained but does not have Serializable as a supertype"),
+  containsError("verifier.ReservedPathFail is annotated with @Path using a reserved path: /health as specified by provider.PathConstraintProvider"),
+  containsError("Error instantiating verifier verifier.UninstantiableVerifier which is required for verifier.UninstantiableVerifierConstrained due to an exception: verifier.BrokenVerifierException: UninstantiableVerifier is not instantiable"),
+  containsError("Verifier class verifier.BrokenVerifier threw an exception: verifier.BrokenVerifierException: BrokenVerifier is broken"),
   Matchers.anyOf( //TODO javac only reports a single error for the annotation, but eclipse reports both
-    Matchers.containsString("example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
-    Matchers.containsString("example.Person is annotated with @Model but does not have a constructor with no arguments")),
-  Matchers.containsString("example.ApplicationPathFail is annotated with @ApplicationPath but does not have Application as a supertype")
+    containsError("example.Person is annotated with @Model but does not have AbstractModel as a supertype"),
+    containsError("example.Person is annotated with @Model but does not have a constructor with no arguments")),
+  containsError("example.ApplicationPathFail is annotated with @ApplicationPath but does not have Application as a supertype as specified by example.ApplicationPathConstraints")
 });

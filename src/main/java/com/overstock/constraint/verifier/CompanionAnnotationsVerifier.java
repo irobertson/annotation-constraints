@@ -63,7 +63,7 @@ public class CompanionAnnotationsVerifier extends AbstractVerifier {
     }
 
     if (!requiredAnnotations.isEmpty()) {
-      messageBuilder(Diagnostic.Kind.WARNING, element, annotationMirror, constraint)
+      messageBuilder(Diagnostic.Kind.ERROR, element, annotationMirror, constraint)
         .appendText(" but not with ")
         .appendAnnotations(requiredAnnotations, " and ")
         .print();
