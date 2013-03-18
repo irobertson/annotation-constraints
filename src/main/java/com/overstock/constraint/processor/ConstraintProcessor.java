@@ -62,40 +62,45 @@ public class ConstraintProcessor extends AbstractProcessor {
       roundEnv.getElementsAnnotatedWith(ProvidesConstraintsFor.class), processingEnv);
     providedConstraints = providedConstraints.combineWith(roundConstraints);
 
-    Elements elementUtils = processingEnv.getElementUtils();
-    for (Element element : elementsToProcess(roundEnv)) {
-      for (AnnotationMirror constrained : elementUtils.getAllAnnotationMirrors(element)) {
-        Constraints constraints = Constraints.on(constrained, providedConstraints, processingEnv);
-        for (ConstraintMirror constraint : constraints) {
-          DeclaredType constraintType = constraint.getAnnotation().getAnnotationType();
-          Verifier verifier = verifiers.get(constraintType);
-          if (verifier == null) {
+    try {
+      Elements elementUtils = processingEnv.getElementUtils();
+      for (Element element : elementsToProcess(roundEnv)) {
+        for (AnnotationMirror constrained : elementUtils.getAllAnnotationMirrors(element)) {
+          Constraints constraints = Constraints.on(constrained, providedConstraints, processingEnv);
+          for (ConstraintMirror constraint : constraints) {
+            DeclaredType constraintType = constraint.getAnnotation().getAnnotationType();
+            Verifier verifier = verifiers.get(constraintType);
+            if (verifier == null) {
+              try {
+                verifier = initializeVerifier(constraint);
+                verifiers.put(constraintType, verifier);
+              }
+              catch (VerifierNotFoundException e) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                  "The verifier for " + constraintType + " was not found, which is required for "
+                    + constrained.getAnnotationType(), element, constrained);
+                continue;
+              }
+              catch (VerifierInstantiationException e) {
+                processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error instantiating verifier "
+                  + e.verifierType + " which is required for " + constrained.getAnnotationType()
+                  + " due to an exception: " + e.getMessage(), element, constrained);
+                continue;
+              }
+            }
             try {
-              verifier = initializeVerifier(constraint);
-              verifiers.put(constraintType, verifier);
+              verifier.verify(element, constrained, constraint);
             }
-            catch (VerifierNotFoundException e) {
-              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                "The verifier for " + constraintType + " was not found, which is required for "
-                  + constrained.getAnnotationType(), element, constrained);
-              continue;
+            catch (Exception e) {
+              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Verifier " + verifier.getClass()
+                + " threw an exception: " + new Exception(e).getMessage(), element, constrained);
             }
-            catch (VerifierInstantiationException e) {
-              processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Error instantiating verifier "
-                + e.verifierType + " which is required for " + constrained.getAnnotationType()
-                + " due to an exception: " + e.getMessage(), element, constrained);
-              continue;
-            }
-          }
-          try {
-            verifier.verify(element, constrained, constraint);
-          }
-          catch (Exception e) {
-            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR, "Verifier " + verifier.getClass()
-              + " threw an exception: " + new Exception(e).getMessage(), element, constrained);
           }
         }
       }
+    }
+    finally {
+      MirrorUtils.clearCaches(); //in Eclipse we don't want caches hanging around
     }
     return false;
   }

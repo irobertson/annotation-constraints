@@ -78,5 +78,10 @@ public class MirrorUtils {
     return typeUtils.isSameType(getTypeMirror(clazz, elementUtils), type);
   }
 
+  static void clearCaches() {
+    TYPE_MIRRORS.clear();
+    SUPERTYPES.clear();
+  }
+
   private MirrorUtils() {}
 }
