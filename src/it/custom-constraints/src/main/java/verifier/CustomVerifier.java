@@ -12,7 +12,15 @@ public class CustomVerifier extends AbstractVerifier {
   @Override
   public void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint) {
     processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-      "Failing " + element.getSimpleName() + ".class from a custom verifier", element);
+      "Failing " + element.getSimpleName() + ".class from " + getClass().getSimpleName(), element);
+  }
+
+  public static class NestedVerifier extends AbstractVerifier {
+    @Override
+    public void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint) {
+      processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+        "Failing " + element.getSimpleName() + ".class from " + getClass().getSimpleName(), element);
+    }
   }
 
 }

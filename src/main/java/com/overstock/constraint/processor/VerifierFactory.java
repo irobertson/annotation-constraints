@@ -8,6 +8,7 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
@@ -65,7 +66,9 @@ class VerifierFactory {
   }
 
   private Verifier newInstance(TypeMirror verifierType) throws Exception {
-    return (Verifier) Class.forName(verifierType.toString(), true, classLoader).newInstance();
+    TypeElement element = processingEnv.getElementUtils().getTypeElement(verifierType.toString());
+    String className = processingEnv.getElementUtils().getBinaryName(element).toString();
+    return (Verifier) Class.forName(className, true, classLoader).newInstance();
   }
 
   public static class VerifierNotFoundException extends Exception {}

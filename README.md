@@ -128,7 +128,8 @@ for more details and/or have a look at [an example Verifier](https://github.com/
 1. Make sure both **annotation-constraints** and your new `Verifier` class are on the classpath during compilation.
 
 Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
-because they have yet to be compiled).
+because they have yet to be compiled). This does not prevent `Verifier`s from being declared in the same compilation
+unit as the annotation(s) they verify, it only prevents them from being exercised against that same compilation unit.
 
 ### Example of writing your own constraint
 
