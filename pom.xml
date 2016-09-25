@@ -47,6 +47,12 @@
       <version>1.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.jdt.core.compiler</groupId>
+      <artifactId>ecj</artifactId>
+      <version>4.4.2</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <licenses>
