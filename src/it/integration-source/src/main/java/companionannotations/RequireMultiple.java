@@ -5,7 +5,7 @@ import requireconstructors.RequireNoArgConstructor;
 
 import java.lang.annotation.Inherited;
 
-import com.overstock.constraint.TargetMustBeAnnotatedWith;
+import org.annotationconstraints.TargetMustBeAnnotatedWith;
 
 @Inherited
 @TargetMustBeAnnotatedWith({Unconstrained.class, RequireNoArgConstructor.class})

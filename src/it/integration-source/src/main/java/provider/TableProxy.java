@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.overstock.constraint.TargetMustBeAnnotatedWith;
-import com.overstock.constraint.provider.ProvidesConstraintsFor;
+import org.annotationconstraints.TargetMustBeAnnotatedWith;
+import org.annotationconstraints.provider.ProvidesConstraintsFor;
 
 @Target({})
 @TargetMustBeAnnotatedWith(Entity.class)

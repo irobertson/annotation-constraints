@@ -4,7 +4,7 @@ import noconstraints.Unconstrained;
 
 import java.lang.annotation.Inherited;
 
-import com.overstock.constraint.TargetMustBeAnnotatedWith;
+import org.annotationconstraints.TargetMustBeAnnotatedWith;
 
 @Inherited
 @TargetMustBeAnnotatedWith(Unconstrained.class)

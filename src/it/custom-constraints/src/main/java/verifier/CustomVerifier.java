@@ -4,8 +4,8 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.verifier.AbstractVerifier;
+import org.annotationconstraints.processor.ConstraintMirror;
+import org.annotationconstraints.verifier.AbstractVerifier;
 
 public class CustomVerifier extends AbstractVerifier {
 

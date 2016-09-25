@@ -1,4 +1,4 @@
 /**
- * Integration tests for {@link com.overstock.constraint.verifier.RequireSupertypesVerifier}
+ * Integration tests for {@link org.annotationconstraints.verifier.RequireSupertypesVerifier}
  */
 package requiresupertypes;

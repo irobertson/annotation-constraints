@@ -10,11 +10,11 @@ import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
-import com.overstock.constraint.Constraint;
-import com.overstock.constraint.TargetMustHaveSupertypes;
-import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.verifier.AbstractVerifier;
-import com.overstock.constraint.verifier.Verifier;
+import org.annotationconstraints.Constraint;
+import org.annotationconstraints.TargetMustHaveSupertypes;
+import org.annotationconstraints.processor.ConstraintMirror;
+import org.annotationconstraints.verifier.AbstractVerifier;
+import org.annotationconstraints.verifier.Verifier;
 
 public class Containing {
 

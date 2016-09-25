@@ -5,7 +5,7 @@ import noconstraints.Unconstrained;
 
 import java.lang.annotation.Inherited;
 
-import com.overstock.constraint.TargetMustHaveASupertypeAnnotatedWith;
+import org.annotationconstraints.TargetMustHaveASupertypeAnnotatedWith;
 
 @Inherited
 @TargetMustHaveASupertypeAnnotatedWith({Unconstrained.class, RequireUnconstrained.class})

@@ -6,9 +6,9 @@ import java.lang.annotation.Target;
 
 import javax.persistence.Entity;
 
-import com.overstock.constraint.Constructor;
-import com.overstock.constraint.TargetMustHaveConstructors;
-import com.overstock.constraint.provider.ProvidesConstraintsFor;
+import org.annotationconstraints.Constructor;
+import org.annotationconstraints.TargetMustHaveConstructors;
+import org.annotationconstraints.provider.ProvidesConstraintsFor;
 
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

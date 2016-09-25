@@ -1,4 +1,4 @@
 /**
- * Integration tests for {@link com.overstock.constraint.verifier.IncompatibleAnnotationsVerifier}
+ * Integration tests for {@link org.annotationconstraints.verifier.IncompatibleAnnotationsVerifier}
  */
 package disallowannotations;

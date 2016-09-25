@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.overstock.constraint.Constraint;
+import org.annotationconstraints.Constraint;
 
 @Constraint(verifiedBy = CustomVerifier.class)
 @Retention(RetentionPolicy.CLASS)

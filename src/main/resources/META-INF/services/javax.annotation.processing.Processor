@@ -1,1 +1,1 @@
-com.overstock.constraint.processor.ConstraintProcessor
+org.annotationconstraints.processor.ConstraintProcessor

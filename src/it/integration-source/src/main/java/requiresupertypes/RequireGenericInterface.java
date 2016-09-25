@@ -1,6 +1,6 @@
 package requiresupertypes;
 
-import com.overstock.constraint.TargetMustHaveSupertypes;
+import org.annotationconstraints.TargetMustHaveSupertypes;
 
 @TargetMustHaveSupertypes(GenericInterface.class)
 public @interface RequireGenericInterface {

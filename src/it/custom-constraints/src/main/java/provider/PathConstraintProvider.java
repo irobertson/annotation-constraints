@@ -6,7 +6,7 @@ import java.lang.annotation.Target;
 
 import javax.ws.rs.Path;
 
-import com.overstock.constraint.provider.ProvidesConstraintsFor;
+import org.annotationconstraints.provider.ProvidesConstraintsFor;
 
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

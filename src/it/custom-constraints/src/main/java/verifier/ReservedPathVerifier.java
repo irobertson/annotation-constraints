@@ -13,10 +13,10 @@ import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.ws.rs.Path;
 
-import com.overstock.constraint.processor.ConstraintMirror;
-import com.overstock.constraint.processor.MirrorUtils;
-import com.overstock.constraint.verifier.MessageBuilder;
-import com.overstock.constraint.verifier.AbstractVerifier;
+import org.annotationconstraints.processor.ConstraintMirror;
+import org.annotationconstraints.processor.MirrorUtils;
+import org.annotationconstraints.verifier.MessageBuilder;
+import org.annotationconstraints.verifier.AbstractVerifier;
 
 public class ReservedPathVerifier extends AbstractVerifier {
 

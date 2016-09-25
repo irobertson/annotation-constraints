@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.overstock</groupId>
+    <groupId>org.annotationconstraints</groupId>
     <artifactId>integration-parent</artifactId>
-    <version>@annotation-constraints.version@</version>
+    <version>@annotationconstraints.version@</version>
   </parent>
 
   <artifactId>custom-constraints</artifactId>

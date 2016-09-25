@@ -2,15 +2,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.overstock</groupId>
-  <artifactId>annotation-constraints</artifactId>
+  <groupId>org.annotationconstraints</groupId>
+  <artifactId>annotationconstraints</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <inceptionYear>2013</inceptionYear>
 
   <name>Annotation Constraints</name>
   <description>Allows you to specify constraints on annotated types which are verified at compile-time.</description>
-  <url>http://github.com/overstock/annotation-constraints</url>
+  <url>http://github.com/iroberts/annotationconstraints</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,19 +59,17 @@
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/overstock/annotation-constraints/issues</url>
+    <url>https://github.com/iroberts/annotationconstraints/issues</url>
   </issueManagement>
 
   <developers>
     <developer>
       <name>Ian Robertson</name>
-      <organization>Overstock.com</organization>
       <id>irobertson</id>
       <email>ian.b.robertson@gmail.com</email>
     </developer>
     <developer>
       <name>Chris Hansen</name>
-      <organization>Overstock.com</organization>
       <id>hansenc</id>
       <email>hansen.chris.w@gmail.com</email>
     </developer>
@@ -97,7 +95,7 @@
           <addTestClassPath>true</addTestClassPath>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
           <filterProperties>
-            <annotation-constraints.version>${project.version}</annotation-constraints.version>
+            <annotationconstraints.version>${project.version}</annotationconstraints.version>
           </filterProperties>
           <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
           <pomExcludes>
@@ -156,8 +154,8 @@
   </reporting>
 
   <scm>
-    <url>https://github.com/overstock/annotation-constraints</url>
-    <connection>scm:git:git://github.com/overstock/annotation-constraints.git</connection>
-    <developerConnection>scm:git:git@github.com:overstock/annotation-constraints.git</developerConnection>
+    <url>https://github.com/iroberts/annotationconstraints</url>
+    <connection>scm:git:git://github.com/iroberts/annotationconstraints.git</connection>
+    <developerConnection>scm:git:git@github.com:iroberts/annotationconstraints.git</developerConnection>
   </scm>
 </project>

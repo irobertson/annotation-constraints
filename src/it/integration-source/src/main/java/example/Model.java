@@ -3,9 +3,9 @@ package example;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
-import com.overstock.constraint.Constructor;
-import com.overstock.constraint.TargetMustHaveConstructors;
-import com.overstock.constraint.TargetMustHaveSupertypes;
+import org.annotationconstraints.Constructor;
+import org.annotationconstraints.TargetMustHaveConstructors;
+import org.annotationconstraints.TargetMustHaveSupertypes;
 
 @TargetMustHaveSupertypes(AbstractModel.class)
 @TargetMustHaveConstructors(@Constructor({}))

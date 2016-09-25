@@ -7,8 +7,8 @@ import java.lang.annotation.Target;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-import com.overstock.constraint.TargetMustHaveSupertypes;
-import com.overstock.constraint.provider.ProvidesConstraintsFor;
+import org.annotationconstraints.TargetMustHaveSupertypes;
+import org.annotationconstraints.provider.ProvidesConstraintsFor;
 
 @Target({})
 @Retention(RetentionPolicy.RUNTIME)

@@ -1,4 +1,4 @@
 /**
- * Integration tests for {@link com.overstock.constraint.verifier.CompanionAnnotationsVerifier}
+ * Integration tests for {@link org.annotationconstraints.verifier.CompanionAnnotationsVerifier}
  */
 package companionannotations;

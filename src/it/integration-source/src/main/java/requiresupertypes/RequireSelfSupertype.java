@@ -1,6 +1,6 @@
 package requiresupertypes;
 
-import com.overstock.constraint.TargetMustHaveSupertypes;
+import org.annotationconstraints.TargetMustHaveSupertypes;
 
 @TargetMustHaveSupertypes(RequireSelfSupertypePass.class)
 public @interface RequireSelfSupertype {

@@ -1,4 +1,4 @@
 /**
- * Integration tests for {@link com.overstock.constraint.verifier.Verifier}s.
+ * Integration tests for {@link org.annotationconstraints.verifier.Verifier}s.
  */
 package verifier;

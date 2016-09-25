@@ -3,8 +3,8 @@ import java.util.regex.Pattern;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
-import com.overstock.constraint.test.ContainsRegExMatcher;
-import com.overstock.constraint.test.FileAssert;
+import org.annotationconstraints.test.ContainsRegExMatcher;
+import org.annotationconstraints.test.FileAssert;
 
 String localBasedir = basedir.getPath().split("../integration-source")[0];
 File buildLog = new File(localBasedir, "build.log");

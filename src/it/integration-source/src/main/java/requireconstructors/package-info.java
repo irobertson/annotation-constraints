@@ -1,4 +1,4 @@
 /**
- * Integration tests for {@link com.overstock.constraint.verifier.RequireConstructorsVerifier}
+ * Integration tests for {@link org.annotationconstraints.verifier.RequireConstructorsVerifier}
  */
 package requireconstructors;

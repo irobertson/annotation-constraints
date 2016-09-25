@@ -1,4 +1,4 @@
-# annotation-constraints
+# annotationconstraints
 
 Intended audience: Java (6+) developers who write annotations.
 
@@ -8,7 +8,7 @@ are only mentioned in the annotation's JavaDoc and enforced at runtime. However,
 verified at compile-time if there was a way to express them, and odds are that you'd prefer compile-time errors to
 runtime ones since you are already using Java.
 
-**annotation-constraints** is a library for Java 6 or newer that allows you to specify constraints on annotations which
+**annotationconstraints** is a library for Java 6 or newer that allows you to specify constraints on annotations which
 are verified at compile-time via the included annotation processor. It includes commonly-used constraint
 meta-annotations and allows you to create your own. Additionally, it allows you to add constraints to existing (e.g.
 third-party) annotations.
@@ -24,7 +24,7 @@ public @interface Model {
 }
 ```
 
-These constraints are validated at compile-time when **annotation-constraints** is on the compiler's classpath. No
+These constraints are validated at compile-time when **annotationconstraints** is on the compiler's classpath. No
 configuration is necessary because it includes an annotation processor which is picked up automatically by javac
 (see below for Eclipse usage). If you violate any of the constraints, you'll receive an error. For example:
 
@@ -49,7 +49,7 @@ Class Person is annotated with @Model but does not have a constructor with no ar
 ```
 ## Out of the box
 
-The following constraints are included in the `com.overstock.constraint` package. They can be combined with one another
+The following constraints are included in the `org.annotationconstraints` package. They can be combined with one another
 and/or with your own custom constraints. The phrase _target annotation_ below refers to the annotation which is being
 constrained (i.e. annotated with one or more of these constraint meta-annotations). In the example above, `@Model` is
 the _target annotation_ because it is annotated with `@TargetMustHaveSupertypes` and `@TargetMustHaveConstructors`. The
@@ -77,13 +77,13 @@ Here's how to do just that.
 
 1. Create a new annotation and add constraint meta-annotations to it.
 1. Annotate your new annotation with `@ProvidesConstraintsFor(ExistingAnnotation.class)`.
-1. To register your new annotation with **annotation-constraints**, create a text file named
-`com.overstock.constraint.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
+1. To register your new annotation with **annotationconstraints**, create a text file named
+`org.annotationconstraints.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
 name of your new annotation in it. Without this file, the constraints will only be validated in the compilation unit in
 which they're defined.
-1. Make sure the **annotation-constraints** jar and your new annotation class are on the classpath during compilation.
+1. Make sure the **annotationconstraints** jar and your new annotation class are on the classpath during compilation.
 
-See the JavaDoc for [com.overstock.constraint.provider.ProvidesConstraintsFor](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/provider/ProvidesConstraintsFor.java) for more details.
+See the JavaDoc for [org.annotationconstraints.provider.ProvidesConstraintsFor](https://github.com/iroberts/annotationconstraints/blob/master/src/main/java/org/annotationconstraints/provider/ProvidesConstraintsFor.java) for more details.
 
 ### Example of adding constraints to an existing annotation
 
@@ -91,7 +91,7 @@ For example, JAX-RS (JSR 311) has `@ApplicationPath`, which is required to only 
 `Application`. To have this validated at compile-time we would do the following.
 
 First, create an annotation on which to put constraints. The name or location of this annotation doesn't really
-matter, so let's call it [ApplicationPathConstraints](https://github.com/overstock/annotation-constraints/blob/master/src/it/integration-source/src/main/java/example/ApplicationPathConstraints.java):
+matter, so let's call it [ApplicationPathConstraints](https://github.com/iroberts/annotationconstraints/blob/master/src/it/integration-source/src/main/java/example/ApplicationPathConstraints.java):
 
 ```java
 package example;
@@ -106,7 +106,7 @@ public @interface ApplicationPathConstraints {
 }
 ```
 
-Next, create a text file named [META-INF/com.overstock.constraint.provider.constraint-providers](https://github.com/overstock/annotation-constraints/blob/master/src/it/integration-source/src/main/resources/META-INF/com.overstock.constraint.provider.constraint-providers)
+Next, create a text file named [META-INF/org.annotationconstraints.provider.constraint-providers](https://github.com/iroberts/annotationconstraints/blob/master/src/it/integration-source/src/main/resources/META-INF/org.annotationconstraints.provider.constraint-providers)
 with the following line of text:
 
 ```
@@ -123,9 +123,9 @@ Though there is some overlap, we think writing a `Verifier` is easier than writi
 
 1. Create an annotation and add `@Constraint(verifiedBy = ...)` to it.
 1. Implement the `Verifier` for your new constraint.
-(See the JavaDoc for [com.overstock.constraint.verifier.Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/Verifier.java)
-for more details and/or have a look at [an example Verifier](https://github.com/overstock/annotation-constraints/blob/master/src/main/java/com/overstock/constraint/verifier/IncompatibleAnnotationsVerifier.java).)
-1. Make sure both **annotation-constraints** and your new `Verifier` class are on the classpath during compilation.
+(See the JavaDoc for [org.annotationconstraints.verifier.Verifier](https://github.com/iroberts/annotationconstraints/blob/master/src/main/java/org/annotationconstraints/verifier/Verifier.java)
+for more details and/or have a look at [an example Verifier](https://github.com/iroberts/annotationconstraints/blob/master/src/main/java/org/annotationconstraints/verifier/IncompatibleAnnotationsVerifier.java).)
+1. Make sure both **annotationconstraints** and your new `Verifier` class are on the classpath during compilation.
 
 Note: Custom `Verifier`s cannot be executed in the same compilation unit in which they are declared (which makes sense
 because they have yet to be compiled). This does not prevent `Verifier`s from being declared in the same compilation
@@ -136,9 +136,9 @@ unit as the annotation(s) they verify, it only prevents them from being exercise
 Suppose that you had several web service projects using JAX-RS (JSR 311) annotations and you wanted to reserve a certain
 path for health checks, say "/health", across all web services. To implement this, you would:
 
-1. Create a new constraint annotation, [@ReservedPaths](https://github.com/overstock/annotation-constraints/blob/master/src/it/custom-constraints/src/main/java/provider/ReservedPaths.java).
-1. Implement a new verifier, [ReservedPathVerifier](https://github.com/overstock/annotation-constraints/blob/master/src/it/custom-constraints/src/main/java/verifier/ReservedPathVerifier.java).
-1. In this case, since we're adding a constraint an existing annotation we need to create a provider, [PathConstraintProvider](https://github.com/overstock/annotation-constraints/blob/master/src/it/custom-constraints/src/main/java/provider/PathConstraintProvider.java).
+1. Create a new constraint annotation, [@ReservedPaths](https://github.com/iroberts/annotationconstraints/blob/master/src/it/custom-constraints/src/main/java/provider/ReservedPaths.java).
+1. Implement a new verifier, [ReservedPathVerifier](https://github.com/iroberts/annotationconstraints/blob/master/src/it/custom-constraints/src/main/java/verifier/ReservedPathVerifier.java).
+1. In this case, since we're adding a constraint an existing annotation we need to create a provider, [PathConstraintProvider](https://github.com/iroberts/annotationconstraints/blob/master/src/it/custom-constraints/src/main/java/provider/PathConstraintProvider.java).
 This is only necessary if you're not able to add the constraint to the annotation's source code.
 
 Then, if you have a class which uses a reserved path, you get a compilation error similar to:
@@ -149,17 +149,17 @@ verifier.ReservedPathFail is annotated with @Path using a reserved path: /health
 
 ## Maven usage
 
-**annotation-constraints** runs as an annotation processor, which happens automatically when it's on the classpath at
+**annotationconstraints** runs as an annotation processor, which happens automatically when it's on the classpath at
 compile-time (for Java 6 and greater). No extra configuration is necessary other than declaring a dependency on
-**annotation-constraints**.
+**annotationconstraints**.
 
 ```xml
   <dependencies>
     ...
     <dependency>
-      <groupId>com.overstock</groupId>
-      <artifactId>annotation-constraints</artifactId>
-      <version>${annotation-constraints.version}</version>
+      <groupId>org.annotationconstraints</groupId>
+      <artifactId>annotationconstraints</artifactId>
+      <version>${annotationconstraints.version}</version>
     </dependency>
     ...
   </dependencies>
@@ -167,7 +167,7 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
 
 ## Eclipse with m2eclipse for Maven integration
 
-If you use Maven, the easiest way to use **annotation-constraints** within Eclipse is using m2eclipse and m2e-apt.
+If you use Maven, the easiest way to use **annotationconstraints** within Eclipse is using m2eclipse and m2e-apt.
 
 * Install m2eclipse from the Eclipse Marketplace.
 * Install m2e-apt (from the Eclipse Marketplace or from the update site listed
@@ -181,7 +181,7 @@ If you're not using Maven you'll have to configure annotation processing in Ecli
 
 * Under the project's properties, go to **Java Compiler** -> **Annotation Processing** and check
 "Enable project specific settings", "Enable annotation processing" and "Enable processing in editor".
-* Under **Annotation Processing**, go to **Factory Path** and add the **annotation-constraints** jar via
+* Under **Annotation Processing**, go to **Factory Path** and add the **annotationconstraints** jar via
 **Add JARs...**, **Add External JARs** or **Add Variable...**.
 * Also add any jars which contain additional constraints (custom constraints or `@ProvidesConstraintsFor`) along with
 any jars which they depend on.
