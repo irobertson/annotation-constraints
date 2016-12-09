@@ -1,4 +1,4 @@
-package org.annotationconstraints.processor;
+package org.annotationconstraints.testutils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

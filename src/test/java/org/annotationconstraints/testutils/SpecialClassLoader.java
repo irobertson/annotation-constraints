@@ -1,4 +1,4 @@
-package org.annotationconstraints.processor;
+package org.annotationconstraints.testutils;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,22 +1,19 @@
 package org.annotationconstraints.processor;
 
-import static java.util.Arrays.asList;
-
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
-import javax.tools.DiagnosticCollector;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import org.annotationconstraints.testutils.Compiler;
+import org.annotationconstraints.testutils.DiagnosticMatcher;
+import org.annotationconstraints.testutils.MemorySource;
 import org.eclipse.jdt.internal.compiler.tool.EclipseCompiler;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
@@ -33,31 +30,20 @@ public abstract class AbstractCompilationTest {
     }
 
     @Parameter
-    public JavaCompiler compiler;
+    public JavaCompiler javaCompiler;
 
     @Parameter(1)
     public String compilerName;
 
-    protected List<Diagnostic<? extends JavaFileObject>> compileClasses(MemorySource... files) throws Exception {
-        JavaCompiler javac = compiler;
+    private Compiler compiler;
 
-        SpecialClassLoader cl = new SpecialClassLoader();
-        StandardJavaFileManager sjfm = javac.getStandardFileManager(null, null, null);
-        SpecialJavaFileManager fileManager = new SpecialJavaFileManager(sjfm, cl);
-        DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
-        Writer out = new PrintWriter(System.err);
-        JavaCompiler.CompilationTask compile = javac.getTask(
-            out,
-            fileManager,
-            diagnosticListener,
-            Collections.<String> emptyList(),
-            null,
-            asList(files));
-        compile.setProcessors(Arrays.asList(new ConstraintProcessor()));
-        compile.call();
-        sjfm.close();
-        fileManager.close();
-        return diagnosticListener.getDiagnostics();
+    @Before
+    public void createCompiler() {
+        compiler = new Compiler(javaCompiler);
+    }
+
+    protected List<Diagnostic<? extends JavaFileObject>> compileClasses(MemorySource... files) throws Exception {
+        return compiler.compileClasses(files);
     }
 
     protected DiagnosticMatcher diagnostic(Kind kind, MemorySource source, String problemText, String message) {

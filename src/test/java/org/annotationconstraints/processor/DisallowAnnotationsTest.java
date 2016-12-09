@@ -1,5 +1,5 @@
 package org.annotationconstraints.processor;
-import static org.annotationconstraints.processor.MemorySource.annotationSource;
+import static org.annotationconstraints.testutils.MemorySource.annotationSource;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
@@ -13,8 +13,8 @@ import javax.tools.JavaFileObject;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-
-import org.annotationconstraints.TargetMustNotBeAnnotatedWith;;
+import org.annotationconstraints.TargetMustNotBeAnnotatedWith;
+import org.annotationconstraints.testutils.MemorySource;;
 
 public class DisallowAnnotationsTest extends AbstractCompilationTest {
     private static final MemorySource DISALLOW_RESOURCE = annotationSource(

@@ -1,4 +1,4 @@
-package org.annotationconstraints.processor;
+package org.annotationconstraints.testutils;
 
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;

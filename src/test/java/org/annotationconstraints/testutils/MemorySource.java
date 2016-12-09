@@ -1,4 +1,4 @@
-package org.annotationconstraints.processor;
+package org.annotationconstraints.testutils;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.net.URI;
 
 import javax.tools.SimpleJavaFileObject;
 
-class MemorySource extends SimpleJavaFileObject {
+public class MemorySource extends SimpleJavaFileObject {
     private final String src;
     public MemorySource(String name, String... lines) {
         super(URI.create("file:///" + name + ".java"), Kind.SOURCE);
