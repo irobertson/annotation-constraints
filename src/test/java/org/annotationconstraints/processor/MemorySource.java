@@ -16,7 +16,6 @@ class MemorySource extends SimpleJavaFileObject {
         for (String line: lines) {
             builder.append(line).append("\n");
         }
-        System.out.println(name + ".java: " + builder);
         src = builder.toString();
     }
 

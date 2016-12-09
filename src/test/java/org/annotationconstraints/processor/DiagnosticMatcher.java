@@ -28,9 +28,20 @@ public class DiagnosticMatcher extends TypeSafeDiagnosingMatcher<Diagnostic<? ex
 
     @Override
     protected boolean matchesSafely(Diagnostic<? extends JavaFileObject> item, Description mismatchDescription) {
-        return item.getKind().equals(kind)
-            && item.getMessage(null).equals(message)
-            && item.getStartPosition() == start;
+        if (!item.getKind().equals(kind)) {
+            mismatchDescription.appendText("had kind ").appendValue(item.getKind());
+            return false;
+        }
+        String itemMessage = item.getMessage(null);
+        if (! (itemMessage.equals(message) || itemMessage.substring(itemMessage.indexOf(": ") + 2).equals(message))) {
+            mismatchDescription.appendText("has message '").appendText(itemMessage).appendText("'");
+            return false;
+        }
+        if (item.getStartPosition() != start) {
+            mismatchDescription.appendText("has start position").appendValue(item.getStartPosition());
+            return false;
+        }
+        return true;
     }
 
 }

@@ -30,7 +30,8 @@ public class RequireConstructorTest extends AbstractCompilationTest {
 
     @Test
     public void testRequireNoArgConstructorFail() throws ClassNotFoundException, Exception {
-        MemorySource failSource = new MemorySource("Fail",
+        MemorySource failSource = new MemorySource(
+            "Fail",
             "@RequireNoArgConstructor",
             "public class Fail {",
             "  public Fail(String s) {}",
@@ -53,6 +54,43 @@ public class RequireConstructorTest extends AbstractCompilationTest {
             REQUIRE_NO_ARG_CONSTRUCTOR,
             new MemorySource("Pass", "@RequireNoArgConstructor public class Pass {}"));
         assertThat(diagnostics, Matchers.empty());
+    }
+
+    @Test
+    public void testRequireNoArgConstructorStaticMemberClassPass() throws ClassNotFoundException, Exception {
+        MemorySource source = new MemorySource(
+            "Containing", "public class Containing { @RequireNoArgConstructor public static class Pass {} }");
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = compileClasses(REQUIRE_NO_ARG_CONSTRUCTOR, source);
+        if ("eclipse".equals(compilerName)) {
+            // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=508222
+            // verify the eroneous error message; when ECJ gets fixed, this test will fail, telling us its time to
+            // fix the comment on TargetMustHaveConstructors referencing the bug.
+            assertThat(diagnostics, contains(
+                diagnostic(
+                    Kind.ERROR,
+                    source,
+                    "@RequireNoArgConstructor",
+                    "Containing.Pass is annotated with @RequireNoArgConstructor but is an inner class")));
+        }
+        else {
+            assertThat(diagnostics, Matchers.empty());
+        }
+    }
+
+    @Test
+    public void testRequireNoArgConstructorInnerClassFail() throws ClassNotFoundException, Exception {
+        MemorySource failSource = new MemorySource(
+            "Containing",
+            "public class Containing { ",
+            "  @RequireNoArgConstructor public class Fail {}",
+            " }");
+        List<Diagnostic<? extends JavaFileObject>> diagnostics = compileClasses(REQUIRE_NO_ARG_CONSTRUCTOR, failSource);
+        assertThat(diagnostics, contains(
+            diagnostic(
+                Kind.ERROR,
+                failSource,
+                "@RequireNoArgConstructor",
+                "Containing.Fail is annotated with @RequireNoArgConstructor but is an inner class")));
     }
 
     @Test

@@ -64,4 +64,19 @@ public abstract class AbstractCompilationTest {
         return new DiagnosticMatcher(kind, source, problemText, message);
     }
 
+    protected static String classRef(Class<?> clazz) {
+        return clazz.getName() + ".class";
+    }
+
+    protected static String classRefs(Class<?>... classes) {
+        StringBuilder builder = new StringBuilder("{");
+        for (int i = 0; i < classes.length; i++) {
+            if (i > 0) {
+                builder.append(",");
+            }
+            builder.append(classRef(classes[i]));
+        }
+        return builder.append("}").toString();
+    }
+
 }

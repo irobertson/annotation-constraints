@@ -1,4 +1,4 @@
-# annotationconstraints
+# annotation-constraints
 
 Intended audience: Java (6+) developers who write annotations.
 
@@ -8,7 +8,7 @@ are only mentioned in the annotation's JavaDoc and enforced at runtime. However,
 verified at compile-time if there was a way to express them, and odds are that you'd prefer compile-time errors to
 runtime ones since you are already using Java.
 
-**annotationconstraints** is a library for Java 6 or newer that allows you to specify constraints on annotations which
+**annotation-constraints** is a library for Java 6 or newer that allows you to specify constraints on annotations which
 are verified at compile-time via the included annotation processor. It includes commonly-used constraint
 meta-annotations and allows you to create your own. Additionally, it allows you to add constraints to existing (e.g.
 third-party) annotations.
@@ -24,7 +24,7 @@ public @interface Model {
 }
 ```
 
-These constraints are validated at compile-time when **annotationconstraints** is on the compiler's classpath. No
+These constraints are validated at compile-time when **annotation-constraints** is on the compiler's classpath. No
 configuration is necessary because it includes an annotation processor which is picked up automatically by javac
 (see below for Eclipse usage). If you violate any of the constraints, you'll receive an error. For example:
 
@@ -77,11 +77,11 @@ Here's how to do just that.
 
 1. Create a new annotation and add constraint meta-annotations to it.
 1. Annotate your new annotation with `@ProvidesConstraintsFor(ExistingAnnotation.class)`.
-1. To register your new annotation with **annotationconstraints**, create a text file named
+1. To register your new annotation with **annotation-constraints**, create a text file named
 `org.annotationconstraints.provider.constraint-providers` under `META-INF` with the fully-qualified binary class
 name of your new annotation in it. Without this file, the constraints will only be validated in the compilation unit in
 which they're defined.
-1. Make sure the **annotationconstraints** jar and your new annotation class are on the classpath during compilation.
+1. Make sure the **annotation-constraints** jar and your new annotation class are on the classpath during compilation.
 
 See the JavaDoc for [org.annotationconstraints.provider.ProvidesConstraintsFor](https://github.com/iroberts/annotationconstraints/blob/master/src/main/java/org/annotationconstraints/provider/ProvidesConstraintsFor.java) for more details.
 
@@ -91,7 +91,7 @@ For example, JAX-RS (JSR 311) has `@ApplicationPath`, which is required to only 
 `Application`. To have this validated at compile-time we would do the following.
 
 First, create an annotation on which to put constraints. The name or location of this annotation doesn't really
-matter, so let's call it [ApplicationPathConstraints](https://github.com/iroberts/annotationconstraints/blob/master/src/it/integration-source/src/main/java/example/ApplicationPathConstraints.java):
+matter, so let's call it [ApplicationPathConstraints](https://github.com/iroberts/annotation-constraints/blob/master/src/it/integration-source/src/main/java/example/ApplicationPathConstraints.java):
 
 ```java
 package example;
@@ -149,9 +149,9 @@ verifier.ReservedPathFail is annotated with @Path using a reserved path: /health
 
 ## Maven usage
 
-**annotationconstraints** runs as an annotation processor, which happens automatically when it's on the classpath at
+**annotation-constraints** runs as an annotation processor, which happens automatically when it's on the classpath at
 compile-time (for Java 6 and greater). No extra configuration is necessary other than declaring a dependency on
-**annotationconstraints**.
+**annotation-constraints**.
 
 ```xml
   <dependencies>
@@ -159,7 +159,7 @@ compile-time (for Java 6 and greater). No extra configuration is necessary other
     <dependency>
       <groupId>org.annotationconstraints</groupId>
       <artifactId>annotationconstraints</artifactId>
-      <version>${annotationconstraints.version}</version>
+      <version>${annotation-constraints.version}</version>
     </dependency>
     ...
   </dependencies>
@@ -181,7 +181,7 @@ If you're not using Maven you'll have to configure annotation processing in Ecli
 
 * Under the project's properties, go to **Java Compiler** -> **Annotation Processing** and check
 "Enable project specific settings", "Enable annotation processing" and "Enable processing in editor".
-* Under **Annotation Processing**, go to **Factory Path** and add the **annotationconstraints** jar via
+* Under **Annotation Processing**, go to **Factory Path** and add the **annotation-constraints** jar via
 **Add JARs...**, **Add External JARs** or **Add Variable...**.
 * Also add any jars which contain additional constraints (custom constraints or `@ProvidesConstraintsFor`) along with
 any jars which they depend on.

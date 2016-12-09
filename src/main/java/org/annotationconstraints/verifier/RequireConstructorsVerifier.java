@@ -5,8 +5,13 @@ import java.util.List;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
 
@@ -19,6 +24,19 @@ public class RequireConstructorsVerifier extends AbstractVerifier {
 
   @Override
   public void verify(Element element, AnnotationMirror annotationMirror, ConstraintMirror constraint) {
+    System.out.println(element);
+    System.out.println("nesting kind: " + ((TypeElement) element).getNestingKind());
+
+    if (element.getEnclosingElement().getKind() != ElementKind.PACKAGE) {
+      TypeMirror type = element.asType();
+      System.out.println("enclosing type: " + ((DeclaredType) type).getEnclosingType());
+      if (type.getKind() == TypeKind.DECLARED && ((DeclaredType) type).getEnclosingType().getKind() != TypeKind.NONE) {
+        messageBuilder(Diagnostic.Kind.ERROR, element, annotationMirror, constraint)
+          .appendText(" but is an inner class")
+          .print();
+      }
+    }
+
     @SuppressWarnings("unchecked")
     List<AnnotationValue> requiredConstructorValues = (List<AnnotationValue>) constraint.getAnnotation()
       .getElementValues().values().iterator().next().getValue();
