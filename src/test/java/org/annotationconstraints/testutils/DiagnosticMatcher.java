@@ -33,7 +33,11 @@ public class DiagnosticMatcher extends TypeSafeDiagnosingMatcher<Diagnostic<? ex
             return false;
         }
         String itemMessage = item.getMessage(null);
-        if (! (itemMessage.equals(message) || itemMessage.substring(itemMessage.indexOf(": ") + 2).equals(message))) {
+        if (! (itemMessage.equals(message)
+            || itemMessage.substring(itemMessage.indexOf(": ") + 2).equals(message)
+            || (
+                (Kind.WARNING == kind || Kind.MANDATORY_WARNING == kind)
+                && itemMessage.substring(itemMessage.indexOf(": ") + 2).equals("warning: " + message)))) {
             mismatchDescription.appendText("has message '").appendText(itemMessage).appendText("'");
             return false;
         }
