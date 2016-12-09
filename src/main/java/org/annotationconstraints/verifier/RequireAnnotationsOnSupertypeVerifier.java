@@ -36,7 +36,7 @@ public class RequireAnnotationsOnSupertypeVerifier extends AbstractVerifier {
     if (!requiredAnnotations.isEmpty()) {
       messageBuilder(Diagnostic.Kind.ERROR, element, annotationMirror, constraint)
         .appendText(" but does not have a supertype annotated with ")
-        .appendAnnotations(requiredAnnotations, " or ")
+        .appendAnnotations(requiredAnnotations, " and ")
         .print();
     }
   }
